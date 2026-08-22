@@ -1,0 +1,48 @@
+---
+import ToolDirectory from "../../components/ToolDirectory.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { tools } from "../../data/tools";
+
+const toolList = {
+  "@type": "ItemList",
+  itemListElement: tools.map((tool, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: tool.name,
+    url: new URL(tool.path, "https://devawesome.io").href,
+  })),
+};
+---
+
+<BaseLayout
+  surface="toolbox"
+  title="Developer Tools"
+  description="Free browser-local tools for JSON, UUIDs, SHA-256 hashes, and developer test plans."
+  canonicalPath="/tools"
+  schemaType="CollectionPage"
+  schemaMainEntity={toolList}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/">← Home</a>
+      <h1>Developer tools</h1>
+    </div>
+    <p>Small tools for everyday tasks. No signup, no analytics, and no uploads.</p>
+  </header>
+
+  <section class="toolbox-section tool-picker" aria-labelledby="all-tools-title">
+    <h2 id="all-tools-title">Pick a tool</h2>
+    <ToolDirectory />
+  </section>
+
+  <section class="tool-detail">
+    <div class="tool-detail-heading">
+      <h2>Local by design.</h2>
+      <p>The tools run in your browser. DevAwesome does not send your inputs to an API or store them in browser storage.</p>
+    </div>
+    <div class="tool-detail-links">
+      <a href="/datenschutz"><span>Read the privacy details</span><span aria-hidden="true">→</span></a>
+      <a href="/guides/reproducible-developer-tool-tests"><span>See how tools are tested</span><span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</BaseLayout>

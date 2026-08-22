@@ -1,0 +1,17 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import { tools } from "../data/tools";
+---
+
+<div class="tool-directory">
+  {tools.map((tool) => (
+    <a class="tool-row" href={tool.path}>
+      <span class:list={["tool-glyph", tool.glyph === "list" && "tool-glyph-list"]} aria-hidden="true">
+        {tool.glyph === "list" ? <><i></i><i></i><i></i></> : tool.glyph}
+      </span>
+      <strong>{tool.name}</strong>
+      <span>{tool.description}</span>
+      <ArrowIcon />
+    </a>
+  ))}
+</div>

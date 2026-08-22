@@ -1,0 +1,32 @@
+---
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const sample = '{"name":"DevAwesome","active":true,"tools":["json","uuid","sha256"]}';
+---
+
+<section class:list={["json-workbench", compact && "json-workbench-compact"]} data-json-formatter aria-label="JSON formatter">
+  <div class="workbench-bar">
+    <strong>JSON formatter</strong>
+    <div>
+      <button type="button" data-json-clear>Clear</button>
+      <button type="button" data-json-copy>Copy</button>
+    </div>
+  </div>
+  <div class="json-panes">
+    <label>
+      <span>Input</span>
+      <textarea rows={compact ? 10 : 16} spellcheck="false" maxlength="1000000" data-json-input>{sample}</textarea>
+    </label>
+    <label>
+      <span>Output</span>
+      <textarea rows={compact ? 10 : 16} spellcheck="false" readonly data-json-output></textarea>
+    </label>
+  </div>
+  <div class="workbench-footer">
+    <p data-json-status aria-live="polite">Ready</p>
+    <div>
+      <button type="button" data-json-minify>Minify</button>
+      <button class="toolbox-button toolbox-button-small" type="button" data-json-format>Format JSON</button>
+    </div>
+  </div>
+</section>

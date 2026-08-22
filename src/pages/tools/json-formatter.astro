@@ -1,0 +1,50 @@
+---
+import JsonFormatter from "../../components/JsonFormatter.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const toolSchema = {
+  "@type": "WebApplication",
+  name: "DevAwesome JSON Formatter",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript.",
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout
+  surface="toolbox"
+  title="JSON Formatter"
+  description="Format, validate, and minify JSON locally in your browser without uploading it."
+  canonicalPath="/tools/json-formatter"
+  schemaMainEntity={toolSchema}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/tools">← All tools</a>
+      <h1>JSON formatter</h1>
+    </div>
+    <p>Paste JSON, spot syntax errors, and copy a formatted or minified result. Everything stays in this browser tab.</p>
+  </header>
+
+  <section class="tool-surface">
+    <div class="tool-privacy-note">
+      <span><strong>No uploads.</strong> Input is processed only in your browser.</span>
+      <span>Maximum input: 1,000,000 characters</span>
+    </div>
+    <JsonFormatter />
+  </section>
+
+  <section class="tool-detail">
+    <div class="tool-detail-heading">
+      <h2>What it does</h2>
+      <p>Uses the browser's built-in JSON parser. Formatting uses two spaces. Minify removes optional whitespace without changing the data.</p>
+    </div>
+    <div class="tool-detail-links">
+      <a href="/tools/uuid-generator"><span>Generate UUIDs</span><span aria-hidden="true">→</span></a>
+      <a href="/tools/evidence-receipt"><span>Create a SHA-256 hash</span><span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <script is:inline src="/json-formatter.js" defer></script>
+</BaseLayout>

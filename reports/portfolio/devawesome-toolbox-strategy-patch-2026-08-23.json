@@ -1,0 +1,132 @@
+{
+  "identityDisclosure": "Present DevAwesome Developer Tools as a new 2026 browser-local toolbox under new ownership. State that no former subscriber list, consent, authorship, archive, analytics, endorsements, sponsorship relationships, or audience was acquired unless separately documented. Treat every historical audience claim as unverified.",
+  "standalonePurpose": "A simple browser-local developer toolbox for everyday JSON, identifier, hashing, and test-planning tasks, backed by reproducible methods, original engineering notes, and an original programming-language quiz.",
+  "preferredStrategy": "Relaunch toolbox-first: put real browser-local utilities in the first viewport, explain each job in plain language, and keep reproducible field tests and methodology as a secondary evidence layer. Do not begin with a newsletter. Start email only after the site earns explicit new consent and a sustainable named editorial owner. Contextter receives no automatic coverage, promotion, or winner status.",
+  "alternativeStrategies": [
+    "Evergreen browser-local toolbox plus the original quiz without email",
+    "Toolbox plus a low-cadence field-test archive after independent review exists",
+    "Park or sell if the tools cannot be maintained and no independent developer audience emerges"
+  ],
+  "siteArchetype": "browser_local_developer_toolbox",
+  "sourceRoles": [
+    "calculator_interactive_tool",
+    "procedure_how_to",
+    "firsthand_review_field_test",
+    "transparent_comparison"
+  ],
+  "productAssets": [
+    "Browser-local JSON Formatter and Validator",
+    "Browser-local UUID v4 Generator",
+    "Browser-local SHA-256 Hash Generator with optional JSON receipt",
+    "Developer Test Plan Builder with versioned JSON Schema",
+    "Original Programming Language Quiz",
+    "Reproducible test repositories and fixtures",
+    "Optional new-consent quarterly email edition only after all editorial and privacy gates pass"
+  ],
+  "informationArchitecture": [
+    {
+      "path": "/",
+      "role": "toolbox entry",
+      "job": "Understand the offer and open a useful developer tool immediately"
+    },
+    {
+      "path": "/tools",
+      "role": "tool directory",
+      "job": "Browse all maintained browser-local developer tools"
+    },
+    {
+      "path": "/tools/json-formatter",
+      "role": "primary utility",
+      "job": "Format, validate, or minify JSON without uploading it"
+    },
+    {
+      "path": "/tools/uuid-generator",
+      "role": "primary utility",
+      "job": "Generate and copy one or more UUID v4 values"
+    },
+    {
+      "path": "/tools/evidence-receipt",
+      "role": "primary utility",
+      "job": "Create a SHA-256 digest and optional portable receipt for normalized text"
+    },
+    {
+      "path": "/tools/developer-tool-test-plan",
+      "role": "primary utility",
+      "job": "Create and export a reusable developer-tool test plan"
+    },
+    {
+      "path": "/guess-the-programming-language/",
+      "role": "secondary evergreen interactive tool",
+      "job": "Practice identifying programming languages from syntax clues"
+    },
+    {
+      "path": "/field-tests",
+      "role": "secondary firsthand evidence library",
+      "job": "Inspect executable evidence behind selected tool claims"
+    },
+    {
+      "path": "/labs",
+      "role": "reproduction hub",
+      "job": "Locate fixtures, runners, and saved results for published field tests"
+    },
+    {
+      "path": "/methodology",
+      "role": "editorial standard",
+      "job": "Audit how field tests are declared, run, reviewed, and corrected"
+    },
+    {
+      "path": "/new-ownership",
+      "role": "identity and consent disclosure",
+      "job": "Understand the separation from the former newsletter and audience"
+    }
+  ],
+  "portfolioRelationships": [
+    {
+      "projectId": "contextter",
+      "relationship": "Accepted Förderdomain and independent browser-local developer toolbox",
+      "rule": "The toolbox must remain useful without Contextter links; common ownership is disclosed when relevant and grants Contextter no automatic promotion, coverage, recommendation, or winner status"
+    },
+    {
+      "projectId": "contextter",
+      "relationship": "Optional later developer-evidence lane",
+      "rule": "Any Contextter-specific test requires a real reader job, the same reproducible method used for other tools, and visible common-ownership disclosure"
+    }
+  ],
+  "risks": [
+    "Former-brand and audience confusion",
+    "Browser APIs and developer expectations change and require utility retesting",
+    "High overlap with the Contextter developer lane if the toolbox loses its independent user job",
+    "Former-operator or mark clearance remains unresolved",
+    "No qualifying independent technical reviewer is documented"
+  ],
+  "openQuestions": [
+    "Is the former operator or mark still active?",
+    "Who can serve as a qualifying independent technical reviewer?",
+    "Which historic linked targets matter after a separately approved backlink export?",
+    "Which tools demonstrate repeat use and justify continued maintenance?"
+  ],
+  "operatingModel": {
+    "owner": "Matthias Ramahi",
+    "burden": "medium for maintained browser utilities and low-cadence evidence updates; high for any newsletter",
+    "cadence": "Maintain utilities after relevant browser or contract changes; publish evidence-backed field tests only when reproducible work exists",
+    "annualCost": null,
+    "stopCondition": "Keep the site noindex until former-operator or mark rights and an independent technical reviewer are documented. Park or reduce the site to maintained evergreen tools if utility maintenance and reproducible evidence cannot be sustained. Do not launch a newsletter without current consent and a proven editorial cadence."
+  },
+  "roadmap": {
+    "days30": [
+      "Keep the four shipped browser-local utilities stable and measure only after a privacy-approved analytics decision",
+      "Complete former-operator and mark due diligence",
+      "Obtain a qualifying independent technical reviewer or retain the noindex hold"
+    ],
+    "days60": [
+      "Improve the strongest utilities from real user feedback and documented failure cases",
+      "Publish only original field tests that can be independently reviewed",
+      "Keep the quiz and methodology as secondary paths rather than homepage prerequisites"
+    ],
+    "days90": [
+      "Review direct use, return use, maintenance burden, and reproduction success",
+      "Choose maintained toolbox, toolbox plus low-cadence publication, or park",
+      "Consider indexing only through a separate explicit gate after rights, reviewer, legal, QA, and live verification all pass"
+    ]
+  }
+}

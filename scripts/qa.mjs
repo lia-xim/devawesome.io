@@ -67,9 +67,12 @@ if (!built.get("/labs").html.includes('"@type":"CollectionPage"')) failures.push
 if (!built.get("/guess-the-programming-language").html.includes('"@type":"Quiz"')) failures.push("quiz needs Quiz mainEntity schema");
 if (!built.get("/").html.includes('"@type":"WebSite"')) failures.push("home needs WebSite schema");
 if (!built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"TechArticle"') || !built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"BreadcrumbList"')) failures.push("guide needs TechArticle and visible breadcrumb schema");
-if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"') || !built.get("/tools/developer-tool-test-plan").html.includes('"@type":"BreadcrumbList"')) failures.push("tool needs WebApplication and visible breadcrumb schema");
+if (!built.get("/tools").html.includes('"@type":"CollectionPage"') || !built.get("/tools").html.includes('"@type":"ItemList"')) failures.push("tools hub needs CollectionPage and ItemList schema");
+if (!built.get("/tools/json-formatter").html.includes('"@type":"WebApplication"')) failures.push("JSON formatter needs WebApplication schema");
+if (!built.get("/tools/uuid-generator").html.includes('"@type":"WebApplication"')) failures.push("UUID generator needs WebApplication schema");
+if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"')) failures.push("test-plan tool needs WebApplication schema");
 if (!built.get("/tools/developer-tool-test-plan").html.includes('href="/schemas/developer-tool-test-plan.v0.1.json"')) failures.push("tool must expose its versioned JSON Schema");
-if (!built.get("/tools/evidence-receipt").html.includes('"@type":"WebApplication"') || !built.get("/tools/evidence-receipt").html.includes('"@type":"BreadcrumbList"')) failures.push("receipt tool needs WebApplication and visible breadcrumb schema");
+if (!built.get("/tools/evidence-receipt").html.includes('"@type":"WebApplication"')) failures.push("hash tool needs WebApplication schema");
 if (!built.get("/tools/evidence-receipt").html.includes('href="/schemas/evidence-receipt.v0.1.json"')) failures.push("receipt tool must expose its versioned JSON Schema");
 if (built.get("/404").html.includes("application/ld+json")) failures.push("404 must not emit page schema");
 
@@ -83,6 +86,9 @@ for (const name of js) {
   if (bytes > 20000) failures.push(name + " exceeds 20 KB route chunk budget: " + bytes);
 }
 const home = built.get("/").html;
+for (const copy of ["Small developer tools.", "Right in your browser.", "Pick a tool", "Useful first. Explained second."]) if (!home.includes(copy)) failures.push("home lacks plain-language toolbox copy: " + copy);
+for (const path of ["/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
+for (const route of ["/", "/tools", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!built.get(route).html.includes('class="toolbox-page"')) failures.push(route + " must use the minimal toolbox surface");
 const revealPath = join(root, "public/reveal.js");
 const revealBytes = (await stat(revealPath)).size;
 if (revealBytes > 2000 || !home.includes('src="/reveal.js"')) failures.push("global reveal loader must remain external and below 2 KB");
@@ -98,7 +104,17 @@ const receiptTool = built.get("/tools/evidence-receipt").html;
 const receiptScripts = [...receiptTool.matchAll(/<script[^>]+src="([^"]+\.js)"/g)].map((m) => m[1]);
 if (!receiptScripts.includes("/evidence-receipt.js")) failures.push("receipt tool must load its external CSP-compatible script");
 if (home.includes("/evidence-receipt.js") || quiz.includes("/evidence-receipt.js") || tool.includes("/evidence-receipt.js")) failures.push("receipt behavior must remain route-specific");
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js"]) if ((await stat(join(root, "public", asset))).size > 5000) failures.push(asset + " exceeds 5 KB utility budget");
+const jsonTool = built.get("/tools/json-formatter").html;
+const uuidTool = built.get("/tools/uuid-generator").html;
+if (!home.includes('src="/json-formatter.js"') || !jsonTool.includes('src="/json-formatter.js"')) failures.push("home and JSON tool must load the shared formatter behavior");
+if (quiz.includes("/json-formatter.js") || tool.includes("/json-formatter.js") || receiptTool.includes("/json-formatter.js") || uuidTool.includes("/json-formatter.js")) failures.push("JSON formatter behavior must stay on its two intended surfaces");
+if (!uuidTool.includes('src="/uuid-generator.js"')) failures.push("UUID tool must load its route-specific behavior");
+if (home.includes("/uuid-generator.js") || quiz.includes("/uuid-generator.js") || tool.includes("/uuid-generator.js") || receiptTool.includes("/uuid-generator.js") || jsonTool.includes("/uuid-generator.js")) failures.push("UUID behavior must remain route-specific");
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "json-formatter.js", "uuid-generator.js"]) {
+  const source = await readFile(join(root, "public", asset), "utf8");
+  if ((await stat(join(root, "public", asset))).size > 7000) failures.push(asset + " exceeds 7 KB utility budget");
+  if (/\bfetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage/.test(source)) failures.push(asset + " must stay request-free and storage-free");
+}
 
 const internalHref = /href="(\/[^"]*)"/g;
 for (const [route, { html }] of built) {

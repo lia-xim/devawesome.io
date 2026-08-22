@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const toolSchema = {
+  "@type": "WebApplication",
+  name: "DevAwesome UUID Generator",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript and crypto.randomUUID().",
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout
+  surface="toolbox"
+  title="UUID Generator"
+  description="Generate cryptographically random UUID v4 values locally in your browser."
+  canonicalPath="/tools/uuid-generator"
+  schemaMainEntity={toolSchema}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/tools">← All tools</a>
+      <h1>UUID generator</h1>
+    </div>
+    <p>Generate up to 100 UUID v4 values at once. Copy the list or download it as a text file.</p>
+  </header>
+
+  <section class="tool-surface">
+    <div class="tool-privacy-note">
+      <span><strong>Generated locally.</strong> No request leaves this page.</span>
+      <span>Uses crypto.randomUUID()</span>
+    </div>
+    <div class="uuid-workbench" data-uuid-generator>
+      <div class="uuid-controls">
+        <h2>How many?</h2>
+        <p>Choose a number between 1 and 100.</p>
+        <label class="tool-field">
+          <span>UUID count</span>
+          <input type="number" name="count" min="1" max="100" value="5" inputmode="numeric" data-uuid-count />
+        </label>
+        <div class="tool-actions">
+          <button class="toolbox-button" type="button" data-uuid-generate>Generate UUIDs</button>
+        </div>
+        <p class="tool-status" data-uuid-status aria-live="polite">Ready</p>
+      </div>
+      <div class="uuid-output">
+        <label class="tool-field">
+          <span>Generated UUIDs</span>
+          <textarea rows="14" readonly spellcheck="false" data-uuid-output></textarea>
+        </label>
+        <div class="tool-actions">
+          <button class="tool-action-secondary" type="button" data-uuid-copy disabled>Copy all</button>
+          <button class="tool-action-secondary" type="button" data-uuid-download disabled>Download .txt</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tool-detail">
+    <div class="tool-detail-heading">
+      <h2>What it creates</h2>
+      <p>Version 4 UUIDs use random data. They are useful identifiers, not passwords, access tokens, or proof of when something was created.</p>
+    </div>
+    <div class="tool-detail-links">
+      <a href="/tools/json-formatter"><span>Format JSON</span><span aria-hidden="true">→</span></a>
+      <a href="/tools/evidence-receipt"><span>Create a SHA-256 hash</span><span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <script is:inline src="/uuid-generator.js" defer></script>
+</BaseLayout>

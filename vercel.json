@@ -47,6 +47,21 @@
     },
     {
       "permanent": true,
+      "destination": "/tools",
+      "source": "/tools/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/json-formatter",
+      "source": "/tools/json-formatter/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/uuid-generator",
+      "source": "/tools/uuid-generator/"
+    },
+    {
+      "permanent": true,
       "destination": "/tools/evidence-receipt",
       "source": "/tools/evidence-receipt/"
     },

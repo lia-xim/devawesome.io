@@ -3,13 +3,14 @@ import { site } from "../data/site";
 ---
 
 <footer class="site-footer">
-  <div class="footer-brand"><span class="brand-mark" aria-hidden="true"></span> Dev<b>Awesome</b></div>
-  <p>Standalone publication / Contextter support domain / New ownership / Editor: Matthias Ramahi</p>
+  <a class="footer-brand" href="/">DevAwesome</a>
+  <p>New site under new ownership.</p>
   <nav aria-label="Footer navigation">
-    <a href="/new-ownership">Ownership note</a>
+    <a href="/tools">Tools</a>
+    <a href="/guides/reproducible-developer-tool-tests">Guide</a>
+    <a href="/new-ownership">About</a>
     <a href="/impressum">Impressum</a>
-    <a href="/datenschutz">Datenschutz</a>
+    <a href="/datenschutz">Privacy</a>
     <a href={site.githubUrl}>Source</a>
-    <a href={`${site.githubIssuesUrl}/new`}>Corrections</a>
   </nav>
 </footer>

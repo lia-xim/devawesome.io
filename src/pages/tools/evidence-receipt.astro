@@ -1,16 +1,9 @@
 ---
-import Breadcrumbs from "../../components/Breadcrumbs.astro";
-import PageIntro from "../../components/PageIntro.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const breadcrumbs = [
-  { name: "Home", path: "/" },
-  { name: "Labs", path: "/labs" },
-  { name: "Evidence receipt", path: "/tools/evidence-receipt" },
-];
 const toolSchema = {
   "@type": "WebApplication",
-  name: "SHA-256 Evidence Receipt",
+  name: "DevAwesome SHA-256 Hash Generator",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript, Web Crypto, and a secure browser context.",
@@ -18,43 +11,75 @@ const toolSchema = {
 };
 ---
 
-<BaseLayout title="SHA-256 Evidence Receipt" description="Generate and export a browser-local SHA-256 receipt for normalized UTF-8 text without uploading the evidence." canonicalPath="/tools/evidence-receipt" schemaMainEntity={toolSchema} breadcrumbs={breadcrumbs}>
-  <Breadcrumbs items={breadcrumbs} />
-  <PageIntro number="T2" label="Browser-local integrity tool" title="Hash the evidence. Keep the limit attached." intro="Paste a test note or output, normalize its line endings, and export a SHA-256 receipt. The text is processed in your browser and is not uploaded by this site." />
+<BaseLayout
+  surface="toolbox"
+  title="SHA-256 Hash Generator"
+  description="Create a SHA-256 hash from text locally in your browser without uploading it."
+  canonicalPath="/tools/evidence-receipt"
+  schemaMainEntity={toolSchema}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/tools">← All tools</a>
+      <h1>SHA-256 hash</h1>
+    </div>
+    <p>Create a SHA-256 hash from text. Copy the digest or download a small JSON receipt.</p>
+  </header>
 
-  <section class="tool-disclosure section-rule" aria-label="Data and proof boundary">
-    <strong>Integrity, not ownership</strong>
-    <p>A matching digest can support a later content-equivalence check. It does not prove who created the text, who owns it, whether rights are cleared, or when it existed.</p>
-    <a href="/schemas/evidence-receipt.v0.1.json">JSON Schema / v0.1 <span aria-hidden="true">↗</span></a>
+  <section class="tool-surface">
+    <div class="tool-privacy-note">
+      <span><strong>No uploads.</strong> Text is processed only in your browser.</span>
+      <a href="/schemas/evidence-receipt.v0.1.json">Receipt schema</a>
+    </div>
+    <div class="hash-workbench" data-receipt-builder>
+      <form class="hash-input" data-receipt-form>
+        <h2>Text to hash</h2>
+        <p>Line endings are normalized to LF before hashing.</p>
+        <label class="tool-field">
+          <span>Optional label</span>
+          <input name="label" value="text-hash" maxlength="120" />
+        </label>
+        <label class="tool-field">
+          <span>Text</span>
+          <textarea name="evidence" required rows="12" maxlength="1000000" placeholder="Paste text here"></textarea>
+        </label>
+        <div class="tool-actions">
+          <button class="toolbox-button" type="submit">Create hash</button>
+          <button class="tool-action-secondary" type="reset">Clear</button>
+        </div>
+      </form>
+      <div class="hash-output">
+        <h2>Result</h2>
+        <p class="tool-status" data-receipt-status aria-live="polite">Paste text to create a hash.</p>
+        <label class="tool-field">
+          <span>SHA-256 digest</span>
+          <input readonly spellcheck="false" data-receipt-digest placeholder="64-character digest" />
+        </label>
+        <div class="tool-actions">
+          <button class="tool-action-secondary" type="button" data-receipt-copy-hash disabled>Copy hash</button>
+        </div>
+        <details class="receipt-details">
+          <summary>Portable JSON receipt</summary>
+          <pre><code tabindex="0" data-receipt-output>The receipt will appear here.</code></pre>
+          <div class="tool-actions">
+            <button class="tool-action-secondary" type="button" data-receipt-copy disabled>Copy JSON</button>
+            <button class="tool-action-secondary" type="button" data-receipt-download disabled>Download .json</button>
+          </div>
+        </details>
+      </div>
+    </div>
+    <noscript><p class="noscript-note">This tool requires JavaScript and Web Crypto. No fallback sends your text to a server.</p></noscript>
   </section>
 
-  <section class="plan-builder section-rule" data-receipt-builder>
-    <form class="plan-form" data-receipt-form>
-      <div class="form-heading"><span class="section-label">Evidence input</span><h2>Create a bounded receipt.</h2><p>Do not paste secrets, tokens, personal data, private source, or material you are not permitted to process.</p></div>
-      <div class="form-grid receipt-form-grid">
-        <label><span>Evidence label <b>Required</b></span><input name="label" required value="field-test-output" /></label>
-        <label><span>Text evidence <b>Required</b></span><textarea name="evidence" required rows="14" placeholder="Paste the exact output or note you want to fingerprint."></textarea></label>
-      </div>
-      <div class="plan-actions">
-        <button class="action action-signal" type="submit">Generate SHA-256 receipt <span class="action-arrow" aria-hidden="true">→</span></button>
-        <button class="action action-dark" type="reset">Reset</button>
-      </div>
-    </form>
-
-    <aside class="plan-output" aria-labelledby="receipt-output-title">
-      <div class="output-heading"><span class="section-label">Portable result</span><h2 id="receipt-output-title">Evidence receipt JSON</h2><p data-receipt-status aria-live="polite">Paste permitted text, then generate the receipt.</p></div>
-      <pre><code tabindex="0" data-receipt-output>The generated receipt will appear here.</code></pre>
-      <div class="plan-actions">
-        <button class="action action-signal" type="button" data-receipt-copy disabled>Copy JSON</button>
-        <button class="action action-dark" type="button" data-receipt-download disabled>Download .json</button>
-      </div>
-    </aside>
-    <noscript><p class="noscript-note">This tool requires JavaScript and Web Crypto. No fallback sends evidence to a server.</p></noscript>
-  </section>
-
-  <section class="tool-next section-rule">
-    <div><span class="section-label">Reproducibility contract</span><h2>Known vectors. Independent limits still open.</h2></div>
-    <div><p>FT-03 checks the browser-facing core against published SHA-256 vectors and Node's separate crypto implementation. The test is executable and saved, but it has not been independently reviewed.</p><div class="action-row"><a class="action action-dark" href="/field-tests/evidence-receipt-contract">Inspect FT-03 <span class="action-arrow" aria-hidden="true">→</span></a><a class="action action-dark" href="/methodology">Audit the method <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
+  <section class="tool-detail">
+    <div class="tool-detail-heading">
+      <h2>What the hash proves</h2>
+      <p>A matching hash shows that normalized text has not changed. It does not prove who wrote it, who owns it, or when it was created.</p>
+    </div>
+    <div class="tool-detail-links">
+      <a href="/field-tests/evidence-receipt-contract"><span>See the executable test</span><span aria-hidden="true">→</span></a>
+      <a href="/tools/json-formatter"><span>Format JSON</span><span aria-hidden="true">→</span></a>
+    </div>
   </section>
 
   <script is:inline type="module" src="/evidence-receipt.js"></script>

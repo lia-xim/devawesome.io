@@ -1,157 +1,59 @@
 ---
+import ArrowIcon from "../components/ArrowIcon.astro";
+import JsonFormatter from "../components/JsonFormatter.astro";
+import ToolDirectory from "../components/ToolDirectory.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout>
-  <section class="hero-grid section-rule" aria-labelledby="home-title">
-    <div class="hero-editorial">
-      <div>
-        <span class="eyebrow" data-hero-kicker>Standalone developer field-test lab</span>
-        <h1 class="hero-title" id="home-title">
-          <span><span data-hero-line>Test the tool.</span></span>
-          <span><em data-hero-line>Keep the receipts.</em></span>
-        </h1>
-        <p class="hero-summary" data-hero-copy>Developer tools are easy to praise and hard to evaluate. DevAwesome publishes the setup, the failure, and the evidence needed to disagree with a verdict.</p>
-        <div class="action-row">
-          <a class="action action-signal" href="/tools/developer-tool-test-plan" data-hero-action>Build a test plan <span class="action-arrow" aria-hidden="true">→</span></a>
-          <a class="action" href="/guess-the-programming-language/" data-hero-action>Take the language quiz <span class="action-arrow" aria-hidden="true">&lt;/&gt;</span></a>
-        </div>
+<BaseLayout
+  surface="toolbox"
+  title="DevAwesome Developer Tools"
+  description="Small browser-local developer tools for formatting JSON, generating UUIDs, creating SHA-256 hashes, and planning tests."
+  canonicalPath="/"
+>
+  <section class="toolbox-hero" aria-labelledby="home-title">
+    <div class="toolbox-hero-copy">
+      <h1 id="home-title">Small developer tools.<br /> Right in your browser.</h1>
+      <p>Format JSON, generate IDs, create hashes, and plan tests. No signup. No uploads.</p>
+      <div class="toolbox-actions">
+        <a class="toolbox-button" href="#tools">Browse tools <ArrowIcon /></a>
+        <a class="toolbox-button toolbox-button-secondary" href="/tools/json-formatter">Open JSON formatter <ArrowIcon /></a>
       </div>
-      <ul class="hero-facts" aria-label="Current project facts">
-        <li><strong>03</strong><span>Published field tests</span></li>
-        <li><strong>08</strong><span>Original quiz samples</span></li>
-        <li><strong>02</strong><span>Recovered legacy notes</span></li>
-        <li><strong>Held</strong><span>Reviewer and identity clearance open</span></li>
-      </ul>
     </div>
-
-    <div class="hero-rig" data-rig-panel aria-label="Preview of the field-test evidence model">
-      <div class="rig-topline"><span class="live-signal">Method preview</span><span>Rig / 000</span></div>
-      <pre class="rig-code"><code><span class="syntax">// No verdict without a declared rig</span>
-&#123;
-  "surface": "developer tool",
-  "environment": "required",
-  "failure_case": "required",
-  "reviewer": <span class="result">"not independent"</span>
-&#125;
-
-<span class="syntax">// Publication gate</span>
-<span class="result">STATUS  PASS — THREE RIGS PUBLISHED</span></code></pre>
-      <svg class="rig-trace" viewBox="0 0 680 180" role="img" aria-label="A diagnostic signal connecting three evidence checkpoints">
-        <path data-draw-path d="M10 132 L80 132 L118 96 L190 110 L252 62 L328 78 L390 42 L468 88 L536 70 L592 112 L670 48" />
-        <circle cx="118" cy="96" r="8" /><circle cx="390" cy="42" r="8" /><circle cx="592" cy="112" r="8" />
-      </svg>
-      <div class="evidence-strip" data-stagger>
-        <div><span>Evidence 01</span><strong>Environment</strong><small>Version, date, region, plan, hardware.</small></div>
-        <div><span>Evidence 02</span><strong>Failure</strong><small>Constraint, recovery path, and raw output.</small></div>
-        <div><span>Evidence 03</span><strong>Review</strong><small>Named owner and a bounded recommendation.</small></div>
-      </div>
-      <div class="rig-bottomline"><span><b>/</b> Reproducible. Limited. Correctable.</span><span>[ preview ]</span></div>
+    <div class="hero-tool-preview">
+      <JsonFormatter compact />
     </div>
   </section>
 
-  <section class="content-section method-section section-rule" aria-labelledby="method-title">
-    <div class="section-heading">
-      <div data-reveal>
-        <span class="section-label">01 / The test method</span>
-        <h2 class="section-title" id="method-title">Evidence before verdict.</h2>
-      </div>
-      <p class="section-copy" data-reveal>A useful test shows where the claim stops. <strong>Versions, inputs, costs, failures, limitations, and conflicts</strong> belong beside the conclusion, not in a footnote.</p>
+  <section class="toolbox-section tool-picker" id="tools" aria-labelledby="tools-title">
+    <h2 id="tools-title">Pick a tool</h2>
+    <ToolDirectory />
+  </section>
+
+  <section class="trust-strip" aria-label="How the tools handle your data">
+    <p>Runs in your browser</p>
+    <p>No signup</p>
+    <p>No analytics</p>
+  </section>
+
+  <section class="toolbox-section simple-explainer" aria-labelledby="explain-title">
+    <div>
+      <h2 id="explain-title">Useful first. Explained second.</h2>
+      <p>Open a tool and get the result. If you want the technical details, the method and test notes are there too.</p>
     </div>
-    <div class="method-track-wrap">
-      <svg class="method-track-svg" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true"><path data-draw-path d="M0 20 H245 l15 -12 l15 24 l15 -24 l15 24 l15 -12 H1000" /></svg>
-      <ol class="method-steps" data-stagger>
-        <li><span class="method-node"></span><small>01</small><strong>Declare</strong><span>Name the task, version, environment, expected result, and limits before the run.</span></li>
-        <li><span class="method-node"></span><small>02</small><strong>Run</strong><span>Keep commands, configuration, elapsed time, direct cost, retries, and raw outputs.</span></li>
-        <li><span class="method-node"></span><small>03</small><strong>Break</strong><span>Leave the happy path. Record the constraint and what recovery actually required.</span></li>
-        <li><span class="method-node"></span><small>04</small><strong>Publish</strong><span>Separate observation from judgment. Date the verdict and make correction possible.</span></li>
-      </ol>
-    </div>
-    <div class="action-row">
-      <a class="action action-signal" href="/guides/reproducible-developer-tool-tests">Run the practical guide <span class="action-arrow" aria-hidden="true">→</span></a>
-      <a class="action action-dark" href="/methodology">Audit the publication standard <span class="action-arrow" aria-hidden="true">↗</span></a>
+    <div class="simple-links">
+      <a href="/guides/reproducible-developer-tool-tests">
+        <strong>How we test tools</strong>
+        <span>Read the guide</span>
+        <ArrowIcon />
+      </a>
+      <a href="/guess-the-programming-language/">
+        <strong>Guess the programming language</strong>
+        <span>Take the quiz</span>
+        <ArrowIcon />
+      </a>
     </div>
   </section>
 
-  <section class="content-section section-rule" aria-labelledby="current-tests-title">
-    <div class="section-heading">
-      <div data-reveal><span class="section-label">02 / Current field tests</span><h2 class="section-title" id="current-tests-title">Small claims. Executable proof.</h2></div>
-      <p class="section-copy" data-reveal>The current release tests its publishing toolchain and a browser-facing integrity module. All rigs are public, versioned, and explicitly marked as not independently reviewed.</p>
-    </div>
-    <div class="field-test-grid" data-stagger>
-      <article class="field-test-card">
-        <div class="test-card-top"><span>FT-01 / Astro 7.2.1</span><strong>PASS</strong></div>
-        <h2>Static route contract</h2>
-        <p>Every registry-backed canonical document carries the same crawlable noindex directive; the redirect-only alias is covered by the response header; the hold sitemap contains no indexable URLs.</p>
-        <a href="/field-tests/astro-static-route-contract">Inspect FT-01 <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="field-test-card">
-        <div class="test-card-top"><span>FT-02 / pnpm 10.33.2</span><strong>PASS</strong></div>
-        <h2>Frozen lockfile contract</h2>
-        <p>The matching manifest installed offline. A deliberate mismatch stopped with ERR_PNPM_OUTDATED_LOCKFILE.</p>
-        <a href="/field-tests/pnpm-frozen-lockfile-contract">Inspect FT-02 <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="field-test-card">
-        <div class="test-card-top"><span>FT-03 / SHA-256</span><strong>PASS</strong></div>
-        <h2>Evidence receipt contract</h2>
-        <p>The browser-facing core matched known vectors, normalized line endings, Unicode input, and a separate Node crypto implementation.</p>
-        <a href="/field-tests/evidence-receipt-contract">Inspect FT-03 <span aria-hidden="true">→</span></a>
-      </article>
-    </div>
-  </section>
-
-  <section class="quiz-teaser section-rule" aria-labelledby="quiz-teaser-title">
-    <div class="quiz-teaser-copy" data-reveal>
-      <div>
-        <span class="eyebrow">03 / First instrument</span>
-        <h2 class="section-title" id="quiz-teaser-title">Read the code. Find the tell.</h2>
-        <p>Eight code samples, four choices each, and an explanation that names the intended syntax clue. No timer, account, leaderboard, or tracking.</p>
-      </div>
-      <div class="action-row"><a class="action action-signal" href="/guess-the-programming-language/">Start language ID <span class="action-arrow" aria-hidden="true">→</span></a></div>
-    </div>
-    <div class="quiz-specimen" data-reveal>
-      <div class="specimen-top"><span>Code sample / 01</span><span>UTF-8</span></div>
-      <pre class="specimen-code"><code><span class="kw">fn</span> double(items: &amp;[i32]) -&gt; <span class="type">Vec&lt;i32&gt;</span> &#123;
-  items.iter().map(|n| n * 2).collect()
-&#125;</code></pre>
-      <div class="specimen-bottom"><span>Clue / borrowed slice</span><span>Question 01 / 08</span></div>
-    </div>
-  </section>
-
-  <section class="content-section legacy-section section-rule" aria-labelledby="legacy-title">
-    <div class="section-heading">
-      <div data-reveal>
-        <span class="section-label">04 / Link recovery</span>
-        <h2 class="section-title" id="legacy-title">Legacy links. Current notes.</h2>
-      </div>
-      <p class="section-copy" data-reveal>The former newsletter is not republished. Two old issue URLs have relevant live links, so each now answers that specific click with a new, independently written project note and an explicit ownership boundary.</p>
-    </div>
-    <div class="legacy-index">
-      <div class="legacy-summary" data-reveal>
-        <strong>No blanket archive restore.</strong>
-        <p>Unknown issue paths stay unresolved. We only rebuild a target when its topic, live source, rights boundary, and reader intent are documented.</p>
-      </div>
-      <ul class="legacy-links" data-stagger>
-        <li><a href="/archive/14"><small>Former issue 14</small><strong>One HTML Page Challenge</strong><span aria-hidden="true">→</span></a></li>
-        <li><a href="/archive/49"><small>Former issue 49</small><strong>HTML Memory Tested</strong><span aria-hidden="true">→</span></a></li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="status-section section-rule" aria-labelledby="status-title">
-    <div class="status-statement" data-reveal>
-      <span class="eyebrow">05 / Disclosure</span>
-      <h2 id="status-title">New site. New ownership.</h2>
-      <p>The domain changed hands. Former issues, authors, subscribers, consent, audience figures, and endorsements did not.</p>
-    </div>
-    <div class="status-ledger" data-reveal>
-      <dl>
-        <div><dt>Current operator</dt><dd>Matthias Ramahi</dd></div>
-        <div><dt>Newsletter</dt><dd>Inactive</dd></div>
-        <div><dt>Editor / technical review</dt><dd>Matthias Ramahi / not independent</dd></div>
-        <div><dt>Search indexing</dt><dd>Held: reviewer and identity clearance open</dd></div>
-      </dl>
-      <div class="action-row"><a class="action" href="/new-ownership">Read the ownership note <span class="action-arrow" aria-hidden="true">→</span></a></div>
-    </div>
-  </section>
+  <script is:inline src="/json-formatter.js" defer></script>
 </BaseLayout>

@@ -3,22 +3,40 @@ import { site } from "../data/site";
 
 const currentPath = Astro.url.pathname;
 const links = [
-  { href: "/field-tests", label: "Field tests" },
-  { href: "/labs", label: "Labs" },
-  { href: "/methodology", label: "Method" },
+  { href: "/tools", label: "Tools" },
+  { href: "/guides/reproducible-developer-tool-tests", label: "Guide" },
   { href: "/guess-the-programming-language/", label: "Quiz" },
+  { href: "/new-ownership", label: "About" },
 ];
+
+const isCurrent = (href: string) => {
+  const normalized = href.replace(/\/$/, "");
+  const current = currentPath.replace(/\/$/, "");
+  return current === normalized || (normalized !== "" && current.startsWith(normalized + "/"));
+};
 ---
 
 <header class="site-header">
   <a class="brand" href="/" aria-label={`${site.title} home`}>
-    <span class="brand-mark" aria-hidden="true"></span>
-    <span>Dev<span class="brand-signal">Awesome</span></span>
+    <svg class="brand-cube" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 2.5 28 9.3v13.4L16 29.5 4 22.7V9.3L16 2.5Z" />
+      <path d="m4 9.3 12 6.9 12-6.9M16 16.2v13.3" />
+    </svg>
+    <span>DevAwesome</span>
   </a>
-  <nav aria-label="Primary navigation">
+  <nav class="desktop-nav" aria-label="Primary navigation">
     {links.map((link) => (
-      <a href={link.href} aria-current={currentPath === link.href || (link.href.endsWith("/") && currentPath === link.href.slice(0, -1)) ? "page" : undefined}>{link.label}</a>
+      <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>{link.label}</a>
     ))}
   </nav>
-  <a class="ownership-link" href="/new-ownership">{site.ownershipLabel}</a>
+  <a class="header-cta" href="/tools">Browse tools <span aria-hidden="true">→</span></a>
+  <a class="ownership-status" href="/new-ownership" aria-label={site.ownershipLabel}></a>
+  <details class="mobile-nav">
+    <summary aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </summary>
+    <nav aria-label="Mobile navigation">
+      {links.map((link) => <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>{link.label}</a>)}
+    </nav>
+  </details>
 </header>

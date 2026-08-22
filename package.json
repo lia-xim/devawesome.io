@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Project foundation for a low-cadence developer field-test lab under new ownership.",
+  "description": "A simple browser-local developer toolbox under new ownership.",
   "engines": {
     "node": "24.x"
   },

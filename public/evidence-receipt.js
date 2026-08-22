@@ -2,7 +2,9 @@ import { sha256Evidence } from "/evidence-receipt-core.js";
 
 const form = document.querySelector("[data-receipt-form]");
 const output = document.querySelector("[data-receipt-output]");
+const digest = document.querySelector("[data-receipt-digest]");
 const status = document.querySelector("[data-receipt-status]");
+const copyHashButton = document.querySelector("[data-receipt-copy-hash]");
 const copyButton = document.querySelector("[data-receipt-copy]");
 const downloadButton = document.querySelector("[data-receipt-download]");
 
@@ -33,13 +35,27 @@ form?.addEventListener("submit", async (event) => {
         "It does not prove authorship, ownership, rights clearance, identity, or a trusted creation time."
       ]
     };
+    digest.value = result.sha256;
     output.textContent = JSON.stringify(currentReceipt, null, 2);
+    copyHashButton.disabled = false;
     copyButton.disabled = false;
     downloadButton.disabled = false;
     output.focus();
     setStatus(`Receipt generated for ${result.bytes} UTF-8 bytes.`);
   } catch (error) {
     setStatus(error instanceof Error ? error.message : "Receipt generation failed.");
+  }
+});
+
+copyHashButton?.addEventListener("click", async () => {
+  if (!currentReceipt) return;
+  try {
+    await navigator.clipboard.writeText(currentReceipt.digest);
+    setStatus("Hash copied.");
+  } catch {
+    digest.focus();
+    digest.select();
+    setStatus("Select and copy the hash manually.");
   }
 });
 
@@ -63,7 +79,9 @@ downloadButton?.addEventListener("click", () => {
 
 form?.addEventListener("reset", () => {
   currentReceipt = null;
-  output.textContent = "The generated receipt will appear here.";
+  digest.value = "";
+  output.textContent = "The receipt will appear here.";
+  copyHashButton.disabled = true;
   copyButton.disabled = true;
   downloadButton.disabled = true;
   setStatus("Receipt cleared.");
