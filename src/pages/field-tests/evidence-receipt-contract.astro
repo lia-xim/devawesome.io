@@ -1,0 +1,74 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import resultJson from "../../../reports/field-tests/evidence-receipt-contract-2026-08-22.json";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const result: any = resultJson;
+const limits: string[] = result.limits ?? [];
+const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "/field-tests" }, { name: "Evidence Receipt Contract", path: "/field-tests/evidence-receipt-contract" }];
+---
+
+<BaseLayout title="Evidence Receipt Contract" description="A reproducible SHA-256 field test comparing known vectors, line-ending normalization, and Node Web Crypto against node:crypto." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="FT-03" label="SHA-256 / normalized UTF-8 text" title="Does the receipt core produce the declared digest?" intro="We run the exact browser-facing core against two published SHA-256 vectors, line-ending normalization, Unicode text, and a separate node:crypto reference implementation." />
+
+  <section class="test-verdict section-rule">
+    <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
+    <p>All four cases produced a 64-character lowercase SHA-256 digest. The empty and abc vectors matched their fixed expected values; every case matched Node's separate crypto implementation after the declared normalization.</p>
+  </section>
+
+  <section class="test-layout section-rule">
+    <aside class="test-rail">
+      <span class="section-label">Evidence record</span>
+      <dl>
+        <div><dt>Captured</dt><dd>{captured}</dd></div>
+        <div><dt>Editor</dt><dd>{result.editor ?? "Matthias Ramahi"}</dd></div>
+        <div><dt>Technical review</dt><dd>{result.technicalReview ?? "Not independently reviewed"}</dd></div>
+        <div><dt>Fixture</dt><dd>Four normalized-text vectors</dd></div>
+      </dl>
+    </aside>
+    <div class="test-body">
+      <section>
+        <span class="section-label">Question and method</span>
+        <h2>One core, two crypto paths.</h2>
+        <p>The runner imports the same small module used by the browser tool. It compares Web Crypto output with Node's createHash implementation and checks fixed standard vectors before any receipt is presented as reproducible.</p>
+        <pre class="command-block"><code>{result.command ?? "corepack pnpm field-test:receipt"}</code></pre>
+      </section>
+
+      <section>
+        <span class="section-label">Locked environment</span>
+        <div class="metric-grid">
+          <div><small>Cases</small><strong>{result.cases?.length ?? 4}</strong></div>
+          <div><small>Node</small><strong>{result.environment?.node ?? "v24.x"}</strong></div>
+          <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"} / {result.environment?.architecture ?? "x64"}</strong></div>
+          <div><small>Algorithm</small><strong>SHA-256</strong></div>
+        </div>
+      </section>
+
+      <section>
+        <span class="section-label">Observed cases</span>
+        <ul class="assertion-list">
+          {(result.cases ?? []).map((testCase: any) => <li><span>{testCase.label} / {testCase.bytes} bytes / {String(testCase.digest).slice(0, 12)}…</span><strong>{Object.values(testCase.assertions ?? {}).every(Boolean) ? "PASS" : "PENDING"}</strong></li>)}
+        </ul>
+      </section>
+
+      <section>
+        <span class="section-label">Limits</span>
+        <h2>A digest is not a rights certificate.</h2>
+        <ul class="limit-list">{limits.map((limit) => <li>{limit}</li>)}</ul>
+      </section>
+
+      <section>
+        <span class="section-label">Reproduce</span>
+        <p>The runner reads the public core and writes only the dated result when capture mode is requested.</p>
+        <pre class="command-block"><code>corepack pnpm field-test:receipt:capture</code></pre>
+        <div class="action-row">
+          <a class="action action-dark" href="https://github.com/lia-xim/devawesome.io/blob/main/scripts/field-tests/evidence-receipt-contract.mjs">Inspect the runner <span class="action-arrow" aria-hidden="true">↗</span></a>
+          <a class="action action-signal" href="/tools/evidence-receipt">Use the local tool <span class="action-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

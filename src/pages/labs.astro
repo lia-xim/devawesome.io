@@ -5,7 +5,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Labs" description="Public DevAwesome fixtures, runners, saved results, and reproduction steps for published field tests." schemaType="CollectionPage">
-  <PageIntro number="L2" label="Reproduction bench" title="Run the material behind the verdict." intro="Each published test links the smallest useful fixture, exact runner, saved result, and limits. The first two rigs use the production repository and an isolated temporary dependency fixture." />
+  <PageIntro number="L3" label="Reproduction bench" title="Run the material behind the verdict." intro="Each published test links the smallest useful fixture, exact runner, saved result, and limits. The first three rigs cover the production repository, an isolated dependency fixture, and a browser-facing integrity module." />
 
   <section class="proof-section">
     <span class="section-label">Artifact flow</span>
@@ -19,14 +19,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </section>
 
   <section class="editorial-section">
-    <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>Two public rigs passed.</h2><p>Both were run on 22 August 2026 and remain bounded to their declared environment.</p></div>
+    <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>Three public rigs passed.</h2><p>All were run on 22 August 2026 and remain bounded to their declared environment.</p></div>
     <div class="editorial-main" data-reveal>
       <ul class="proof-list">
         <li><strong>Astro static contract</strong><span>Production build, generated routes, crawlable noindex directives, empty hold sitemap, and a custom 404.</span></li>
         <li><strong>pnpm frozen lockfile</strong><span>Offline positive case plus a deliberate stale-manifest negative case in an automatically deleted temporary fixture.</span></li>
+        <li><strong>SHA-256 evidence receipt</strong><span>Known vectors, normalized line endings, Unicode input, and Node/Web Crypto equivalence for the browser-facing core.</span></li>
       </ul>
       <div class="action-row">
-        <a class="action action-dark" href="/field-tests">Read both field tests <span class="action-arrow" aria-hidden="true">→</span></a>
+        <a class="action action-dark" href="/field-tests">Read all field tests <span class="action-arrow" aria-hidden="true">→</span></a>
+        <a class="action action-signal" href="/tools/evidence-receipt">Create an evidence receipt <span class="action-arrow" aria-hidden="true">→</span></a>
         <a class="action action-signal" href="/tools/developer-tool-test-plan">Build a test plan <span class="action-arrow" aria-hidden="true">→</span></a>
         <a class="action" href={site.githubUrl}>View the public source <span class="action-arrow" aria-hidden="true">↗</span></a>
       </div>

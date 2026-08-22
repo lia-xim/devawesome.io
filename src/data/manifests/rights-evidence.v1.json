@@ -36,5 +36,17 @@
     "externalMarks": "Product and project names appear only for factual identification. Direct source links do not imply affiliation or endorsement."
   },
   "unknowns": ["former operator clearance", "brand or mark clearance", "independent technical reviewer"],
+  "governance": {
+    "dossier": "reports/governance/rights-reviewer-dossier.md",
+    "domainControl": "pass",
+    "currentOperatorIdentity": "pass",
+    "currentRepositoryProvenance": "pass",
+    "formerMaterialExcluded": "pass",
+    "formerOperatorAuthorization": "not_proven",
+    "brandOrMarkClearance": "not_proven",
+    "namedEditor": "pass",
+    "independentTechnicalReviewer": "not_proven",
+    "indexRelease": "fail"
+  },
   "launchState": "production_noindex"
 }

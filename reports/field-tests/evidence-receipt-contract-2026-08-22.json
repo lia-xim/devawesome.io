@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "evidence-receipt-contract",
+  "status": "passed",
+  "capturedAt": "2026-08-22T21:27:09.625Z",
+  "editor": "Matthias Ramahi",
+  "technicalReview": "Not independently reviewed",
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26200",
+    "architecture": "x64",
+    "node": "v24.15.0",
+    "crypto": "Node Web Crypto plus node:crypto reference"
+  },
+  "command": "corepack pnpm field-test:receipt",
+  "cases": [
+    {
+      "label": "empty",
+      "bytes": 0,
+      "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "assertions": {
+        "normalizationMatches": true,
+        "nodeReferenceMatches": true,
+        "knownVectorMatches": true,
+        "digestShapeValid": true
+      }
+    },
+    {
+      "label": "abc",
+      "bytes": 3,
+      "digest": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      "assertions": {
+        "normalizationMatches": true,
+        "nodeReferenceMatches": true,
+        "knownVectorMatches": true,
+        "digestShapeValid": true
+      }
+    },
+    {
+      "label": "line endings",
+      "bytes": 16,
+      "digest": "f3220283d05d1ff2ae350cfe9e0e367cb5aef46e10efb203c8a53c678e2218c8",
+      "assertions": {
+        "normalizationMatches": true,
+        "nodeReferenceMatches": true,
+        "knownVectorMatches": true,
+        "digestShapeValid": true
+      }
+    },
+    {
+      "label": "unicode",
+      "bytes": 24,
+      "digest": "6aafa92c63dbe9c63725a77a55f85e2af6f8b92505bcdb95e4cc894093641ba3",
+      "assertions": {
+        "normalizationMatches": true,
+        "nodeReferenceMatches": true,
+        "knownVectorMatches": true,
+        "digestShapeValid": true
+      }
+    }
+  ],
+  "limits": [
+    "The test covers normalized text encoded as UTF-8, not arbitrary binary files.",
+    "A matching digest supports content-equivalence checking but does not establish authorship, ownership, rights clearance, identity, or trusted time.",
+    "The browser tool requires a secure context with Web Crypto support."
+  ]
+}

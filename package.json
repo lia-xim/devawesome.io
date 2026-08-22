@@ -17,7 +17,9 @@
     "field-test:astro:capture": "node scripts/field-tests/astro-static-contract.mjs --capture",
     "field-test:pnpm": "node scripts/field-tests/pnpm-frozen-lockfile.mjs",
     "field-test:pnpm:capture": "node scripts/field-tests/pnpm-frozen-lockfile.mjs --capture",
-    "verify": "pnpm build && pnpm field-test:astro && pnpm field-test:pnpm && pnpm qa"
+    "field-test:receipt": "node scripts/field-tests/evidence-receipt-contract.mjs",
+    "field-test:receipt:capture": "node scripts/field-tests/evidence-receipt-contract.mjs --capture",
+    "verify": "pnpm build && pnpm field-test:astro && pnpm field-test:pnpm && pnpm field-test:receipt && pnpm qa"
   },
   "dependencies": {
     "astro": "7.2.1"

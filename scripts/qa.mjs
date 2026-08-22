@@ -41,10 +41,14 @@ const legacy = JSON.parse(await readFile(join(root, "src/data/manifests/legacy-u
 const vercel = JSON.parse(await readFile(join(root, "vercel.json"), "utf8"));
 const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const planSchema = JSON.parse(await readFile(join(dist, "schemas", "developer-tool-test-plan.v0.1.json"), "utf8"));
+const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-receipt.v0.1.json"), "utf8"));
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
+if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
 const headers = Object.fromEntries((vercel.headers?.[0]?.headers ?? []).map(({ key, value }) => [key.toLowerCase(), value]));
 if (rights.launchState !== "production_noindex") failures.push("rights manifest must record production_noindex");
 if (!rights.unknowns.includes("independent technical reviewer") || !rights.unknowns.includes("brand or mark clearance")) failures.push("open reviewer and identity gates must stay explicit");
+if (rights.governance?.independentTechnicalReviewer !== "not_proven" || rights.governance?.brandOrMarkClearance !== "not_proven" || rights.governance?.indexRelease !== "fail") failures.push("governance manifest must keep reviewer, mark, and index-release gates closed");
+try { await access(join(root, rights.governance.dossier)); } catch { failures.push("rights and reviewer governance dossier must exist"); }
 if (pkg.dependencies?.gsap || pkg.dependencies?.["@astrojs/sitemap"]) failures.push("global GSAP and unused sitemap dependencies must be absent");
 if (headers["x-robots-tag"] !== "noindex, follow, noarchive") failures.push("Vercel X-Robots-Tag must match meta");
 for (const key of ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options", "cross-origin-opener-policy"]) if (!headers[key]) failures.push("missing security header " + key);
@@ -53,7 +57,7 @@ if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
 if (!built.get("/datenschutz").html.includes("keine Webanalyse")) failures.push("privacy copy must match analytics-free runtime");
 if (!built.get("/new-ownership").html.includes("remains out of search indexes")) failures.push("ownership page must disclose hold");
-for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract"]) {
+for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract"]) {
   const html = built.get(route).html;
   if (!html.includes("Not independently reviewed")) failures.push(route + " must disclose review boundary");
   if (!html.includes('"@type":"TechArticle"') || !html.includes('"editor":{"@id":"https://devawesome.io/#operator"}')) failures.push(route + " needs truthful TechArticle editor schema");
@@ -65,6 +69,8 @@ if (!built.get("/").html.includes('"@type":"WebSite"')) failures.push("home need
 if (!built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"TechArticle"') || !built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"BreadcrumbList"')) failures.push("guide needs TechArticle and visible breadcrumb schema");
 if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"') || !built.get("/tools/developer-tool-test-plan").html.includes('"@type":"BreadcrumbList"')) failures.push("tool needs WebApplication and visible breadcrumb schema");
 if (!built.get("/tools/developer-tool-test-plan").html.includes('href="/schemas/developer-tool-test-plan.v0.1.json"')) failures.push("tool must expose its versioned JSON Schema");
+if (!built.get("/tools/evidence-receipt").html.includes('"@type":"WebApplication"') || !built.get("/tools/evidence-receipt").html.includes('"@type":"BreadcrumbList"')) failures.push("receipt tool needs WebApplication and visible breadcrumb schema");
+if (!built.get("/tools/evidence-receipt").html.includes('href="/schemas/evidence-receipt.v0.1.json"')) failures.push("receipt tool must expose its versioned JSON Schema");
 if (built.get("/404").html.includes("application/ld+json")) failures.push("404 must not emit page schema");
 
 const assetDir = join(dist, "_astro");
@@ -88,6 +94,11 @@ const tool = built.get("/tools/developer-tool-test-plan").html;
 const toolScripts = [...tool.matchAll(/<script[^>]+src="([^"]+\.js)"/g)].map((m) => m[1]);
 if (!toolScripts.includes("/test-plan.js")) failures.push("test-plan tool must load its external CSP-compatible script");
 if (home.includes("/test-plan.js") || quiz.includes("/test-plan.js")) failures.push("test-plan behavior must remain route-specific");
+const receiptTool = built.get("/tools/evidence-receipt").html;
+const receiptScripts = [...receiptTool.matchAll(/<script[^>]+src="([^"]+\.js)"/g)].map((m) => m[1]);
+if (!receiptScripts.includes("/evidence-receipt.js")) failures.push("receipt tool must load its external CSP-compatible script");
+if (home.includes("/evidence-receipt.js") || quiz.includes("/evidence-receipt.js") || tool.includes("/evidence-receipt.js")) failures.push("receipt behavior must remain route-specific");
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js"]) if ((await stat(join(root, "public", asset))).size > 5000) failures.push(asset + " exceeds 5 KB utility budget");
 
 const internalHref = /href="(\/[^"]*)"/g;
 for (const [route, { html }] of built) {

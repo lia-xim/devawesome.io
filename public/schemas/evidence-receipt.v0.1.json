@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://devawesome.io/schemas/evidence-receipt.v0.1.json",
+  "title": "DevAwesome normalized-text evidence receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "version", "label", "algorithm", "normalization", "bytes", "digest", "generatedAt", "limitations"],
+  "properties": {
+    "schema": { "const": "https://devawesome.io/schemas/evidence-receipt.v0.1.json" },
+    "version": { "const": "0.1" },
+    "label": { "type": "string", "minLength": 1 },
+    "algorithm": { "const": "SHA-256" },
+    "normalization": { "const": "CRLF and CR line endings converted to LF; UTF-8 encoding" },
+    "bytes": { "type": "integer", "minimum": 0 },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "limitations": { "type": "array", "minItems": 2, "items": { "type": "string", "minLength": 1 } }
+  }
+}

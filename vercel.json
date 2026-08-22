@@ -32,6 +32,11 @@
     },
     {
       "permanent": true,
+      "destination": "/field-tests/evidence-receipt-contract",
+      "source": "/field-tests/evidence-receipt-contract/"
+    },
+    {
+      "permanent": true,
       "destination": "/guides/reproducible-developer-tool-tests",
       "source": "/guides/reproducible-developer-tool-tests/"
     },
@@ -39,6 +44,11 @@
       "permanent": true,
       "destination": "/tools/developer-tool-test-plan",
       "source": "/tools/developer-tool-test-plan/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/evidence-receipt",
+      "source": "/tools/evidence-receipt/"
     },
     {
       "permanent": true,

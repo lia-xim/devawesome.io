@@ -4,9 +4,9 @@ Public source repository for the current devawesome.io website.
 
 ## Current state
 
-DevAwesome is a production-preview developer and AI-engineering field-test publication held from indexing until its documented reviewer and identity gates are cleared. The minimum viable launch includes an original programming-language quiz, two reproducible field tests, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
+DevAwesome is a production-preview developer and AI-engineering field-test publication held from indexing until its documented reviewer and identity gates are cleared. The protected release includes an original programming-language quiz, three reproducible field tests, two browser-local utilities, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
-Matthias Ramahi is the operator and editor. The two launch tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
+Matthias Ramahi is the operator and editor. All three field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
 
 ## Standalone purpose
 
@@ -25,12 +25,13 @@ Run the full release contract:
 
     corepack pnpm verify
 
-Run and recapture the two field tests:
+Run and recapture the three field tests:
 
     corepack pnpm field-test:astro:capture
     corepack pnpm field-test:pnpm:capture
+    corepack pnpm field-test:receipt:capture
 
-The QA pass checks all canonical routes, crawlable robots, consistent meta and Vercel-header noindex, the empty hold sitemap, real 404 behavior, declared legacy decisions, legal pages, internal links, the permanent quiz alias, test evidence, schemas, JavaScript budgets, security headers, and historical-identity claims.
+The QA pass checks all canonical routes, crawlable robots, consistent meta and Vercel-header noindex, the empty hold sitemap, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all three test records, both utility schemas, route-specific JavaScript budgets, security headers, closed governance gates, and historical-identity claims.
 
 ## Deployment
 

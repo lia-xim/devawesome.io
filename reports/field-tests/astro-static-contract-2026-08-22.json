@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "astro-static-route-contract",
   "status": "passed",
-  "capturedAt": "2026-08-22T20:40:43.903Z",
+  "capturedAt": "2026-08-22T21:31:03.673Z",
   "editor": "Matthias Ramahi",
   "technicalReview": "Not independently reviewed",
   "project": "devawesome.io production source",
@@ -15,10 +15,10 @@
     "sitemapMode": "empty static hold sitemap"
   },
   "command": "corepack pnpm exec astro build",
-  "buildDurationMs": 3314,
+  "buildDurationMs": 5909,
   "exitCode": 0,
-  "generatedHtmlFiles": 16,
-  "canonicalRouteCount": 14,
+  "generatedHtmlFiles": 18,
+  "canonicalRouteCount": 16,
   "sitemapEntries": 0,
   "sitemapUrls": [],
   "assertions": {
