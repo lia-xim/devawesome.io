@@ -13,9 +13,14 @@
     "preview": "astro preview",
     "check": "astro check",
     "qa": "node scripts/qa.mjs",
-    "verify": "pnpm build && pnpm qa"
+    "field-test:astro": "node scripts/field-tests/astro-static-contract.mjs",
+    "field-test:astro:capture": "node scripts/field-tests/astro-static-contract.mjs --capture",
+    "field-test:pnpm": "node scripts/field-tests/pnpm-frozen-lockfile.mjs",
+    "field-test:pnpm:capture": "node scripts/field-tests/pnpm-frozen-lockfile.mjs --capture",
+    "verify": "pnpm build && pnpm field-test:astro && pnpm field-test:pnpm && pnpm qa"
   },
   "dependencies": {
+    "@astrojs/sitemap": "3.7.3",
     "astro": "7.2.1",
     "gsap": "^3.15.0"
   },

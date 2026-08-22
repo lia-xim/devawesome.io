@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Build a new, low-cadence developer field-test lab that helps software developers inspect reproducible evidence before adopting developer tools, APIs, MCP servers, agents, and the workflows between them.
+DevAwesome is a low-cadence, independent developer and AI-engineering publication. It helps developers inspect reproducible evidence before adopting developer tools, APIs, MCP servers, agents, and the workflows between them.
 
-The first evergreen product is an original, browser-local programming-language identification quiz. The first editorial product is a transparent field-test method. No test result is published until its environment, inputs, costs, latency, failures, limitations, and reviewer are ready.
+The evergreen product is an original, browser-local programming-language identification quiz. The editorial product is a transparent field-test library. Each result publishes its environment, inputs, method, observed result, limitations, reproduction command, editor, and review status.
 
 ## Audience
 
@@ -13,48 +13,41 @@ The first evergreen product is an original, browser-local programming-language i
 - MCP and agent implementers
 - Technical product and platform teams
 
-## Visual thesis
-
-A premium developer instrument with editorial discipline: graphite working surfaces, warm-bone reading planes, an electric chartreuse measurement signal, and cyan diagnostic detail. It should feel authored, inspectable, contemporary, and motion-aware-not like a generic SaaS dashboard, cyberpunk prop, or nostalgic copy of the former newsletter.
-
 ## Information architecture
 
-- `/` - current product thesis, test protocol, quiz entry, and honest lab status
-- `/guess-the-programming-language/` - exact restored target with an original eight-question interactive language-identification quiz
-- `/quiz` - permanent alias redirect to the exact restored target
-- `/field-tests` - deliberately empty publication queue and release gate
-- `/labs` - reproduction and fixture hub, with no fake repositories or results
-- `/methodology` - testing, evidence, scoring, conflicts, corrections, and ageing policy
-- `/archive/14` - new One HTML Page Challenge note; former issue not republished
-- `/archive/49` - new HTML Tags Memory Test note; former issue not republished
-- `/new-ownership` - identity, consent, rights, corrections, and current status disclosure
+- / - publication thesis, current tests, quiz entry, legacy-link policy, and ownership disclosure
+- /field-tests - canonical library for published tests
+- /field-tests/astro-static-route-contract - FT-01, the Astro static publishing contract
+- /field-tests/pnpm-frozen-lockfile-contract - FT-02, the pnpm frozen-lockfile contract
+- /labs - public fixture, runner, result, and reproduction hub
+- /methodology - testing, evidence, review, correction, and ageing policy
+- /guess-the-programming-language/ - original eight-question language-identification quiz
+- /quiz - permanent alias redirect to the canonical quiz
+- /archive/14 and /archive/49 - newly authored notes for two evidence-backed legacy targets
+- /new-ownership - identity, consent, rights, corrections, and current status disclosure
+- /impressum and /datenschutz - operator and implementation-specific legal disclosures
 
-## Non-goals
+## Launch evidence
+
+- FT-01 ran the pinned Astro 7.2.1 production build and compared all generated sitemap entries with the declared canonical route set.
+- FT-02 ran pnpm 10.33.2 in a disposable local fixture: the matching frozen lockfile installed offline, while a deliberately stale manifest failed with ERR_PNPM_OUTDATED_LOCKFILE.
+- Both result records were captured on 22 August 2026 and live in reports/field-tests/.
+- Matthias Ramahi is the operator and editor. The launch tests are not independently technically reviewed, and every test discloses that limit.
+
+## Launch status
+
+The owner explicitly approved indexing once the minimum viable launch passed its content, legal, and technical gates. The source now has no meta noindex or Vercel X-Robots-Tag noindex. Crawling is allowed, and Astro generates a canonical-only sitemap.
+
+Unknown legacy paths return a real 404. No 410 target is currently declared because the recovery evidence contains no reviewed 410 decision; open archive samples remain review_required rather than receiving an invented status.
+
+## Non-goals and hard boundaries
 
 - No weekly newsletter, signup form, imported list, or inherited consent
-- No automated news aggregator or generic AI-written programming feed
 - No copied former issues, quiz questions, branding, code, screenshots, authors, or identities
-- No fake reviews, star ratings, benchmarks, testimonials, usage numbers, or reviewer identity
-- No sitewide Contextter promotion or commonly owned corroboration
-
-## Evidence boundaries
-
-- Confirmed: the domain is recorded as owned; bounded archive evidence shows a former developer newsletter, issue archive, and programming quiz.
-- Unverified: historical audience figures, former rights, brand clearance, and contributor permissions. Target-level backlink evidence is recorded; Search Console domain ownership is verified through DNS.
-- Current: the repository and Vercel production deployment are live on the owned custom domain; indexing remains deliberately disabled.
-- All quiz questions, explanations, layout, copy, and code in this repository are newly authored for the 2026 project.
-
-## Launch gates
-
-Keep `noindex, follow, noarchive` until all of the following are explicit and verified. Crawling remains allowed so search engines can observe the noindex directive; the sitemap stays empty.
-
-1. Brand and former-operator confusion is cleared.
-2. A named editor and technical reviewer own the cadence.
-3. At least two complete reproducible field tests meet the methodology.
-4. Legacy target URLs have reviewed actions based on backlink and rights evidence.
-5. Production metadata, status codes, accessibility, security, and custom-domain behavior pass live checks.
-6. The owner explicitly approves launch and indexing.
+- No fake reviews, benchmarks, testimonials, audience figures, or reviewer identity
+- No Contextter satellite role, sitewide promotion, or portfolio link network
+- No blanket homepage redirect or speculative restoration of legacy URLs
 
 ## Stop condition
 
-Do not start a newsletter without a named editor, a current consent system, and four completed editions. If reproducible field tests cannot be maintained, keep only the evergreen quiz and methodology or park the domain.
+Do not start a newsletter without a named editor, a current consent system, and four completed editions. If reproducible field tests cannot be maintained, retain the evergreen quiz and methodology or park the domain.

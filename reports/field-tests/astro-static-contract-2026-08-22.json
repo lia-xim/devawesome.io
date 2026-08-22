@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "astro-static-route-contract",
+  "status": "passed",
+  "capturedAt": "2026-08-22T16:18:50.162Z",
+  "editor": "Matthias Ramahi",
+  "technicalReview": "Not independently reviewed",
+  "project": "devawesome.io production source",
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26200",
+    "architecture": "x64",
+    "node": "v24.15.0",
+    "astro": "7.2.1",
+    "sitemapIntegration": "3.7.3"
+  },
+  "command": "corepack pnpm exec astro build",
+  "buildDurationMs": 2550,
+  "exitCode": 0,
+  "generatedHtmlFiles": 14,
+  "sitemapEntries": 12,
+  "sitemapUrls": [
+    "https://devawesome.io/",
+    "https://devawesome.io/archive/14",
+    "https://devawesome.io/archive/49",
+    "https://devawesome.io/datenschutz",
+    "https://devawesome.io/field-tests",
+    "https://devawesome.io/field-tests/astro-static-route-contract",
+    "https://devawesome.io/field-tests/pnpm-frozen-lockfile-contract",
+    "https://devawesome.io/guess-the-programming-language/",
+    "https://devawesome.io/impressum",
+    "https://devawesome.io/labs",
+    "https://devawesome.io/methodology",
+    "https://devawesome.io/new-ownership"
+  ],
+  "assertions": {
+    "staticOutputExists": true,
+    "custom404Exists": true,
+    "redirectAliasExcluded": true,
+    "errorRouteExcluded": true,
+    "sitemapMatchesCanonicalSet": true
+  },
+  "limits": [
+    "One warm local run on a Windows x64 workstation; this is not a cross-platform performance benchmark.",
+    "The result covers Astro static output for this repository, not SSR, server islands, adapters, or cold dependency installation.",
+    "Elapsed time includes local filesystem and process-start variance and should not be compared across machines."
+  ]
+}

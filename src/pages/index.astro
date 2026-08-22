@@ -18,10 +18,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
       </div>
       <ul class="hero-facts" aria-label="Current project facts">
-        <li><strong>00</strong><span>Published field tests</span></li>
+        <li><strong>02</strong><span>Published field tests</span></li>
         <li><strong>08</strong><span>Original quiz samples</span></li>
         <li><strong>02</strong><span>Recovered legacy notes</span></li>
-        <li><strong>Off</strong><span>Indexing until launch approval</span></li>
+        <li><strong>On</strong><span>Indexing approved for launch</span></li>
       </ul>
     </div>
 
@@ -32,11 +32,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   "surface": "developer tool",
   "environment": "required",
   "failure_case": "required",
-  "reviewer": <span class="result">"open"</span>
+  "reviewer": <span class="result">"not independent"</span>
 &#125;
 
 <span class="syntax">// Publication gate</span>
-<span class="result">STATUS  HOLD — EVIDENCE INCOMPLETE</span></code></pre>
+<span class="result">STATUS  PASS — TWO RIGS PUBLISHED</span></code></pre>
       <svg class="rig-trace" viewBox="0 0 680 180" role="img" aria-label="A diagnostic signal connecting three evidence checkpoints">
         <path data-draw-path d="M10 132 L80 132 L118 96 L190 110 L252 62 L328 78 L390 42 L468 88 L536 70 L592 112 L670 48" />
         <circle cx="118" cy="96" r="8" /><circle cx="390" cy="42" r="8" /><circle cx="592" cy="112" r="8" />
@@ -70,10 +70,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <a class="method-link" href="/methodology">Inspect the complete six-stage method <span aria-hidden="true">↗</span></a>
   </section>
 
+  <section class="content-section section-rule" aria-labelledby="current-tests-title">
+    <div class="section-heading">
+      <div data-reveal><span class="section-label">02 / Current field tests</span><h2 class="section-title" id="current-tests-title">Small claims. Executable proof.</h2></div>
+      <p class="section-copy" data-reveal>The first release tests the toolchain that publishes this site. Both rigs are public, versioned, and explicitly marked as not independently reviewed.</p>
+    </div>
+    <div class="field-test-grid" data-stagger>
+      <article class="field-test-card">
+        <div class="test-card-top"><span>FT-01 / Astro 7.2.1</span><strong>PASS</strong></div>
+        <h2>Static route contract</h2>
+        <p>Fourteen generated HTML files, twelve canonical sitemap entries, and no redirect or error route leaked into discovery.</p>
+        <a href="/field-tests/astro-static-route-contract">Inspect FT-01 <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="field-test-card">
+        <div class="test-card-top"><span>FT-02 / pnpm 10.33.2</span><strong>PASS</strong></div>
+        <h2>Frozen lockfile contract</h2>
+        <p>The matching manifest installed offline. A deliberate mismatch stopped with ERR_PNPM_OUTDATED_LOCKFILE.</p>
+        <a href="/field-tests/pnpm-frozen-lockfile-contract">Inspect FT-02 <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </section>
+
   <section class="quiz-teaser section-rule" aria-labelledby="quiz-teaser-title">
     <div class="quiz-teaser-copy" data-reveal>
       <div>
-        <span class="eyebrow">02 / First instrument</span>
+        <span class="eyebrow">03 / First instrument</span>
         <h2 class="section-title" id="quiz-teaser-title">Read the code. Find the tell.</h2>
         <p>Eight code samples, four choices each, and an explanation that names the intended syntax clue. No timer, account, leaderboard, or tracking.</p>
       </div>
@@ -91,7 +112,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="content-section legacy-section section-rule" aria-labelledby="legacy-title">
     <div class="section-heading">
       <div data-reveal>
-        <span class="section-label">03 / Link recovery</span>
+        <span class="section-label">04 / Link recovery</span>
         <h2 class="section-title" id="legacy-title">Legacy links. Current notes.</h2>
       </div>
       <p class="section-copy" data-reveal>The former newsletter is not republished. Two old issue URLs have relevant live links, so each now answers that specific click with a new, independently written project note and an explicit ownership boundary.</p>
@@ -110,7 +131,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <section class="status-section section-rule" aria-labelledby="status-title">
     <div class="status-statement" data-reveal>
-      <span class="eyebrow">04 / Disclosure</span>
+      <span class="eyebrow">05 / Disclosure</span>
       <h2 id="status-title">New site. New ownership.</h2>
       <p>The domain changed hands. Former issues, authors, subscribers, consent, audience figures, and endorsements did not.</p>
     </div>
@@ -118,8 +139,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <dl>
         <div><dt>Current operator</dt><dd>Matthias Ramahi</dd></div>
         <div><dt>Newsletter</dt><dd>Inactive</dd></div>
-        <div><dt>Named editor and reviewer</dt><dd>Open</dd></div>
-        <div><dt>Search indexing</dt><dd>Blocked</dd></div>
+        <div><dt>Editor / technical review</dt><dd>Matthias Ramahi / not independent</dd></div>
+        <div><dt>Search indexing</dt><dd>Enabled</dd></div>
       </dl>
       <div class="action-row"><a class="action" href="/new-ownership">Read the ownership note <span class="action-arrow" aria-hidden="true">→</span></a></div>
     </div>

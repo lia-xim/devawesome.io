@@ -1,27 +1,36 @@
 ---
 import PageIntro from "../components/PageIntro.astro";
+import astroResult from "../../reports/field-tests/astro-static-contract-2026-08-22.json";
+import pnpmResult from "../../reports/field-tests/pnpm-frozen-lockfile-2026-08-22.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Field Tests" description="The DevAwesome field-test library and the evidence gate every verdict must pass.">
-  <PageIntro number="00" label="Field-test index" title="No published verdict yet." intro="That zero is a boundary, not an empty-state trick. A test earns a public URL only after its rig, evidence, failure cases, limitations, and reviewer are ready." />
+  <PageIntro number="02" label="Field-test index" title="Two runs. Every limit stays attached." intro="These first tests use the site's own release toolchain as a public fixture. They answer small engineering questions with executable runners, saved results, and an explicit review boundary." />
 
-  <section class="editorial-section">
-    <div class="editorial-side" data-reveal><span class="section-label">Release gate</span><h2>A test earns its URL.</h2><p>The planned scope is developer tools, APIs, MCP servers, agents, and engineering workflows. Scope does not guarantee coverage or a favorable result.</p></div>
-    <div class="editorial-main">
-      <ul class="proof-list" data-stagger>
-        <li><strong>Environment locked</strong><span>Tool and dependency versions, operating context, date, region, plan, and hardware where relevant.</span></li>
-        <li><strong>Evidence attached</strong><span>Inputs, outputs, direct costs, timings, logs, fixtures, and reproduction steps.</span></li>
-        <li><strong>Failure explored</strong><span>At least one relevant constraint, failure case, permission boundary, or recovery path.</span></li>
-        <li><strong>Review complete</strong><span>A named editor and technical reviewer accept the dated verdict, limitations, and conflict disclosure.</span></li>
-      </ul>
-    </div>
+  <section class="field-test-grid section-rule" data-stagger>
+    <article class="field-test-card">
+      <div class="test-card-top"><span>FT-01 / Astro 7.2.1</span><strong>{astroResult.status}</strong></div>
+      <h2>Static route and sitemap contract</h2>
+      <p>Build the production source, inspect every generated sitemap URL, and prove that redirect-only and error routes stay out.</p>
+      <dl><div><dt>Fixture</dt><dd>devawesome.io source</dd></div><div><dt>Review</dt><dd>Not independently reviewed</dd></div></dl>
+      <a href="/field-tests/astro-static-route-contract">Read the evidence <span aria-hidden="true">→</span></a>
+    </article>
+    <article class="field-test-card">
+      <div class="test-card-top"><span>FT-02 / pnpm 10.33.2</span><strong>{pnpmResult.status}</strong></div>
+      <h2>Frozen lockfile contract</h2>
+      <p>Run the matching manifest offline, then introduce a deliberate mismatch and verify that pnpm stops the install.</p>
+      <dl><div><dt>Fixture</dt><dd>Isolated manifest + lockfile</dd></div><div><dt>Review</dt><dd>Not independently reviewed</dd></div></dl>
+      <a href="/field-tests/pnpm-frozen-lockfile-contract">Read the evidence <span aria-hidden="true">→</span></a>
+    </article>
   </section>
 
-  <section class="proof-section">
-    <span class="section-label">Current queue</span>
-    <h2 data-reveal>Planned means untested.</h2>
-    <p data-reveal>No vendor, product, or commonly owned project is presented as reviewed until a complete run exists. There are currently no public field-test results and no placeholder ratings.</p>
-    <div class="action-row"><a class="action action-dark" href="/methodology">Inspect the complete method <span class="action-arrow" aria-hidden="true">→</span></a></div>
+  <section class="editorial-section">
+    <div class="editorial-side" data-reveal><span class="section-label">Editorial boundary</span><h2>Named editor. No invented reviewer.</h2><p>Matthias Ramahi is the operator and editor of this publication.</p></div>
+    <div class="editorial-main" data-reveal>
+      <h2>These two tests were not independently reviewed.</h2>
+      <p>The runner, result JSON, environment, limits, and repository history are public so another developer can challenge or reproduce the observations. Until an independent reviewer signs a future test, the disclosure stays beside every verdict.</p>
+      <div class="action-row"><a class="action action-dark" href="/methodology">Inspect the complete method <span class="action-arrow" aria-hidden="true">→</span></a><a class="action" href="/labs">Open the reproduction bench <span class="action-arrow" aria-hidden="true">→</span></a></div>
+    </div>
   </section>
 </BaseLayout>

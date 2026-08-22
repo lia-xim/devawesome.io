@@ -1,0 +1,81 @@
+---
+import PageIntro from "../../components/PageIntro.astro";
+import resultJson from "../../../reports/field-tests/astro-static-contract-2026-08-22.json";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const result: any = resultJson;
+const limits: string[] = result.limits ?? [];
+const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+---
+
+<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, canonical sitemap coverage, redirect exclusions, and a real 404.">
+  <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Can the build ship only canonical pages?" intro="We ran the production source as the fixture, generated the static output, then compared every sitemap entry with the intended canonical route set. The question is deliberately narrow: does this repository produce the release contract it claims?" />
+
+  <section class="test-verdict section-rule">
+    <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
+    <p>Astro generated the expected static HTML, retained a custom 404, and kept the redirect-only alias and error route out of the generated sitemap. This is a repository-specific publishing result, not a general Astro performance score.</p>
+  </section>
+
+  <section class="test-layout section-rule">
+    <aside class="test-rail">
+      <span class="section-label">Evidence record</span>
+      <dl>
+        <div><dt>Captured</dt><dd>{captured}</dd></div>
+        <div><dt>Editor</dt><dd>{result.editor ?? "Matthias Ramahi"}</dd></div>
+        <div><dt>Technical review</dt><dd>{result.technicalReview ?? "Not independently reviewed"}</dd></div>
+        <div><dt>Fixture</dt><dd>devawesome.io production source</dd></div>
+      </dl>
+    </aside>
+    <div class="test-body">
+      <section>
+        <span class="section-label">Question and method</span>
+        <h2>Build first. Inspect the output, not the promise.</h2>
+        <p>The runner executes the pinned Astro build in this repository. It walks the generated HTML files, reads Astro's sitemap index and child sitemap, then checks the complete URL set. A passing run requires the custom 404 file, all intended canonical pages, and zero redirect/error aliases in the sitemap.</p>
+        <pre class="command-block"><code>{result.command ?? "corepack pnpm exec astro build"}</code></pre>
+      </section>
+
+      <section>
+        <span class="section-label">Locked environment</span>
+        <div class="metric-grid">
+          <div><small>Astro</small><strong>{result.environment?.astro ?? "7.2.1"}</strong></div>
+          <div><small>Node</small><strong>{result.environment?.node ?? "v24.15.0"}</strong></div>
+          <div><small>Sitemap</small><strong>{result.environment?.sitemapIntegration ?? "3.7.3"}</strong></div>
+          <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"} / {result.environment?.architecture ?? "x64"}</strong></div>
+        </div>
+      </section>
+
+      <section>
+        <span class="section-label">Observed result</span>
+        <div class="metric-grid">
+          <div><small>Exit code</small><strong>{result.exitCode ?? "—"}</strong></div>
+          <div><small>Elapsed</small><strong>{result.buildDurationMs ? `${result.buildDurationMs} ms` : "—"}</strong></div>
+          <div><small>HTML files</small><strong>{result.generatedHtmlFiles ?? "—"}</strong></div>
+          <div><small>Sitemap URLs</small><strong>{result.sitemapEntries ?? "—"}</strong></div>
+        </div>
+        <ul class="assertion-list">
+          <li><span>Static output exists</span><strong>{result.assertions?.staticOutputExists ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Custom 404 exists</span><strong>{result.assertions?.custom404Exists ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Redirect alias excluded</span><strong>{result.assertions?.redirectAliasExcluded ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Error route excluded</span><strong>{result.assertions?.errorRouteExcluded ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Sitemap matches canonical set</span><strong>{result.assertions?.sitemapMatchesCanonicalSet ? "PASS" : "PENDING"}</strong></li>
+        </ul>
+      </section>
+
+      <section>
+        <span class="section-label">Limits</span>
+        <h2>Useful for this release, not a universal benchmark.</h2>
+        <ul class="limit-list">{limits.map((limit) => <li>{limit}</li>)}</ul>
+      </section>
+
+      <section>
+        <span class="section-label">Reproduce</span>
+        <p>Clone the public repository, install the pinned dependencies, and run the capture command. The runner and saved JSON are versioned beside the site.</p>
+        <pre class="command-block"><code>{`corepack pnpm install --frozen-lockfile\ncorepack pnpm field-test:astro:capture`}</code></pre>
+        <div class="action-row">
+          <a class="action action-dark" href="https://github.com/lia-xim/devawesome.io/blob/main/scripts/field-tests/astro-static-contract.mjs">Inspect the runner <span class="action-arrow" aria-hidden="true">↗</span></a>
+          <a class="action" href="/field-tests/pnpm-frozen-lockfile-contract">Next field test <span class="action-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

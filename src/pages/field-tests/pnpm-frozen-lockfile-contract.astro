@@ -1,0 +1,85 @@
+---
+import PageIntro from "../../components/PageIntro.astro";
+import resultJson from "../../../reports/field-tests/pnpm-frozen-lockfile-2026-08-22.json";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const result: any = resultJson;
+const limits: string[] = result.limits ?? [];
+const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+---
+
+<BaseLayout title="pnpm Frozen Lockfile Contract" description="A reproducible pnpm 10.33.2 field test showing a matching frozen lockfile succeeds and a deliberately stale lockfile is rejected.">
+  <PageIntro number="FT-02" label="pnpm 10.33.2 / dependency integrity" title="Does frozen really stop a stale lockfile?" intro="We copied the real package manifest and lockfile into an isolated temporary project, ran an offline frozen install, then changed the manifest without updating the lockfile and ran the same command again." />
+
+  <section class="test-verdict section-rule">
+    <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
+    <p>The matching pair installed successfully from a warm offline store. The synthetic mismatch failed with the explicit pnpm frozen-lockfile error. That protects this release workflow from silently drifting past its committed dependency graph.</p>
+  </section>
+
+  <section class="test-layout section-rule">
+    <aside class="test-rail">
+      <span class="section-label">Evidence record</span>
+      <dl>
+        <div><dt>Captured</dt><dd>{captured}</dd></div>
+        <div><dt>Editor</dt><dd>{result.editor ?? "Matthias Ramahi"}</dd></div>
+        <div><dt>Technical review</dt><dd>{result.technicalReview ?? "Not independently reviewed"}</dd></div>
+        <div><dt>Fixture</dt><dd>Isolated package.json + pnpm-lock.yaml</dd></div>
+      </dl>
+    </aside>
+    <div class="test-body">
+      <section>
+        <span class="section-label">Question and method</span>
+        <h2>One command, two manifest states.</h2>
+        <p>The first case keeps the copied manifest and lockfile untouched. The second adds a clearly synthetic dependency to the temporary manifest only. Both cases run offline with lifecycle scripts disabled, so the observed difference comes from lockfile consistency rather than network availability or package scripts.</p>
+        <pre class="command-block"><code>{result.command ?? "corepack pnpm install --frozen-lockfile --offline --ignore-scripts"}</code></pre>
+      </section>
+
+      <section>
+        <span class="section-label">Locked environment</span>
+        <div class="metric-grid">
+          <div><small>pnpm</small><strong>{result.environment?.pnpm ?? "10.33.2"}</strong></div>
+          <div><small>Node</small><strong>{result.environment?.node ?? "v24.15.0"}</strong></div>
+          <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"} / {result.environment?.architecture ?? "x64"}</strong></div>
+          <div><small>Network</small><strong>Offline</strong></div>
+        </div>
+      </section>
+
+      <section>
+        <span class="section-label">Observed result</span>
+        <div class="case-grid">
+          <article>
+            <small>Positive case</small>
+            <h2>Matching manifest accepted</h2>
+            <dl><div><dt>Exit</dt><dd>{result.positiveCase?.exitCode ?? "—"}</dd></div><div><dt>Elapsed</dt><dd>{result.positiveCase?.durationMs ? `${result.positiveCase.durationMs} ms` : "—"}</dd></div></dl>
+          </article>
+          <article>
+            <small>Negative case</small>
+            <h2>Stale lockfile rejected</h2>
+            <dl><div><dt>Exit</dt><dd>{result.negativeCase?.exitCode ?? "—"}</dd></div><div><dt>Error</dt><dd>{result.negativeCase?.errorCode ?? "—"}</dd></div><div><dt>Elapsed</dt><dd>{result.negativeCase?.durationMs ? `${result.negativeCase.durationMs} ms` : "—"}</dd></div></dl>
+          </article>
+        </div>
+        <ul class="assertion-list">
+          <li><span>Matching manifest accepted</span><strong>{result.assertions?.matchingManifestAccepted ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Mismatched manifest rejected</span><strong>{result.assertions?.mismatchedManifestRejected ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Explicit frozen-lockfile error</span><strong>{result.assertions?.explicitFrozenLockfileError ? "PASS" : "PENDING"}</strong></li>
+        </ul>
+      </section>
+
+      <section>
+        <span class="section-label">Limits</span>
+        <h2>Integrity result, not an install-speed contest.</h2>
+        <ul class="limit-list">{limits.map((limit) => <li>{limit}</li>)}</ul>
+      </section>
+
+      <section>
+        <span class="section-label">Reproduce</span>
+        <p>The runner creates and removes its own temporary fixture. It does not edit the repository manifest or lockfile.</p>
+        <pre class="command-block"><code>corepack pnpm field-test:pnpm:capture</code></pre>
+        <div class="action-row">
+          <a class="action action-dark" href="https://github.com/lia-xim/devawesome.io/blob/main/scripts/field-tests/pnpm-frozen-lockfile.mjs">Inspect the runner <span class="action-arrow" aria-hidden="true">↗</span></a>
+          <a class="action" href="/field-tests/astro-static-route-contract">Read FT-01 <span class="action-arrow" aria-hidden="true">←</span></a>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

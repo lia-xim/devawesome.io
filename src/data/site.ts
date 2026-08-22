@@ -6,13 +6,13 @@ export const site = {
   title: "DevAwesome Field Tests",
   description: "Reproducible field tests for developer tools, APIs, MCP servers, agents, and engineering workflows.",
   purpose: "A low-cadence developer field-test lab with reproducible methods and an original programming-language quiz.",
-  status: "Live on the owned domain, but intentionally noindex until the editorial launch gates are met.",
+  status: "Live and indexable under an accepted standalone publication strategy.",
   boundary: "No former issues, authors, subscribers, consent, audience figures or brand endorsement transferred.",
-  portfolioStatus: "Unassigned. No project relationship is claimed.",
+  portfolioStatus: "Standalone DevAwesome publication. No external project or satellite relationship is claimed.",
   githubUrl: "https://github.com/lia-xim/devawesome.io",
   githubIssuesUrl: "https://github.com/lia-xim/devawesome.io/issues",
   securityUrl: "https://github.com/lia-xim/devawesome.io/security",
-  indexable: false,
+  indexable: true,
   ownershipLabel: "New ownership / 2026",
   operator: {
     name: "Matthias Ramahi",
@@ -25,10 +25,11 @@ export const site = {
     phoneHref: "+4917642449858",
   },
   launchGates: {
-    publishedFieldTests: 0,
+    publishedFieldTests: 2,
     minimumFieldTests: 2,
-    namedEditor: null,
+    namedEditor: "Matthias Ramahi",
     namedTechnicalReviewer: null,
+    technicalReviewDisclosure: "Not independently reviewed",
   },
 } as const;
 

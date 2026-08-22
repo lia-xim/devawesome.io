@@ -27,7 +27,7 @@
       "id": "repository",
       "kind": "implementation_proof",
       "location": "https://github.com/lia-xim/devawesome.io",
-      "supports": ["new source code", "new content", "noindex implementation"]
+      "supports": ["new source code", "new content", "field-test evidence", "indexable launch implementation"]
     }
   ],
   "rights": {
@@ -35,6 +35,6 @@
     "notAcquiredOrNotProven": ["former issues", "former quiz content", "former logos", "former media", "former authorship", "former subscriber list", "former consent", "former analytics", "former sponsorships", "former endorsements"],
     "externalMarks": "Product and project names appear only for factual identification. Direct source links do not imply affiliation or endorsement."
   },
-  "unknowns": ["former operator clearance", "brand or mark clearance", "named editor", "named technical reviewer"],
-  "launchState": "production_noindex"
+  "unknowns": ["former operator clearance", "brand or mark clearance", "independent technical reviewer"],
+  "launchState": "public_indexable"
 }

@@ -10,18 +10,5 @@
       "destination": "/guess-the-programming-language/",
       "permanent": true
     }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, follow, noarchive"
-        }
-      ]
-    }
   ]
 }
-
-

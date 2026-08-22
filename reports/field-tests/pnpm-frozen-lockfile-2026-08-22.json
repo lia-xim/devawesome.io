@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "pnpm-frozen-lockfile-contract",
+  "status": "passed",
+  "capturedAt": "2026-08-22T16:19:02.132Z",
+  "editor": "Matthias Ramahi",
+  "technicalReview": "Not independently reviewed",
+  "project": "isolated copy of devawesome.io package.json and pnpm-lock.yaml",
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26200",
+    "architecture": "x64",
+    "node": "v24.15.0",
+    "pnpm": "10.33.2",
+    "dependencyStore": "warm local pnpm store; network disabled"
+  },
+  "command": "corepack pnpm install --frozen-lockfile --offline --ignore-scripts",
+  "positiveCase": {
+    "description": "package.json matches the copied lockfile",
+    "exitCode": 0,
+    "durationMs": 10363
+  },
+  "negativeCase": {
+    "description": "a synthetic dependency is added to package.json without updating pnpm-lock.yaml",
+    "exitCode": 1,
+    "durationMs": 1020,
+    "errorCode": "ERR_PNPM_OUTDATED_LOCKFILE"
+  },
+  "assertions": {
+    "matchingManifestAccepted": true,
+    "mismatchedManifestRejected": true,
+    "explicitFrozenLockfileError": true
+  },
+  "limits": [
+    "The positive run uses a warm local pnpm store and does not measure network or cold-cache installation.",
+    "The fixture uses this repository's dependency graph; other workspaces and peer-dependency layouts may behave differently.",
+    "Timing is diagnostic for this run only. The durable result is acceptance of the matching manifest and rejection of the mismatch."
+  ]
+}
