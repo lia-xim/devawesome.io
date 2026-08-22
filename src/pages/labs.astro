@@ -4,7 +4,7 @@ import { site } from "../data/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Labs" description="Public DevAwesome fixtures, runners, saved results, and reproduction steps for published field tests.">
+<BaseLayout title="Labs" description="Public DevAwesome fixtures, runners, saved results, and reproduction steps for published field tests." schemaType="CollectionPage">
   <PageIntro number="L2" label="Reproduction bench" title="Run the material behind the verdict." intro="Each published test links the smallest useful fixture, exact runner, saved result, and limits. The first two rigs use the production repository and an isolated temporary dependency fixture." />
 
   <section class="proof-section">
@@ -22,7 +22,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>Two public rigs passed.</h2><p>Both were run on 22 August 2026 and remain bounded to their declared environment.</p></div>
     <div class="editorial-main" data-reveal>
       <ul class="proof-list">
-        <li><strong>Astro static contract</strong><span>Production build, generated routes, canonical sitemap set, custom 404, and excluded redirect/error aliases.</span></li>
+        <li><strong>Astro static contract</strong><span>Production build, generated routes, crawlable noindex directives, empty hold sitemap, and a custom 404.</span></li>
         <li><strong>pnpm frozen lockfile</strong><span>Offline positive case plus a deliberate stale-manifest negative case in an automatically deleted temporary fixture.</span></li>
       </ul>
       <div class="action-row">

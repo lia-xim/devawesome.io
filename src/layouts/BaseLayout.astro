@@ -4,21 +4,73 @@ import SiteHeader from "../components/SiteHeader.astro";
 import { site } from "../data/site";
 import "../styles/modern.css";
 
+type SchemaType = "WebPage" | "CollectionPage" | "TechArticle";
+
 interface Props {
   title?: string;
   description?: string;
   canonicalPath?: string;
   includeCanonical?: boolean;
   language?: string;
+  schemaType?: SchemaType;
+  schemaMainEntity?: Record<string, unknown>;
+  datePublished?: string;
+  dateModified?: string;
 }
 
-const { title = site.title, description = site.description, canonicalPath, includeCanonical = true, language = site.language } = Astro.props;
-const pageTitle = title === site.title ? title : `${title} | ${site.title}`;
+const {
+  title = site.title,
+  description = site.description,
+  canonicalPath,
+  includeCanonical = true,
+  language = site.language,
+  schemaType = "WebPage",
+  schemaMainEntity,
+  datePublished,
+  dateModified,
+} = Astro.props;
+const pageTitle = title === site.title ? title : title + " | " + site.title;
 const requestedCanonicalPath = canonicalPath ?? Astro.url.pathname;
 const normalizedCanonicalPath = canonicalPath || requestedCanonicalPath === "/"
   ? requestedCanonicalPath
   : requestedCanonicalPath.replace(/\/$/, "");
 const canonicalUrl = new URL(normalizedCanonicalPath, site.canonicalHost);
+const operatorId = site.canonicalHost + "/#operator";
+const websiteId = site.canonicalHost + "/#website";
+const pageNode: Record<string, unknown> = {
+  "@type": schemaType,
+  "@id": canonicalUrl.href + "#webpage",
+  url: canonicalUrl.href,
+  name: pageTitle,
+  description,
+  inLanguage: language,
+  isPartOf: { "@id": websiteId },
+  publisher: { "@id": operatorId },
+};
+if (schemaMainEntity) pageNode.mainEntity = schemaMainEntity;
+if (schemaType === "TechArticle") {
+  pageNode.headline = title;
+  pageNode.author = { "@id": operatorId };
+  pageNode.editor = { "@id": operatorId };
+  pageNode.datePublished = datePublished;
+  pageNode.dateModified = dateModified ?? datePublished;
+}
+const schemaGraph: Record<string, unknown>[] = [
+  { "@type": "Person", "@id": operatorId, name: site.operator.name },
+];
+if (Astro.url.pathname === "/") {
+  schemaGraph.push({
+    "@type": "WebSite",
+    "@id": websiteId,
+    url: site.canonicalHost + "/",
+    name: site.title,
+    description: site.description,
+    inLanguage: site.language,
+    publisher: { "@id": operatorId },
+  });
+}
+if (includeCanonical) schemaGraph.push(pageNode);
+const structuredData = JSON.stringify({ "@context": "https://schema.org", "@graph": schemaGraph });
 ---
 
 <!doctype html>
@@ -27,11 +79,12 @@ const canonicalUrl = new URL(normalizedCanonicalPath, site.canonicalHost);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content="noindex, follow, noarchive" />
     <meta name="theme-color" content="#090b0b" />
     {includeCanonical && <link rel="canonical" href={canonicalUrl} />}
-    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
+    {includeCanonical && <script is:inline type="application/ld+json" set:html={structuredData} />}
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -40,58 +93,6 @@ const canonicalUrl = new URL(normalizedCanonicalPath, site.canonicalHost);
       <main id="main-content"><slot /></main>
       <SiteFooter />
     </div>
-    <script>
-      import gsap from "gsap";
-      import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      const motion = gsap.matchMedia();
-      motion.add("(prefers-reduced-motion: no-preference)", () => {
-        if (document.querySelector("[data-hero-line]")) {
-          const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-          heroTimeline
-            .from("[data-hero-kicker]", { y: 16, autoAlpha: 0, duration: 0.5 })
-            .from("[data-hero-line]", { yPercent: 105, duration: 0.85, stagger: 0.08 }, "-=0.25")
-            .from("[data-hero-copy]", { y: 22, autoAlpha: 0, duration: 0.65 }, "-=0.45")
-            .from("[data-hero-action]", { y: 16, autoAlpha: 0, duration: 0.45, stagger: 0.08 }, "-=0.35")
-            .from("[data-rig-panel]", { x: 42, autoAlpha: 0, duration: 0.75 }, "-=0.8");
-        }
-
-        document.querySelectorAll<SVGPathElement>("[data-draw-path]").forEach((path) => {
-          const length = path.getTotalLength();
-          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-          gsap.to(path, {
-            strokeDashoffset: 0,
-            duration: 1.35,
-            ease: "power2.inOut",
-            scrollTrigger: { trigger: path.closest("section") ?? path, start: "top 78%", once: true },
-          });
-        });
-
-        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
-          gsap.from(element, {
-            y: 34,
-            autoAlpha: 0,
-            duration: 0.7,
-            ease: "power3.out",
-            scrollTrigger: { trigger: element, start: "top 86%", once: true },
-          });
-        });
-
-        gsap.utils.toArray<HTMLElement>("[data-stagger]").forEach((group) => {
-          gsap.from(group.children, {
-            y: 24,
-            autoAlpha: 0,
-            duration: 0.55,
-            stagger: 0.09,
-            ease: "power3.out",
-            scrollTrigger: { trigger: group, start: "top 82%", once: true },
-          });
-        });
-
-        return () => ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      });
-    </script>
+    <script is:inline src="/reveal.js" defer></script>
   </body>
 </html>

@@ -8,12 +8,12 @@ const limits: string[] = result.limits ?? [];
 const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
 ---
 
-<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, canonical sitemap coverage, redirect exclusions, and a real 404.">
-  <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Can the build ship only canonical pages?" intro="We ran the production source as the fixture, generated the static output, then compared every sitemap entry with the intended canonical route set. The question is deliberately narrow: does this repository produce the release contract it claims?" />
+<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, crawlable noindex controls, an empty hold sitemap, and a real 404." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22">
+  <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Does every built page honor the indexing hold?" intro="We ran the production source as the fixture, generated the static output, then checked every canonical HTML document for noindex and verified that the hold sitemap exposes zero indexable URLs." />
 
   <section class="test-verdict section-rule">
     <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
-    <p>Astro generated the expected static HTML, retained a custom 404, and kept the redirect-only alias and error route out of the generated sitemap. This is a repository-specific publishing result, not a general Astro performance score.</p>
+    <p>Astro generated the expected static HTML, retained a custom 404, added the same noindex directive to every canonical document, and exposed zero URLs in the hold sitemap. This is a repository-specific publishing result, not a general Astro performance score.</p>
   </section>
 
   <section class="test-layout section-rule">
@@ -30,7 +30,7 @@ const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString(
       <section>
         <span class="section-label">Question and method</span>
         <h2>Build first. Inspect the output, not the promise.</h2>
-        <p>The runner executes the pinned Astro build in this repository. It walks the generated HTML files, reads Astro's sitemap index and child sitemap, then checks the complete URL set. A passing run requires the custom 404 file, all intended canonical pages, and zero redirect/error aliases in the sitemap.</p>
+        <p>The runner executes the pinned Astro build in this repository. It walks every generated canonical HTML file, checks the exact crawlable noindex directive, reads the empty sitemap, and verifies the custom 404. A passing run requires zero discoverable sitemap URLs and no canonical HTML document without the indexing hold.</p>
         <pre class="command-block"><code>{result.command ?? "corepack pnpm exec astro build"}</code></pre>
       </section>
 
@@ -39,7 +39,7 @@ const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString(
         <div class="metric-grid">
           <div><small>Astro</small><strong>{result.environment?.astro ?? "7.2.1"}</strong></div>
           <div><small>Node</small><strong>{result.environment?.node ?? "v24.15.0"}</strong></div>
-          <div><small>Sitemap</small><strong>{result.environment?.sitemapIntegration ?? "3.7.3"}</strong></div>
+          <div><small>Sitemap mode</small><strong>{result.environment?.sitemapMode ?? "empty static hold sitemap"}</strong></div>
           <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"} / {result.environment?.architecture ?? "x64"}</strong></div>
         </div>
       </section>
@@ -55,9 +55,9 @@ const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString(
         <ul class="assertion-list">
           <li><span>Static output exists</span><strong>{result.assertions?.staticOutputExists ? "PASS" : "PENDING"}</strong></li>
           <li><span>Custom 404 exists</span><strong>{result.assertions?.custom404Exists ? "PASS" : "PENDING"}</strong></li>
-          <li><span>Redirect alias excluded</span><strong>{result.assertions?.redirectAliasExcluded ? "PASS" : "PENDING"}</strong></li>
-          <li><span>Error route excluded</span><strong>{result.assertions?.errorRouteExcluded ? "PASS" : "PENDING"}</strong></li>
-          <li><span>Sitemap matches canonical set</span><strong>{result.assertions?.sitemapMatchesCanonicalSet ? "PASS" : "PENDING"}</strong></li>
+          <li><span>All canonical HTML is noindex</span><strong>{result.assertions?.allCanonicalHtmlNoindex ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Redirect alias not discoverable</span><strong>{result.assertions?.redirectAliasNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Hold sitemap has zero URLs</span><strong>{result.assertions?.sitemapContainsNoIndexableUrls ? "PASS" : "PENDING"}</strong></li><li><span>Error route not discoverable</span><strong>{result.assertions?.errorRouteNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
         </ul>
       </section>
 

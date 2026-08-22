@@ -5,14 +5,14 @@ import pnpmResult from "../../reports/field-tests/pnpm-frozen-lockfile-2026-08-2
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Field Tests" description="The DevAwesome field-test library and the evidence gate every verdict must pass.">
+<BaseLayout title="Field Tests" description="The DevAwesome field-test library and the evidence gate every verdict must pass." schemaType="CollectionPage">
   <PageIntro number="02" label="Field-test index" title="Two runs. Every limit stays attached." intro="These first tests use the site's own release toolchain as a public fixture. They answer small engineering questions with executable runners, saved results, and an explicit review boundary." />
 
   <section class="field-test-grid section-rule" data-stagger>
     <article class="field-test-card">
       <div class="test-card-top"><span>FT-01 / Astro 7.2.1</span><strong>{astroResult.status}</strong></div>
-      <h2>Static route and sitemap contract</h2>
-      <p>Build the production source, inspect every generated sitemap URL, and prove that redirect-only and error routes stay out.</p>
+      <h2>Static noindex route contract</h2>
+      <p>Build the production source and prove that every canonical HTML document is noindex while the hold sitemap exposes zero indexable URLs.</p>
       <dl><div><dt>Fixture</dt><dd>devawesome.io source</dd></div><div><dt>Review</dt><dd>Not independently reviewed</dd></div></dl>
       <a href="/field-tests/astro-static-route-contract">Read the evidence <span aria-hidden="true">→</span></a>
     </article>

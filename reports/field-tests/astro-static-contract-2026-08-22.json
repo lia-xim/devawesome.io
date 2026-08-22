@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "astro-static-route-contract",
   "status": "passed",
-  "capturedAt": "2026-08-22T16:18:50.162Z",
+  "capturedAt": "2026-08-22T18:53:57.088Z",
   "editor": "Matthias Ramahi",
   "technicalReview": "Not independently reviewed",
   "project": "devawesome.io production source",
@@ -12,37 +12,25 @@
     "architecture": "x64",
     "node": "v24.15.0",
     "astro": "7.2.1",
-    "sitemapIntegration": "3.7.3"
+    "sitemapMode": "empty static hold sitemap"
   },
   "command": "corepack pnpm exec astro build",
-  "buildDurationMs": 2550,
+  "buildDurationMs": 2930,
   "exitCode": 0,
   "generatedHtmlFiles": 14,
-  "sitemapEntries": 12,
-  "sitemapUrls": [
-    "https://devawesome.io/",
-    "https://devawesome.io/archive/14",
-    "https://devawesome.io/archive/49",
-    "https://devawesome.io/datenschutz",
-    "https://devawesome.io/field-tests",
-    "https://devawesome.io/field-tests/astro-static-route-contract",
-    "https://devawesome.io/field-tests/pnpm-frozen-lockfile-contract",
-    "https://devawesome.io/guess-the-programming-language/",
-    "https://devawesome.io/impressum",
-    "https://devawesome.io/labs",
-    "https://devawesome.io/methodology",
-    "https://devawesome.io/new-ownership"
-  ],
+  "sitemapEntries": 0,
+  "sitemapUrls": [],
   "assertions": {
     "staticOutputExists": true,
     "custom404Exists": true,
-    "redirectAliasExcluded": true,
-    "errorRouteExcluded": true,
-    "sitemapMatchesCanonicalSet": true
+    "allCanonicalHtmlNoindex": true,
+    "sitemapContainsNoIndexableUrls": true,
+    "redirectAliasNotDiscoverable": true,
+    "errorRouteNotDiscoverable": true
   },
   "limits": [
-    "One warm local run on a Windows x64 workstation; this is not a cross-platform performance benchmark.",
-    "The result covers Astro static output for this repository, not SSR, server islands, adapters, or cold dependency installation.",
-    "Elapsed time includes local filesystem and process-start variance and should not be compared across machines."
+    "One warm local run on a Windows x64 workstation; no cross-platform comparison was made.",
+    "This verifies generated artifacts and indexing controls, not Vercel edge behavior or search-engine processing.",
+    "The result applies to the captured repository revision and becomes stale when routes or publishing controls change."
   ]
 }

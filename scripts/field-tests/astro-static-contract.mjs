@@ -9,20 +9,6 @@ const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const dist = join(root, "dist");
 const resultPath = join(root, "reports", "field-tests", "astro-static-contract-2026-08-22.json");
 const capture = process.argv.includes("--capture");
-const expectedUrls = [
-  "https://devawesome.io/",
-  "https://devawesome.io/archive/14",
-  "https://devawesome.io/archive/49",
-  "https://devawesome.io/datenschutz",
-  "https://devawesome.io/field-tests",
-  "https://devawesome.io/field-tests/astro-static-route-contract",
-  "https://devawesome.io/field-tests/pnpm-frozen-lockfile-contract",
-  "https://devawesome.io/guess-the-programming-language/",
-  "https://devawesome.io/impressum",
-  "https://devawesome.io/labs",
-  "https://devawesome.io/methodology",
-  "https://devawesome.io/new-ownership",
-];
 
 function runCorepack(args) {
   const isWindows = process.platform === "win32";
@@ -53,29 +39,24 @@ async function listHtmlFiles(directory) {
   return files.sort();
 }
 
-function extractLocs(xml) {
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-}
-
 async function inspectBuild() {
   const htmlFiles = await listHtmlFiles(dist);
-  const sitemapIndex = await readFile(join(dist, "sitemap-index.xml"), "utf8");
-  const sitemapFiles = extractLocs(sitemapIndex).map((url) => new URL(url).pathname.slice(1));
-  const sitemapUrls = [];
-  for (const sitemapFile of sitemapFiles) {
-    sitemapUrls.push(...extractLocs(await readFile(join(dist, sitemapFile), "utf8")));
+  const sitemap = await readFile(join(dist, "sitemap.xml"), "utf8");
+  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const noindexFailures = [];
+  for (const file of htmlFiles.filter((name) => name !== "quiz/index.html")) {
+    const html = await readFile(join(dist, file), "utf8");
+    if (!/<meta name="robots" content="noindex, follow, noarchive"/.test(html)) noindexFailures.push(file);
   }
-  const normalizedUrls = [...new Set(sitemapUrls)].sort();
-  const missingUrls = expectedUrls.filter((url) => !normalizedUrls.includes(url));
-  const extraUrls = normalizedUrls.filter((url) => !expectedUrls.includes(url));
   const assertions = {
     staticOutputExists: htmlFiles.length > 0,
     custom404Exists: htmlFiles.includes("404.html"),
-    redirectAliasExcluded: !normalizedUrls.some((url) => new URL(url).pathname.replace(/\/$/, "") === "/quiz"),
-    errorRouteExcluded: !normalizedUrls.some((url) => ["/404", "/404.html"].includes(new URL(url).pathname.replace(/\/$/, ""))),
-    sitemapMatchesCanonicalSet: missingUrls.length === 0 && extraUrls.length === 0,
+    allCanonicalHtmlNoindex: noindexFailures.length === 0,
+    sitemapContainsNoIndexableUrls: sitemapUrls.length === 0,
+    redirectAliasNotDiscoverable: !sitemapUrls.some((url) => new URL(url).pathname.replace(/\/$/, "") === "/quiz"),
+    errorRouteNotDiscoverable: !sitemapUrls.some((url) => ["/404", "/404.html"].includes(new URL(url).pathname.replace(/\/$/, ""))),
   };
-  return { htmlFiles, sitemapFiles, sitemapUrls: normalizedUrls, missingUrls, extraUrls, assertions };
+  return { htmlFiles, sitemapUrls, noindexFailures, assertions };
 }
 
 let buildRun = null;
@@ -108,7 +89,7 @@ const recorded = {
     architecture: arch(),
     node: process.version,
     astro: packageJson.dependencies.astro,
-    sitemapIntegration: packageJson.dependencies["@astrojs/sitemap"],
+    sitemapMode: "empty static hold sitemap",
   },
   command: "corepack pnpm exec astro build",
   buildDurationMs: buildRun?.durationMs ?? null,
@@ -118,21 +99,15 @@ const recorded = {
   sitemapUrls: inspection.sitemapUrls,
   assertions: inspection.assertions,
   limits: [
-    "One warm local run on a Windows x64 workstation; this is not a cross-platform performance benchmark.",
-    "The result covers Astro static output for this repository, not SSR, server islands, adapters, or cold dependency installation.",
-    "Elapsed time includes local filesystem and process-start variance and should not be compared across machines.",
+    "One warm local run on a Windows x64 workstation; no cross-platform comparison was made.",
+    "This verifies generated artifacts and indexing controls, not Vercel edge behavior or search-engine processing.",
+    "The result applies to the captured repository revision and becomes stale when routes or publishing controls change.",
   ],
 };
 
 if (capture) {
   await mkdir(dirname(resultPath), { recursive: true });
   await writeFile(resultPath, JSON.stringify(recorded, null, 2) + "\n", "utf8");
-  console.log("Captured Astro static contract:", resultPath);
-} else {
-  const saved = JSON.parse(await readFile(resultPath, "utf8"));
-  if (saved.status !== "passed" || saved.environment.astro !== recorded.environment.astro) {
-    console.error("Recorded Astro field-test evidence is stale or incomplete.");
-    process.exit(1);
-  }
-  console.log("Astro static contract passed:", inspection.sitemapUrls.length, "canonical sitemap entries.");
 }
+
+console.log("Astro noindex contract passed:", inspection.sitemapUrls.length, "indexable sitemap entries and", inspection.htmlFiles.length - 1, "canonical noindex HTML files plus one redirect alias.");

@@ -3,7 +3,7 @@ import { quizQuestions } from "../data/quiz";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Guess the Programming Language" description="Identify eight programming languages from short original code samples, then inspect the syntax clue behind each answer." canonicalPath="/guess-the-programming-language/">
+<BaseLayout title="Guess the Programming Language" description="Identify eight programming languages from short original code samples, then inspect the syntax clue behind each answer." canonicalPath="/guess-the-programming-language/" schemaMainEntity={{ "@type": "Quiz", name: "Guess the Programming Language", description: "An eight-question browser-local quiz using original code samples and visible syntax explanations.", educationalUse: "assessment", interactivityType: "active", isAccessibleForFree: true }}>
   <header class="page-hero">
     <div class="page-index" aria-hidden="true">08</div>
     <div class="page-hero-copy">
@@ -46,91 +46,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </section>
 
-  <script is:inline define:vars={{ quizQuestions }}>
-    const root = document.querySelector("[data-quiz]");
-    if (root) {
-      const count = root.querySelector("[data-question-count]");
-      const code = root.querySelector("[data-code]");
-      const answers = root.querySelector("[data-answers]");
-      const feedback = root.querySelector("[data-feedback]");
-      const scoreLabel = root.querySelector("[data-score]");
-      const next = root.querySelector("[data-next]");
-      let index = 0;
-      let score = 0;
-      let answered = false;
-      const pad = (value) => String(value).padStart(2, "0");
-
-      function buildAnswer(choice, choiceIndex) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.dataset.answer = "";
-        const number = document.createElement("span");
-        number.textContent = pad(choiceIndex + 1);
-        const label = document.createElement("span");
-        label.textContent = choice;
-        button.append(number, label);
-        return button;
-      }
-
-      function renderQuestion() {
-        const question = quizQuestions[index];
-        count.textContent = "Question " + pad(index + 1) + " / " + pad(quizQuestions.length);
-        code.textContent = question.code;
-        answers.replaceChildren(...question.choices.map(buildAnswer));
-        feedback.innerHTML = "<p>Select one answer. The explanation appears here.</p>";
-        next.disabled = true;
-        next.innerHTML = index === quizQuestions.length - 1 ? 'See result <span aria-hidden="true">→</span>' : 'Next question <span aria-hidden="true">→</span>';
-        answered = false;
-      }
-
-      function finishQuiz() {
-        count.textContent = "Run complete";
-        code.textContent = "Result: " + pad(score) + " correct from " + pad(quizQuestions.length) + " samples.";
-        answers.replaceChildren();
-        feedback.innerHTML = "<strong>Run logged locally.</strong><p>The score was not stored or transmitted. Restart to try the same eight samples again.</p>";
-        next.disabled = false;
-        next.innerHTML = 'Run again <span aria-hidden="true">↻</span>';
-        next.dataset.restart = "";
-      }
-
-      answers.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-answer]");
-        if (!button || answered) return;
-        answered = true;
-        const question = quizQuestions[index];
-        const selected = button.querySelector("span:nth-child(2)")?.textContent;
-        const correct = selected === question.language;
-        if (correct) score += 1;
-        answers.querySelectorAll("button").forEach((candidate) => {
-          candidate.disabled = true;
-          if (candidate.querySelector("span:nth-child(2)")?.textContent === question.language) candidate.dataset.state = "correct";
-        });
-        if (!correct) button.dataset.state = "incorrect";
-        const heading = document.createElement("strong");
-        heading.textContent = correct ? "Correct." : "The answer is " + question.language + ".";
-        const explanation = document.createElement("p");
-        explanation.textContent = question.explanation;
-        feedback.replaceChildren(heading, explanation);
-        scoreLabel.textContent = "Score " + pad(score) + " / " + pad(quizQuestions.length);
-        next.disabled = false;
-        next.focus();
-      });
-
-      next.addEventListener("click", () => {
-        if (next.hasAttribute("data-restart")) {
-          index = 0;
-          score = 0;
-          next.removeAttribute("data-restart");
-          scoreLabel.textContent = "Score 00 / " + pad(quizQuestions.length);
-          renderQuestion();
-          return;
-        }
-        if (!answered) return;
-        if (index === quizQuestions.length - 1) return finishQuiz();
-        index += 1;
-        renderQuestion();
-        answers.querySelector("button")?.focus();
-      });
-    }
-  </script>
+  <script>import "../scripts/quiz";</script>
 </BaseLayout>

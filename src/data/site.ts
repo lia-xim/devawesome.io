@@ -6,17 +6,17 @@ export const site = {
   title: "DevAwesome Field Tests",
   description: "Reproducible field tests for developer tools, APIs, MCP servers, agents, and engineering workflows.",
   purpose: "A low-cadence developer field-test lab with reproducible methods and an original programming-language quiz.",
-  status: "Live and indexable under an accepted standalone publication strategy.",
+  status: "Production preview held from indexing until the documented reviewer and identity gates are cleared.",
   boundary: "No former issues, authors, subscribers, consent, audience figures or brand endorsement transferred.",
-  portfolioStatus: "Standalone DevAwesome publication. No external project or satellite relationship is claimed.",
+  portfolioStatus: "Accepted Contextter support domain with a standalone editorial purpose; common ownership is not independent corroboration and does not imply automatic product coverage.",
   githubUrl: "https://github.com/lia-xim/devawesome.io",
   githubIssuesUrl: "https://github.com/lia-xim/devawesome.io/issues",
   securityUrl: "https://github.com/lia-xim/devawesome.io/security",
-  indexable: true,
+  indexable: false,
   ownershipLabel: "New ownership / 2026",
   operator: {
     name: "Matthias Ramahi",
-    street: "Kempener Straße 44",
+    street: "Kempener Stra\u00dfe 44",
     postalCode: "40699",
     city: "Erkrath",
     country: "Deutschland",
@@ -30,7 +30,6 @@ export const site = {
     namedEditor: "Matthias Ramahi",
     namedTechnicalReviewer: null,
     technicalReviewDisclosure: "Not independently reviewed",
+    formerOperatorAndMarkClearance: false,
   },
 } as const;
-
-
