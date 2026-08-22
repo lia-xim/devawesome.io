@@ -1,0 +1,27 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Field Tests" description="The DevAwesome field-test library and the evidence gate every verdict must pass.">
+  <PageIntro number="00" label="Field-test index" title="No published verdict yet." intro="That zero is a boundary, not an empty-state trick. A test earns a public URL only after its rig, evidence, failure cases, limitations, and reviewer are ready." />
+
+  <section class="editorial-section">
+    <div class="editorial-side" data-reveal><span class="section-label">Release gate</span><h2>A test earns its URL.</h2><p>The planned scope is developer tools, APIs, MCP servers, agents, and engineering workflows. Scope does not guarantee coverage or a favorable result.</p></div>
+    <div class="editorial-main">
+      <ul class="proof-list" data-stagger>
+        <li><strong>Environment locked</strong><span>Tool and dependency versions, operating context, date, region, plan, and hardware where relevant.</span></li>
+        <li><strong>Evidence attached</strong><span>Inputs, outputs, direct costs, timings, logs, fixtures, and reproduction steps.</span></li>
+        <li><strong>Failure explored</strong><span>At least one relevant constraint, failure case, permission boundary, or recovery path.</span></li>
+        <li><strong>Review complete</strong><span>A named editor and technical reviewer accept the dated verdict, limitations, and conflict disclosure.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="proof-section">
+    <span class="section-label">Current queue</span>
+    <h2 data-reveal>Planned means untested.</h2>
+    <p data-reveal>No vendor, product, or commonly owned project is presented as reviewed until a complete run exists. There are currently no public field-test results and no placeholder ratings.</p>
+    <div class="action-row"><a class="action action-dark" href="/methodology">Inspect the complete method <span class="action-arrow" aria-hidden="true">→</span></a></div>
+  </section>
+</BaseLayout>

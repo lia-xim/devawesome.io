@@ -1,0 +1,74 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Datenschutz" description="Datenschutzhinweise für die technisch schlanke Website devawesome.io." language="de">
+  <PageIntro number="01" label="Datenschutzhinweise" title="Datenschutz" intro="Welche Daten beim Besuch der aktuellen Website tatsächlich verarbeitet werden – und welche Dienste nicht eingesetzt werden." />
+
+  <section class="legal-document">
+    <aside class="legal-toc">
+      <span class="section-label">Stand / 22.08.2026</span>
+      <p>Diese Erklärung bildet den gegenwärtigen technischen Stand der statischen Website ab.</p>
+    </aside>
+    <div class="legal-content">
+      <section>
+        <h2>1. Verantwortlicher</h2>
+        <address>
+          <strong>{site.operator.name}</strong><br />
+          {site.operator.street}<br />
+          {site.operator.postalCode} {site.operator.city}<br />
+          {site.operator.country}<br />
+          E-Mail: <a href={`mailto:${site.operator.email}`}>{site.operator.email}</a><br />
+          Telefon: <a href={`tel:${site.operator.phoneHref}`}>{site.operator.phoneDisplay}</a>
+        </address>
+      </section>
+
+      <section>
+        <h2>2. Bereitstellung und Hosting</h2>
+        <p>Die Website ist eine statisch erzeugte Astro-Website und wird über Vercel Inc. bereitgestellt. Beim Aufruf können technisch erforderliche Verbindungsdaten verarbeitet werden, insbesondere IP-Adresse, Datum und Uhrzeit, angeforderte URL, Referrer, Browser- und Betriebssysteminformationen sowie Status- und Fehlerdaten. Diese Verarbeitung ist erforderlich, um die Website auszuliefern, Angriffe abzuwehren und technische Fehler zu untersuchen.</p>
+        <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in einem sicheren, stabilen und nachvollziehbaren Betrieb der Website. Speicherdauer und Löschung technischer Protokolle richten sich nach ihrer Erforderlichkeit und den Einstellungen beziehungsweise Aufbewahrungsregeln des Hosting-Anbieters.</p>
+        <p>Vercel kann Daten in den USA verarbeiten. Vercel beschreibt hierfür insbesondere das EU-US Data Privacy Framework und Standardvertragsklauseln als Transfermechanismen. Weitere Informationen: <a href="https://vercel.com/legal/privacy-notice">Vercel Privacy Notice</a> und <a href="https://vercel.com/legal/dpa">Vercel Data Processing Addendum</a>.</p>
+      </section>
+
+      <section>
+        <h2>3. Browser-lokaler Quiz</h2>
+        <p>Der Programmiersprachen-Quiz wird vollständig im Browser ausgeführt. Antworten und Punktestand werden nur für die laufende Seitenansicht im Arbeitsspeicher gehalten. Sie werden nicht an uns übertragen und nicht in Cookies, Local Storage oder Session Storage gespeichert.</p>
+      </section>
+
+      <section>
+        <h2>4. Kontakt per E-Mail oder Telefon</h2>
+        <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Kontaktdaten und den Inhalt der Anfrage, um diese zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern es um vorvertragliche oder vertragliche Kommunikation geht, andernfalls Art. 6 Abs. 1 lit. f DSGVO aufgrund unseres berechtigten Interesses an der Bearbeitung sachlicher Anfragen.</p>
+        <p>Die E-Mail-Infrastruktur der angegebenen Betreiberadresse wird bei netcup betrieben. Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten oder berechtigten Gründe für eine weitere Speicherung bestehen. Weitere Informationen: <a href="https://www.netcup.com/de/kontakt/datenschutzerklaerung">Datenschutzerklärung von netcup</a>.</p>
+        <p>Auf dieser Website gibt es kein Kontaktformular. Ein Klick auf eine E-Mail-Adresse öffnet lediglich das von Ihnen konfigurierte E-Mail-Programm.</p>
+      </section>
+
+      <section>
+        <h2>5. Externe Links</h2>
+        <p>Die Website verlinkt unter anderem auf GitHub und auf Originalquellen zu beschriebenen Projekten. Erst wenn Sie einen externen Link aufrufen, verlassen Sie devawesome.io; der jeweilige Anbieter kann dann Verbindungsdaten nach seinen eigenen Regeln verarbeiten. Für GitHub finden Sie weitere Informationen in der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub General Privacy Statement</a>.</p>
+      </section>
+
+      <section>
+        <h2>6. Nicht eingesetzte Dienste</h2>
+        <p>Die aktuelle Website verwendet keine Webanalyse, kein Werbetracking, keine Social-Media-Pixel, keine extern geladenen Webfonts, keine Nutzerkonten, keinen Newsletter, kein Kontaktformular und keine eingebetteten Medien. Sie setzt keine eigenen Cookies und speichert keine Daten in Local Storage oder Session Storage.</p>
+        <p>Ein DNS-TXT-Eintrag dient ausschließlich der technischen Bestätigung der Domaininhaberschaft gegenüber Google Search Console. Die Website lädt dadurch kein Google-Skript und übermittelt beim Seitenaufruf keine Daten an Google.</p>
+      </section>
+
+      <section>
+        <h2>7. Ihre Rechte</h2>
+        <p>Sie haben nach Maßgabe der gesetzlichen Voraussetzungen das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Erteilte Einwilligungen können Sie mit Wirkung für die Zukunft widerrufen. Zur Ausübung Ihrer Rechte genügt eine Nachricht an die oben genannte E-Mail-Adresse.</p>
+      </section>
+
+      <section>
+        <h2>8. Beschwerderecht</h2>
+        <p>Sie können sich bei einer Datenschutzaufsichtsbehörde beschweren. Für den Sitz des Verantwortlichen ist insbesondere die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen erreichbar: <a href="https://www.ldi.nrw.de/kontakt">Kontakt zur LDI NRW</a>.</p>
+      </section>
+
+      <section>
+        <h2>9. Änderungen</h2>
+        <p>Wir passen diese Datenschutzerklärung an, wenn sich die Website, die eingesetzten Dienste oder die rechtlichen Anforderungen ändern. Maßgeblich ist die hier veröffentlichte Fassung.</p>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,34 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="New Ownership" description="How the current DevAwesome project is separated from the former newsletter, audience, authors, consent, and archive.">
+  <PageIntro number="2026" label="Identity and rights boundary" title="New site. New ownership." intro="DevAwesome is a new project on an acquired domain. The domain is the continuity; the former operation, people, content, audience, and consent are not." />
+
+  <section class="boundary-list">
+    <article data-reveal><small>Current project</small><h2>What starts here</h2><p>A newly authored developer field-test lab, an original language-identification quiz, a transparent method, and public implementation source.</p></article>
+    <article data-reveal><small>Hard boundary</small><h2>What did not transfer</h2><p>No former issue archive, quiz content, logo, authorship, subscriber list, consent, analytics, audience figure, endorsement, sponsorship relationship, customer, or community is claimed.</p></article>
+    <article data-reveal><small>Email</small><h2>No inherited list</h2><p>There is no newsletter signup. Any future edition needs a named editor, a current privacy flow, fresh consent for the current operator, and four completed editions before launch.</p></article>
+    <article data-reveal><small>Historical URLs</small><h2>No blanket redirects</h2><p>Unknown paths return a real 404. The two restored issue URLs answer documented live links with new project notes; they do not reproduce the former issues. Every other archive URL remains unresolved unless target-level evidence justifies a specific action.</p></article>
+  </section>
+
+  <section class="editorial-section" id="contact">
+    <div class="editorial-side" data-reveal><span class="section-label">Corrections and rights</span><h2>Challenge the record.</h2><p>If you operated, wrote for, or hold rights connected to the former site, or if a factual statement here is wrong, use the public issue tracker for a non-sensitive correction.</p></div>
+    <div class="editorial-main" data-reveal>
+      <h2>Keep sensitive reports private.</h2>
+      <p>Do not post credentials, personal data, subscriber information, or vulnerability details publicly. Use GitHub's private security reporting flow for security matters.</p>
+      <div class="action-row">
+        <a class="action action-dark" href={`${site.githubIssuesUrl}/new`}>Open a correction <span class="action-arrow" aria-hidden="true">↗</span></a>
+        <a class="action action-dark" href={site.securityUrl}>Security guidance <span class="action-arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof-section">
+    <span class="section-label">Launch status</span>
+    <h2 data-reveal>Preview stays out of search.</h2>
+    <p data-reveal>The current operator is Matthias Ramahi. This legal operator disclosure does not appoint him as the site's editor or technical reviewer. Brand clearance, a named editor and reviewer, two complete field tests, production verification, and explicit owner approval are still required before indexing can be enabled.</p>
+  </section>
+</BaseLayout>

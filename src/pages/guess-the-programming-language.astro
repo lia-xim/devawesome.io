@@ -1,0 +1,136 @@
+---
+import { quizQuestions } from "../data/quiz";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Guess the Programming Language" description="Identify eight programming languages from short original code samples, then inspect the syntax clue behind each answer." canonicalPath="/guess-the-programming-language/">
+  <header class="page-hero">
+    <div class="page-index" aria-hidden="true">08</div>
+    <div class="page-hero-copy">
+      <span class="eyebrow">Original browser-local quiz</span>
+      <h1 class="page-title" data-reveal>Guess the programming language.</h1>
+      <p data-reveal>Read the code, choose a language, then inspect the tell. Recognition is not mastery, so every answer explains the intended clue.</p>
+    </div>
+  </header>
+
+  <section class="quiz-shell" data-quiz>
+    <div class="quiz-meta">
+      <h2 class="quiz-title">Language ID</h2>
+      <p>No timer. No account. No leaderboard. The score stays in this page and disappears when you leave.</p>
+      <div class="quiz-progress">
+        <strong data-question-count>Question 01 / 08</strong>
+        <span>Read the code. Find the tell.</span>
+      </div>
+      <div class="quiz-score" data-score>Score 00 / 08</div>
+    </div>
+    <div class="quiz-code-pane">
+      <div class="quiz-code-head"><span>Code.sample</span><span>UTF-8</span></div>
+      <pre class="quiz-code"><code data-code>{quizQuestions[0].code}</code></pre>
+    </div>
+    <div class="quiz-choice-pane">
+      <div class="quiz-choice-head"><span>Choose the language</span><span>One answer</span></div>
+      <div class="quiz-answers" data-answers>
+        {quizQuestions[0].choices.map((choice, choiceIndex) => <button type="button" data-answer><span>{String(choiceIndex + 1).padStart(2, "0")}</span><span>{choice}</span></button>)}
+      </div>
+      <div class="quiz-feedback" aria-live="polite" data-feedback><p>Select one answer. The explanation appears here.</p></div>
+      <div class="quiz-controls"><button type="button" class="action action-signal" data-next disabled>Next question <span aria-hidden="true">→</span></button></div>
+    </div>
+    <noscript><p>This browser-local quiz needs JavaScript to change questions and score answers.</p></noscript>
+  </section>
+
+  <section class="editorial-section">
+    <div class="editorial-side" data-reveal><span class="section-label">What it measures</span><h2>Recognition, not mastery.</h2></div>
+    <div class="editorial-main" data-reveal>
+      <p>Each sample contains at least one intended language-specific clue. Real code can still be ambiguous. The explanation makes the answer key visible so you can challenge the question instead of trusting a hidden score.</p>
+      <p>Every sample and explanation was written from scratch for the current project. This is not a copy or restoration of the former site's quiz.</p>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ quizQuestions }}>
+    const root = document.querySelector("[data-quiz]");
+    if (root) {
+      const count = root.querySelector("[data-question-count]");
+      const code = root.querySelector("[data-code]");
+      const answers = root.querySelector("[data-answers]");
+      const feedback = root.querySelector("[data-feedback]");
+      const scoreLabel = root.querySelector("[data-score]");
+      const next = root.querySelector("[data-next]");
+      let index = 0;
+      let score = 0;
+      let answered = false;
+      const pad = (value) => String(value).padStart(2, "0");
+
+      function buildAnswer(choice, choiceIndex) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.answer = "";
+        const number = document.createElement("span");
+        number.textContent = pad(choiceIndex + 1);
+        const label = document.createElement("span");
+        label.textContent = choice;
+        button.append(number, label);
+        return button;
+      }
+
+      function renderQuestion() {
+        const question = quizQuestions[index];
+        count.textContent = "Question " + pad(index + 1) + " / " + pad(quizQuestions.length);
+        code.textContent = question.code;
+        answers.replaceChildren(...question.choices.map(buildAnswer));
+        feedback.innerHTML = "<p>Select one answer. The explanation appears here.</p>";
+        next.disabled = true;
+        next.innerHTML = index === quizQuestions.length - 1 ? 'See result <span aria-hidden="true">→</span>' : 'Next question <span aria-hidden="true">→</span>';
+        answered = false;
+      }
+
+      function finishQuiz() {
+        count.textContent = "Run complete";
+        code.textContent = "Result: " + pad(score) + " correct from " + pad(quizQuestions.length) + " samples.";
+        answers.replaceChildren();
+        feedback.innerHTML = "<strong>Run logged locally.</strong><p>The score was not stored or transmitted. Restart to try the same eight samples again.</p>";
+        next.disabled = false;
+        next.innerHTML = 'Run again <span aria-hidden="true">↻</span>';
+        next.dataset.restart = "";
+      }
+
+      answers.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-answer]");
+        if (!button || answered) return;
+        answered = true;
+        const question = quizQuestions[index];
+        const selected = button.querySelector("span:nth-child(2)")?.textContent;
+        const correct = selected === question.language;
+        if (correct) score += 1;
+        answers.querySelectorAll("button").forEach((candidate) => {
+          candidate.disabled = true;
+          if (candidate.querySelector("span:nth-child(2)")?.textContent === question.language) candidate.dataset.state = "correct";
+        });
+        if (!correct) button.dataset.state = "incorrect";
+        const heading = document.createElement("strong");
+        heading.textContent = correct ? "Correct." : "The answer is " + question.language + ".";
+        const explanation = document.createElement("p");
+        explanation.textContent = question.explanation;
+        feedback.replaceChildren(heading, explanation);
+        scoreLabel.textContent = "Score " + pad(score) + " / " + pad(quizQuestions.length);
+        next.disabled = false;
+        next.focus();
+      });
+
+      next.addEventListener("click", () => {
+        if (next.hasAttribute("data-restart")) {
+          index = 0;
+          score = 0;
+          next.removeAttribute("data-restart");
+          scoreLabel.textContent = "Score 00 / " + pad(quizQuestions.length);
+          renderQuestion();
+          return;
+        }
+        if (!answered) return;
+        if (index === quizQuestions.length - 1) return finishQuiz();
+        index += 1;
+        renderQuestion();
+        answers.querySelector("button")?.focus();
+      });
+    }
+  </script>
+</BaseLayout>

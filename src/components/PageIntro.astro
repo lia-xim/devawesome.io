@@ -1,0 +1,19 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  intro: string;
+  label?: string;
+}
+
+const { number, title, intro, label = "DevAwesome / Field note" } = Astro.props;
+---
+
+<header class="page-hero">
+  <div class="page-index" aria-hidden="true">{number}</div>
+  <div class="page-hero-copy">
+    <span class="eyebrow">{label}</span>
+    <h1 class="page-title" data-reveal>{title}</h1>
+    <p data-reveal>{intro}</p>
+  </div>
+</header>

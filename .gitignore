@@ -6,6 +6,8 @@ dist/
 .env.*
 !.env.example
 .DS_Store
+reports/owned-domain-rebuild/*.json
+design/qa/
 
 
 .vercel

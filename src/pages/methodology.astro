@@ -1,0 +1,28 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Methodology" description="How DevAwesome declares, runs, breaks, reviews, reproduces, maintains, and retires developer-tool field tests.">
+  <PageIntro number="M1" label="The test method" title="A verdict you can inspect." intro="The method makes disagreement useful. You should be able to rerun the work, find the assumption, and see where your result diverges." />
+
+  <ol class="method-detail-list">
+    <li data-reveal><small>01 / Declare</small><h2>Name the surface.</h2><p>Record the tool, version, release channel, environment, date, region, plan or price context, task, input, and expected result. Separate vendor claims from the test hypothesis.</p></li>
+    <li data-reveal><small>02 / Run</small><h2>Keep the receipts.</h2><p>Capture commands, configuration, prompts where relevant, elapsed time, direct cost, retries, outputs, and observable behavior. Redact secrets and personal data before publication.</p></li>
+    <li data-reveal><small>03 / Break</small><h2>Leave the happy path.</h2><p>Test a relevant constraint, malformed input, partial failure, timeout, cancellation, permission boundary, or recovery path. The point is to find the edge of the claim.</p></li>
+    <li data-reveal><small>04 / Review</small><h2>Separate fact from judgment.</h2><p>Publish observed facts, supported interpretation, and the recommendation as distinct parts. Name conflicts, review copies, affiliate relationships, common ownership, and limitations beside the verdict.</p></li>
+    <li data-reveal><small>05 / Reproduce</small><h2>Make divergence visible.</h2><p>Provide the smallest safe fixture and instructions another developer can run. If the real system cannot be shared, document the missing layer and reduce the strength of the claim.</p></li>
+    <li data-reveal><small>06 / Maintain</small><h2>Date everything.</h2><p>A tool test is a snapshot, not a permanent ranking. Material product changes trigger a retest, a visible stale notice, or retirement. Corrections preserve the original claim and explain what changed.</p></li>
+  </ol>
+
+  <section class="proof-section">
+    <span class="section-label">Publication standards</span>
+    <h2 data-reveal>Measurements stay bounded to the job.</h2>
+    <div class="standard-grid" data-stagger>
+      <article><small>Score</small><h3>No universal stars</h3><p>A single number hides task fit, environment, trade-offs, and failure modes.</p></article>
+      <article><small>Money</small><h3>No purchased conclusion</h3><p>Sponsorship, access, affiliate links, and common ownership are disclosed and never determine the result.</p></article>
+      <article><small>Changes</small><h3>No invisible correction</h3><p>Material edits receive a date and reason. A challenged result is checked against the saved rig.</p></article>
+      <article><small>Age</small><h3>No permanent ranking</h3><p>A versioned product can outgrow a test. Stale evidence is labeled, rerun, or retired.</p></article>
+    </div>
+  </section>
+</BaseLayout>

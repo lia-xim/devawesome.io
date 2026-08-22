@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="One HTML Page Challenge — Legacy Link Note" description="A new, independent note about the One HTML Page Challenge at the former Dev Awesome Issue 14 URL." canonicalPath="/archive/14">
+  <div class="legacy-page">
+    <section class="legacy-layout">
+      <aside class="provenance-rail" aria-labelledby="provenance-title">
+        <h2 id="provenance-title">URL provenance</h2>
+        <ol class="provenance-list">
+          <li><strong>Original target</strong><span>devawesome.io/archive/14</span></li>
+          <li><strong>Historical evidence</strong><span>The 2019 wrapper identified Issue #14 and embedded the July 18 edition.</span></li>
+          <li><strong>Current source</strong><span>The active project repository still lists Issue #14 under “Publicity”.</span></li>
+          <li><strong>This page</strong><span>New technical note written under new ownership on 2026-08-22.</span></li>
+        </ol>
+      </aside>
+      <main class="legacy-main">
+        <span class="eyebrow">Legacy link, current note</span>
+        <h1 class="legacy-title" data-reveal>One HTML Page Challenge</h1>
+        <div class="legacy-notice" data-reveal>
+          <strong>Former issue not republished</strong>
+          <p>The newsletter edition that once occupied this URL did not transfer to the current owner. This page does not reproduce its copy, design, authorship, or editorial identity.</p>
+        </div>
+        <div class="legacy-note-grid" data-stagger>
+          <article>
+            <small>What the project asks</small>
+            <h2>One file. A real constraint.</h2>
+            <p>The current rules ask contributors to put the whole result in a single HTML file under 1 MB. External files and network requests are excluded; any library has to live inside that file.</p>
+          </article>
+          <article>
+            <small>Current observation</small>
+            <h2>The browser becomes the toolchain.</h2>
+            <p>Removing imports and a build step makes every dependency visible. The interesting work moves to code budget, embedded assets, native browser APIs, and the trade-off between ambition and inspectability.</p>
+          </article>
+          <article>
+            <small>Evidence behind this restore</small>
+            <h2>The click still has the same subject.</h2>
+            <p>The repository links this exact URL as past coverage. A reader following that link expects context about the challenge, so a new note about the same project is more faithful than a homepage redirect or an empty archive shell.</p>
+          </article>
+          <article>
+            <small>Limit of this note</small>
+            <h2>This is not a field-test verdict.</h2>
+            <p>We verified the live repository, its current rules, and the historical link relationship. We did not benchmark the submissions, test browser compatibility, or evaluate maintainability across entries.</p>
+          </article>
+        </div>
+        <a class="source-link" href="https://github.com/Metroxe/one-html-page-challenge">Open the current project source <span aria-hidden="true">↗</span></a>
+      </main>
+    </section>
+  </div>
+</BaseLayout>

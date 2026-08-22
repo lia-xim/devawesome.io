@@ -1,24 +1,24 @@
 # devawesome.io
 
-Public source repository for the future `devawesome.io` website.
+Public source repository for the current `devawesome.io` website.
 
 ## Current state
 
-Repository and Vercel foundation only. The planned public tool, reference, service, or publication is not launched on the custom domain yet. The temporary deployment is deliberately excluded from indexing.
+The first product version is live on the owned custom domain: an original programming-language quiz, the field-test methodology, an intentionally empty test library, a lab hub, legal pages, and the new-ownership disclosure. It remains intentionally non-indexable. No newsletter, public editorial cadence, editor, technical reviewer, or indexing launch is approved.
 
 ## Standalone purpose
 
-The planned site will publish reproducible developer-tool tests and an original programming-language quiz.
+The site is an independent developer and AI-engineering lab for reproducible tool tests and an original programming-language quiz.
 
 ## Current status
 
-Planning repository. No newsletter, subscriber list or public editorial cadence is active.
+Live but deliberately noindex. The site remains unassigned in the portfolio; a named editor, technical reviewer, brand clearance, two complete field tests, and indexing approval remain open. No newsletter, subscriber list, or public editorial cadence is active.
 
 ## Hard boundary
 
 No former issues, authors, subscribers, consent, audience figures or brand endorsement transferred.
 
-Primary portfolio relationship: `Contextter (proposed, not assigned)`.
+Portfolio relationship: unassigned. No project relationship is claimed by this repository or website.
 
 ## Local development
 
@@ -33,11 +33,13 @@ Verification:
 corepack pnpm verify
 ```
 
+The QA pass checks built routes, legal pages, exact canonical URLs, the crawlable noindex contract, the empty sitemap, the real 404 boundary, internal links, quiz content, the legacy URL manifest, and forbidden historical claims.
+
 ## Deployment
 
 Vercel project: `devawesome-io`.
 
-The placeholder carries both a robots exclusion and an `X-Robots-Tag`. Remove those only when the real site passes its strategy, rights, disclosure, quality, and launch gates. Connecting the custom domain and changing DNS are separate operations.
+The production site allows crawling so search engines can observe its page-level and HTTP `noindex, follow, noarchive` directives. The sitemap remains empty. Remove `noindex` only after the strategy, rights, disclosure, quality, editorial, and explicit launch gates pass.
 
 ## Rights
 

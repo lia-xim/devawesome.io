@@ -1,0 +1,52 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Impressum" description="Anbieterkennzeichnung und Kontakt für devawesome.io." language="de">
+  <PageIntro number="§" label="Anbieterkennzeichnung" title="Impressum" intro="Verantwortlicher Betreiber dieses unabhängigen Developer- und AI-Engineering-Labs." />
+
+  <section class="legal-document">
+    <aside class="legal-toc">
+      <span class="section-label">devawesome.io</span>
+      <p>Neue Inhaberschaft seit 2026. Dieses Impressum gilt für die aktuelle Website und nicht für den früheren Newsletter-Betrieb.</p>
+    </aside>
+    <div class="legal-content">
+      <section>
+        <h2>Angaben gemäß § 5 DDG</h2>
+        <address>
+          <strong>{site.operator.name}</strong><br />
+          {site.operator.street}<br />
+          {site.operator.postalCode} {site.operator.city}<br />
+          {site.operator.country}
+        </address>
+      </section>
+
+      <section>
+        <h2>Kontakt</h2>
+        <p>
+          Telefon: <a href={`tel:${site.operator.phoneHref}`}>{site.operator.phoneDisplay}</a><br />
+          E-Mail: <a href={`mailto:${site.operator.email}`}>{site.operator.email}</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Redaktionell verantwortlich</h2>
+        <p>Verantwortlich für journalistisch-redaktionelle Inhalte gemäß § 18 Abs. 2 MStV:</p>
+        <address>{site.operator.name}<br />{site.operator.street}<br />{site.operator.postalCode} {site.operator.city}</address>
+        <p class="legal-note">Diese gesetzliche Verantwortungsangabe ist keine Besetzung der offenen redaktionellen Rolle oder der technischen Reviewer-Rolle. Beide Launch-Gates bleiben unbesetzt.</p>
+      </section>
+
+      <section>
+        <h2>Neue Inhaberschaft</h2>
+        <p>devawesome.io ist eine erworbene Domain und wird seit 2026 als neu aufgebautes, unabhängiges Developer- und AI-Engineering-Lab betrieben. Frühere Ausgaben, Texte, Autoren, Abonnenten, Einwilligungen, Reichweitenangaben, Markenunterstützungen oder Geschäftsbeziehungen wurden nicht übernommen und werden nicht beansprucht.</p>
+      </section>
+
+      <section>
+        <h2>Inhalte und externe Links</h2>
+        <p>Die Inhalte dieser Website wurden für das aktuelle Projekt neu erstellt. Externe Produkt- und Projektnamen dienen ausschließlich der sachlichen Einordnung. Direkte Links zu Originalquellen bedeuten keine Zugehörigkeit, Empfehlung oder Unterstützung. Hinweise auf Fehler oder mögliche Rechtsverletzungen nehmen wir unter der oben genannten E-Mail-Adresse entgegen.</p>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

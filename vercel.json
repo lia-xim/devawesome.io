@@ -4,13 +4,20 @@
   "installCommand": "corepack pnpm install --frozen-lockfile",
   "buildCommand": "corepack pnpm build",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/quiz",
+      "destination": "/guess-the-programming-language/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "noindex, follow, noarchive"
         }
       ]
     }

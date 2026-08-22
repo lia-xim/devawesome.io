@@ -1,24 +1,16 @@
 ---
-import { site } from "../data/site";
-import "../styles/global.css";
+import PageIntro from "../components/PageIntro.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<!doctype html>
-<html lang={site.language}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="robots" content="noindex, nofollow, noarchive" />
-    <title>Not found | {site.domain}</title>
-  </head>
-  <body>
-    <main>
-      <div class="eyebrow">{site.domain}</div>
-      <h1>Page not found</h1>
-      <p class="purpose">Only the project setup page exists at the moment.</p>
-      <div class="actions"><a href="/">Return to the project setup</a></div>
-    </main>
-  </body>
-</html>
-
-
+<BaseLayout title="Not Found" description="This path does not have a current DevAwesome equivalent." includeCanonical={false}>
+  <PageIntro number="404" label="URL recovery boundary" title="No equivalent path." intro="This URL does not map to a current page. Historical and unknown paths are not redirected to the homepage merely to keep a click." />
+  <section class="proof-section">
+    <span class="section-label">Current destinations</span>
+    <h2 data-reveal>Try an active instrument.</h2>
+    <div class="action-row">
+      <a class="action action-signal" href="/guess-the-programming-language/">Take the language quiz <span class="action-arrow" aria-hidden="true">→</span></a>
+      <a class="action action-dark" href="/">Return home <span class="action-arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</BaseLayout>

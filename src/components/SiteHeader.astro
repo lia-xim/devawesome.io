@@ -1,0 +1,24 @@
+---
+import { site } from "../data/site";
+
+const currentPath = Astro.url.pathname;
+const links = [
+  { href: "/field-tests", label: "Field tests" },
+  { href: "/labs", label: "Labs" },
+  { href: "/methodology", label: "Method" },
+  { href: "/guess-the-programming-language/", label: "Quiz" },
+];
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label={`${site.title} home`}>
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>Dev<span class="brand-signal">Awesome</span></span>
+  </a>
+  <nav aria-label="Primary navigation">
+    {links.map((link) => (
+      <a href={link.href} aria-current={currentPath === link.href || (link.href.endsWith("/") && currentPath === link.href.slice(0, -1)) ? "page" : undefined}>{link.label}</a>
+    ))}
+  </nav>
+  <a class="ownership-link" href="/new-ownership">{site.ownershipLabel}</a>
+</header>

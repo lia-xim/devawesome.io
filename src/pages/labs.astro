@@ -1,0 +1,25 @@
+---
+import PageIntro from "../components/PageIntro.astro";
+import { site } from "../data/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Labs" description="The future home of DevAwesome fixtures, reproduction steps, raw outputs, and versioned field-test repositories.">
+  <PageIntro number="L0" label="Reproduction bench" title="Show the material behind the verdict." intro="Labs will hold the smallest useful fixture, exact runner, raw evidence, and known limits for each published field test." />
+
+  <section class="proof-section">
+    <span class="section-label">Artifact flow</span>
+    <h2 data-reveal>From fixture to dated verdict.</h2>
+    <div class="lab-flow" data-stagger>
+      <article><small>01</small><h3>Fixture</h3><p>Small enough to inspect. Specific enough to reproduce.</p></article>
+      <article><small>02</small><h3>Runner</h3><p>Versions, commands, cost boundary, and expected behavior.</p></article>
+      <article><small>03</small><h3>Evidence</h3><p>Raw outputs and failure notes before interpretation.</p></article>
+      <article><small>04</small><h3>Verdict</h3><p>Dated, bounded, correctable, and linked back to the rig.</p></article>
+    </div>
+  </section>
+
+  <section class="editorial-section">
+    <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>No public fixture has passed.</h2></div>
+    <div class="editorial-main" data-reveal><p>The website source is public implementation evidence for this new site. It is not a substitute for a developer-tool field test and does not make an unrun comparison credible.</p><div class="action-row"><a class="action action-dark" href={site.githubUrl}>View the website source <span class="action-arrow" aria-hidden="true">↗</span></a></div></div>
+  </section>
+</BaseLayout>

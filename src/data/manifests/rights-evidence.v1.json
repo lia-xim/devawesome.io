@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "domain": "devawesome.io",
+  "project": "DevAwesome Field Tests",
+  "effectiveDate": "2026-08-22",
+  "currentOperator": "Matthias Ramahi, Kempener Straße 44, 40699 Erkrath, Deutschland",
+  "sources": [
+    {
+      "id": "portfolio-dossier",
+      "kind": "canonical_strategy",
+      "location": "C:/Users/matth/Documents/DomainPortfolio/strategy/domains/devawesome.io.md",
+      "supports": ["ownership status", "proposed purpose", "rights boundary", "launch gates"]
+    },
+    {
+      "id": "rebuild-evidence",
+      "kind": "bounded_technical_evidence",
+      "location": "reports/owned-domain-rebuild/domains/devawesome.io.md",
+      "supports": ["current DNS observation", "Wayback URL inventory", "historical topic cues"]
+    },
+    {
+      "id": "dataforseo-live-2026-08-22",
+      "kind": "paid_backlink_evidence",
+      "location": "reports/owned-domain-rebuild/devawesome-dataforseo-2026-08-22.json",
+      "supports": ["backlink totals", "target-page distribution", "anchors", "referring sources", "spam classification inputs"]
+    },
+    {
+      "id": "repository",
+      "kind": "implementation_proof",
+      "location": "https://github.com/lia-xim/devawesome.io",
+      "supports": ["new source code", "new content", "noindex implementation"]
+    }
+  ],
+  "rights": {
+    "newlyAuthoredInRepository": ["site copy", "visual system", "quiz questions", "quiz explanations", "methodology", "legacy project notes"],
+    "notAcquiredOrNotProven": ["former issues", "former quiz content", "former logos", "former media", "former authorship", "former subscriber list", "former consent", "former analytics", "former sponsorships", "former endorsements"],
+    "externalMarks": "Product and project names appear only for factual identification. Direct source links do not imply affiliation or endorsement."
+  },
+  "unknowns": ["former operator clearance", "brand or mark clearance", "named editor", "named technical reviewer"],
+  "launchState": "production_noindex"
+}
