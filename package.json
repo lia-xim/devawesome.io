@@ -1,0 +1,28 @@
+{
+  "name": "devawesome-io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Project foundation for a low-cadence developer field-test lab under new ownership.",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "qa": "node scripts/qa.mjs",
+    "verify": "pnpm build && pnpm qa"
+  },
+  "dependencies": {
+    "astro": "7.2.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "5.9.3"
+  },
+  "packageManager": "pnpm@10.33.2"
+}
+
+

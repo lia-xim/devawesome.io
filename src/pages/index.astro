@@ -1,0 +1,40 @@
+---
+import { site } from "../data/site";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="description" content={site.description} />
+    <title>{site.title} | Project setup</title>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">{site.domain} · Project setup</div>
+      <h1>{site.title}</h1>
+      <p class="purpose">{site.purpose}</p>
+
+      <section aria-labelledby="status-heading">
+        <h2 id="status-heading">Current status</h2>
+        <p>{site.status}</p>
+      </section>
+
+      <section aria-labelledby="boundary-heading">
+        <h2 id="boundary-heading">Hard boundary</h2>
+        <p>{site.boundary}</p>
+      </section>
+
+      <div class="actions">
+        <a href={site.githubUrl}>View the public source repository</a>
+      </div>
+
+      <p class="note">This temporary project page is deliberately excluded from indexing. The custom domain is not connected yet.</p>
+    </main>
+  </body>
+</html>
+
+

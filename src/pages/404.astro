@@ -1,0 +1,24 @@
+---
+import { site } from "../data/site";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Not found | {site.domain}</title>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">{site.domain}</div>
+      <h1>Page not found</h1>
+      <p class="purpose">Only the project setup page exists at the moment.</p>
+      <div class="actions"><a href="/">Return to the project setup</a></div>
+    </main>
+  </body>
+</html>
+
+
