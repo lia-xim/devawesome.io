@@ -3,6 +3,5 @@
 dist/
 node_modules/
 design/
-reports/*
-!reports/field-tests/
-!reports/field-tests/*.json
+reports/owned-domain-rebuild/
+reports/seo/
