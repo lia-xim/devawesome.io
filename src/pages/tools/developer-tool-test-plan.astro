@@ -1,0 +1,79 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Labs", path: "/labs" },
+  { name: "Developer tool test plan", path: "/tools/developer-tool-test-plan" },
+];
+const toolSchema = {
+  "@type": "WebApplication",
+  name: "Developer Tool Test Plan Builder",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript for local plan generation and export.",
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout
+  title="Developer Tool Test Plan Builder"
+  description="Build and export a structured, browser-local test plan for a developer tool, API, agent, or engineering workflow."
+  canonicalPath="/tools/developer-tool-test-plan"
+  schemaMainEntity={toolSchema}
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="T1" label="Browser-local tool" title="Turn a tool claim into a testable plan." intro="Declare the question, environment, expected behavior, negative case, command, evidence, and limits before the run. The builder generates a portable JSON plan in your browser." />
+
+  <section class="tool-disclosure section-rule" aria-label="Data handling">
+    <strong>Local by design</strong>
+    <p>No account, analytics, server request, or browser storage. Your entries stay in this page unless you copy or download the generated file.</p>
+    <a href="/schemas/developer-tool-test-plan.v0.1.json">JSON Schema / v0.1 <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="plan-builder section-rule" data-plan-builder>
+    <form class="plan-form" data-plan-form>
+      <div class="form-heading"><span class="section-label">Test declaration</span><h2>Define the contract.</h2><p>Required fields prevent an attractive but non-reproducible verdict. Do not paste secrets, tokens, personal data, or proprietary fixtures.</p></div>
+
+      <div class="form-grid">
+        <label><span>Test question <b>Required</b></span><textarea name="question" required rows="3" placeholder="Does Astro 7.2.1 generate one canonical HTML document for every declared route?"></textarea></label>
+        <label><span>Tool and exact version <b>Required</b></span><input name="tool" required placeholder="Astro 7.2.1" /></label>
+        <label><span>Environment <b>Required</b></span><textarea name="environment" required rows="3" placeholder="Node 24.x; Windows 11; static output; production source at commit …"></textarea></label>
+        <label><span>Fixture or input <b>Required</b></span><textarea name="fixture" required rows="3" placeholder="Repository, sample project, request body, prompt, or test dataset"></textarea></label>
+        <label><span>Expected observable result <b>Required</b></span><textarea name="expected" required rows="3" placeholder="The exact output, status, assertion, or behavior that counts as a pass"></textarea></label>
+        <label><span>Relevant negative case <b>Required</b></span><textarea name="negative" required rows="3" placeholder="One changed condition and the failure you expect before running it"></textarea></label>
+        <label><span>Exact command or procedure <b>Required</b></span><textarea name="command" required rows="3" placeholder="corepack pnpm build"></textarea></label>
+        <label><span>Evidence to capture <b>Required</b></span><textarea name="evidence" required rows="3" placeholder="Exit status, result JSON, generated HTML, timing boundary, redacted screenshot …"></textarea></label>
+        <label><span>Known limits <b>Required</b></span><textarea name="limits" required rows="3" placeholder="What this run cannot establish"></textarea></label>
+        <label><span>Rerun trigger</span><textarea name="rerun" rows="3" placeholder="Major version, changed API contract, fixture revision, or divergent reproduction"></textarea></label>
+      </div>
+
+      <div class="plan-actions">
+        <button class="action action-signal" type="submit">Generate JSON plan <span class="action-arrow" aria-hidden="true">→</span></button>
+        <button class="action action-dark" type="reset">Reset</button>
+      </div>
+    </form>
+
+    <aside class="plan-output" aria-labelledby="plan-output-title">
+      <div class="output-heading"><span class="section-label">Portable result</span><h2 id="plan-output-title">Test plan JSON</h2><p data-plan-status aria-live="polite">Complete the required fields, then generate the plan.</p></div>
+      <pre><code tabindex="0" data-plan-output>&#123;
+  "status": "waiting_for_declaration"
+&#125;</code></pre>
+      <div class="plan-actions">
+        <button class="action action-signal" type="button" data-copy disabled>Copy JSON</button>
+        <button class="action action-dark" type="button" data-download disabled>Download .json</button>
+      </div>
+    </aside>
+    <noscript><p class="noscript-note">This browser-local builder needs JavaScript to assemble and export the JSON. The testing method remains available in the linked guide.</p></noscript>
+  </section>
+
+  <section class="tool-next section-rule">
+    <div><span class="section-label">What this tool does not do</span><h2>It plans the run. It does not prove the result.</h2></div>
+    <div><p>A complete form can still describe a weak test. Review the fixture, run both cases, keep the raw output, disclose conflicts, and reduce the conclusion when the environment or evidence is incomplete.</p><div class="action-row"><a class="action action-dark" href="/guides/reproducible-developer-tool-tests">Read the practical guide <span class="action-arrow" aria-hidden="true">→</span></a><a class="action action-dark" href="/methodology">Audit the publication standard <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
+  </section>
+
+  <script is:inline src="/test-plan.js" defer></script>
+</BaseLayout>

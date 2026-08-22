@@ -1,4 +1,5 @@
 ---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import resultJson from "../../../reports/field-tests/pnpm-frozen-lockfile-2026-08-22.json";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -6,9 +7,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const result: any = resultJson;
 const limits: string[] = result.limits ?? [];
 const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "/field-tests" }, { name: "pnpm Frozen Lockfile Contract", path: "/field-tests/pnpm-frozen-lockfile-contract" }];
 ---
 
-<BaseLayout title="pnpm Frozen Lockfile Contract" description="A reproducible pnpm 10.33.2 field test showing a matching frozen lockfile succeeds and a deliberately stale lockfile is rejected." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22">
+<BaseLayout title="pnpm Frozen Lockfile Contract" description="A reproducible pnpm 10.33.2 field test showing a matching frozen lockfile succeeds and a deliberately stale lockfile is rejected." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
   <PageIntro number="FT-02" label="pnpm 10.33.2 / dependency integrity" title="Does frozen really stop a stale lockfile?" intro="We copied the real package manifest and lockfile into an isolated temporary project, ran an offline frozen install, then changed the manifest without updating the lockfile and ran the same command again." />
 
   <section class="test-verdict section-rule">

@@ -1,0 +1,79 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Methodology", path: "/methodology" },
+  { name: "Reproducible developer-tool tests", path: "/guides/reproducible-developer-tool-tests" },
+];
+---
+
+<BaseLayout
+  title="How to Run a Reproducible Developer Tool Test"
+  description="A practical six-stage guide to declaring, running, breaking, recording, reviewing, and maintaining a developer-tool test."
+  canonicalPath="/guides/reproducible-developer-tool-tests"
+  schemaType="TechArticle"
+  datePublished="2026-08-22"
+  dateModified="2026-08-22"
+  breadcrumbs={breadcrumbs}
+>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="G1" label="Practical guide" title="Run a test another developer can challenge." intro="A useful tool test is not a product tour. It is a bounded question, a declared environment, an executable path, a relevant failure case, and enough evidence to explain a different result." />
+
+  <section class="guide-lede section-rule">
+    <div>
+      <span class="section-label">The shortest useful version</span>
+      <h2>Write the claim before you run the command.</h2>
+    </div>
+    <div>
+      <p>Start with one question that can fail: “Does this exact version produce this observable result in this environment?” Then capture the setup, the happy path, one meaningful negative case, the raw result, and the limits of the verdict.</p>
+      <div class="action-row">
+        <a class="action action-signal" href="/tools/developer-tool-test-plan">Build a test plan <span class="action-arrow" aria-hidden="true">→</span></a>
+        <a class="action action-dark" href="/field-tests">Inspect real examples <span class="action-arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <ol class="guide-steps">
+    <li>
+      <div><small>01 / Question</small><h2>Choose one observable contract.</h2></div>
+      <div><p>“Is this tool good?” is too broad to reproduce. Name the input, the expected output, and the condition that would disprove the claim. Keep comparisons out until each tool has passed an equivalent standalone test.</p><p class="guide-check"><strong>Write down:</strong> task, expected behavior, failure signal, and why the result matters.</p></div>
+    </li>
+    <li>
+      <div><small>02 / Environment</small><h2>Freeze the moving parts.</h2></div>
+      <div><p>Record tool and runtime versions, operating system, relevant configuration, date, region, account tier, and hardware when it can affect the result. Redact secrets; do not erase the conditions that make the run interpretable.</p><p class="guide-check"><strong>Minimum:</strong> exact version, runtime, OS, command, fixture, and date.</p></div>
+    </li>
+    <li>
+      <div><small>03 / Happy path</small><h2>Run the smallest real fixture.</h2></div>
+      <div><p>Prefer a fixture another developer can inspect in minutes. Keep the exact command and exit status. A screenshot can support an observation, but a saved text or JSON result is easier to diff and rerun.</p><p>DevAwesome’s <a href="/field-tests/astro-static-route-contract">Astro route contract</a> uses the production repository as the fixture and checks the generated HTML, redirects, sitemap, and 404 output.</p></div>
+    </li>
+    <li>
+      <div><small>04 / Negative case</small><h2>Find the edge of the claim.</h2></div>
+      <div><p>Change one relevant condition: stale configuration, malformed input, missing permission, unavailable dependency, timeout, or cancellation. Declare the expected failure before running it so an accidental error does not become a convenient result.</p><p>In the <a href="/field-tests/pnpm-frozen-lockfile-contract">pnpm frozen-lockfile test</a>, a deliberate manifest mismatch must stop the install. That matches pnpm’s documented frozen-lockfile contract.</p></div>
+    </li>
+    <li>
+      <div><small>05 / Evidence</small><h2>Separate output from interpretation.</h2></div>
+      <div><p>Store the raw assertion result first. Then write what the observation supports, what it does not support, and any conflict of interest. A local pass does not prove another operating system, version, account tier, or workload.</p><p class="guide-check"><strong>Publish:</strong> input, command, status, raw result, interpretation, limits, editor, and review state.</p></div>
+    </li>
+    <li>
+      <div><small>06 / Maintenance</small><h2>Give the verdict an expiry condition.</h2></div>
+      <div><p>Record what triggers a rerun: a major version, changed pricing, a new API contract, an altered fixture, or a credible reproduction that diverges. Preserve material corrections so readers can see why the conclusion changed.</p><p class="guide-check"><strong>Close the loop:</strong> rerun, mark stale, correct, or retire.</p></div>
+    </li>
+  </ol>
+
+  <section class="source-panel section-rule">
+    <div><span class="section-label">Primary references</span><h2>Contracts used by the live examples.</h2></div>
+    <ul>
+      <li><a href="https://docs.astro.build/en/guides/routing/">Astro routing documentation <span aria-hidden="true">↗</span></a><p>Astro maps files in <code>src/pages</code> to routes and prerenders static routes at build time.</p></li>
+      <li><a href="https://pnpm.io/cli/install">pnpm install documentation <span aria-hidden="true">↗</span></a><p><code>--frozen-lockfile</code> prevents lockfile generation and fails when the lockfile is out of sync with the manifest.</p></li>
+      <li><a href="https://nodejs.org/api/test.html">Node.js test runner documentation <span aria-hidden="true">↗</span></a><p>The built-in test runner provides the executable assertion layer used by the local rigs.</p></li>
+    </ul>
+  </section>
+
+  <section class="editorial-section">
+    <div class="editorial-side"><span class="section-label">Review boundary</span><h2>Useful does not mean independent.</h2><p>Matthias Ramahi wrote and edited this guide. It has not been independently technically reviewed.</p></div>
+    <div class="editorial-main"><h2>Take the method into your own fixture.</h2><p>The browser-local builder turns these six stages into a structured JSON plan. It does not run the test or validate a conclusion; it makes missing assumptions visible before the work starts.</p><div class="action-row"><a class="action action-signal" href="/tools/developer-tool-test-plan">Open the plan builder <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
+  </section>
+</BaseLayout>

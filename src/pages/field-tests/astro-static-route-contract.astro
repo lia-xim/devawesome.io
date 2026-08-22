@@ -1,4 +1,5 @@
 ---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import resultJson from "../../../reports/field-tests/astro-static-contract-2026-08-22.json";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -6,9 +7,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const result: any = resultJson;
 const limits: string[] = result.limits ?? [];
 const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "/field-tests" }, { name: "Astro Static Route Contract", path: "/field-tests/astro-static-route-contract" }];
 ---
 
-<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, crawlable noindex controls, an empty hold sitemap, and a real 404." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22">
+<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, crawlable noindex controls, an empty hold sitemap, and a real 404." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
   <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Does every built page honor the indexing hold?" intro="We ran the production source as the fixture, generated the static output, then checked every canonical HTML document for noindex and verified that the hold sitemap exposes zero indexable URLs." />
 
   <section class="test-verdict section-rule">
@@ -53,9 +56,9 @@ const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString(
           <div><small>Sitemap URLs</small><strong>{result.sitemapEntries ?? "—"}</strong></div>
         </div>
         <ul class="assertion-list">
-          <li><span>Static output exists</span><strong>{result.assertions?.staticOutputExists ? "PASS" : "PENDING"}</strong></li>
+          <li><span>All registry routes built</span><strong>{result.assertions?.allRegistryRoutesBuilt ? "PASS" : "PENDING"}</strong></li>
           <li><span>Custom 404 exists</span><strong>{result.assertions?.custom404Exists ? "PASS" : "PENDING"}</strong></li>
-          <li><span>All canonical HTML is noindex</span><strong>{result.assertions?.allCanonicalHtmlNoindex ? "PASS" : "PENDING"}</strong></li>
+          <li><span>All canonical HTML is noindex</span><strong>{result.assertions?.allCanonicalHtmlNoindex ? "PASS" : "PENDING"}</strong></li><li><span>Custom 404 is noindex</span><strong>{result.assertions?.custom404Noindex ? "PASS" : "PENDING"}</strong></li>
           <li><span>Redirect alias not discoverable</span><strong>{result.assertions?.redirectAliasNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
           <li><span>Hold sitemap has zero URLs</span><strong>{result.assertions?.sitemapContainsNoIndexableUrls ? "PASS" : "PENDING"}</strong></li><li><span>Error route not discoverable</span><strong>{result.assertions?.errorRouteNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
         </ul>

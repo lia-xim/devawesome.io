@@ -4,6 +4,7 @@ import { platform, release, arch } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { performance } from "node:perf_hooks";
+import { canonicalRoutes } from "../../src/data/routes.ts";
 
 const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const dist = join(root, "dist");
@@ -41,24 +42,30 @@ async function listHtmlFiles(directory) {
 
 async function inspectBuild() {
   const htmlFiles = await listHtmlFiles(dist);
+  const canonicalHtmlFiles = canonicalRoutes.map(({ path }) => {
+    const route = path.split("/").filter(Boolean).join("/");
+    return route ? route + "/index.html" : "index.html";
+  });
+  const missingCanonicalFiles = canonicalHtmlFiles.filter((file) => !htmlFiles.includes(file));
   const sitemap = await readFile(join(dist, "sitemap.xml"), "utf8");
-  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const sitemapUrls = [...sitemap.matchAll(new RegExp("<loc>([^<]+)</loc>", "g"))].map((match) => match[1]);
   const noindexFailures = [];
-  for (const file of htmlFiles.filter((name) => name !== "quiz/index.html")) {
+  for (const file of canonicalHtmlFiles.filter((name) => htmlFiles.includes(name))) {
     const html = await readFile(join(dist, file), "utf8");
     if (!/<meta name="robots" content="noindex, follow, noarchive"/.test(html)) noindexFailures.push(file);
   }
+  const errorHtml = await readFile(join(dist, "404.html"), "utf8");
   const assertions = {
-    staticOutputExists: htmlFiles.length > 0,
+    allRegistryRoutesBuilt: missingCanonicalFiles.length === 0,
     custom404Exists: htmlFiles.includes("404.html"),
     allCanonicalHtmlNoindex: noindexFailures.length === 0,
+    custom404Noindex: /<meta name="robots" content="noindex, follow, noarchive"/.test(errorHtml),
     sitemapContainsNoIndexableUrls: sitemapUrls.length === 0,
-    redirectAliasNotDiscoverable: !sitemapUrls.some((url) => new URL(url).pathname.replace(/\/$/, "") === "/quiz"),
-    errorRouteNotDiscoverable: !sitemapUrls.some((url) => ["/404", "/404.html"].includes(new URL(url).pathname.replace(/\/$/, ""))),
+    redirectAliasNotDiscoverable: !sitemapUrls.some((url) => new URL(url).pathname.split("/").filter(Boolean).join("/") === "quiz"),
+    errorRouteNotDiscoverable: !sitemapUrls.some((url) => ["404", "404.html"].includes(new URL(url).pathname.split("/").filter(Boolean).join("/"))),
   };
-  return { htmlFiles, sitemapUrls, noindexFailures, assertions };
+  return { htmlFiles, canonicalHtmlFiles, missingCanonicalFiles, sitemapUrls, noindexFailures, assertions };
 }
-
 let buildRun = null;
 if (capture) {
   buildRun = runCorepack(["pnpm", "exec", "astro", "build"]);
@@ -95,6 +102,7 @@ const recorded = {
   buildDurationMs: buildRun?.durationMs ?? null,
   exitCode: buildRun?.exitCode ?? 0,
   generatedHtmlFiles: inspection.htmlFiles.length,
+  canonicalRouteCount: inspection.canonicalHtmlFiles.length,
   sitemapEntries: inspection.sitemapUrls.length,
   sitemapUrls: inspection.sitemapUrls,
   assertions: inspection.assertions,
@@ -110,4 +118,4 @@ if (capture) {
   await writeFile(resultPath, JSON.stringify(recorded, null, 2) + "\n", "utf8");
 }
 
-console.log("Astro noindex contract passed:", inspection.sitemapUrls.length, "indexable sitemap entries and", inspection.htmlFiles.length - 1, "canonical noindex HTML files plus one redirect alias.");
+console.log("Astro noindex contract passed:", inspection.sitemapUrls.length, "indexable sitemap entries,", inspection.canonicalHtmlFiles.length, "registry-backed canonical noindex files, one noindex 404, and one redirect alias.");

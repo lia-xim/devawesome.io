@@ -6,22 +6,108 @@
   "outputDirectory": "dist",
   "redirects": [
     {
-      "source": "/quiz",
+      "permanent": true,
       "destination": "/guess-the-programming-language/",
-      "permanent": true
+      "source": "/quiz"
+    },
+    {
+      "permanent": true,
+      "destination": "/guess-the-programming-language/",
+      "source": "/guess-the-programming-language"
+    },
+    {
+      "permanent": true,
+      "destination": "/field-tests",
+      "source": "/field-tests/"
+    },
+    {
+      "permanent": true,
+      "destination": "/field-tests/astro-static-route-contract",
+      "source": "/field-tests/astro-static-route-contract/"
+    },
+    {
+      "permanent": true,
+      "destination": "/field-tests/pnpm-frozen-lockfile-contract",
+      "source": "/field-tests/pnpm-frozen-lockfile-contract/"
+    },
+    {
+      "permanent": true,
+      "destination": "/guides/reproducible-developer-tool-tests",
+      "source": "/guides/reproducible-developer-tool-tests/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/developer-tool-test-plan",
+      "source": "/tools/developer-tool-test-plan/"
+    },
+    {
+      "permanent": true,
+      "destination": "/labs",
+      "source": "/labs/"
+    },
+    {
+      "permanent": true,
+      "destination": "/methodology",
+      "source": "/methodology/"
+    },
+    {
+      "permanent": true,
+      "destination": "/new-ownership",
+      "source": "/new-ownership/"
+    },
+    {
+      "permanent": true,
+      "destination": "/archive/14",
+      "source": "/archive/14/"
+    },
+    {
+      "permanent": true,
+      "destination": "/archive/49",
+      "source": "/archive/49/"
+    },
+    {
+      "permanent": true,
+      "destination": "/impressum",
+      "source": "/impressum/"
+    },
+    {
+      "permanent": true,
+      "destination": "/datenschutz",
+      "source": "/datenschutz/"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow, noarchive" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'none'; upgrade-insecure-requests" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow, noarchive"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), browsing-topics=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
       ]
     }
   ]

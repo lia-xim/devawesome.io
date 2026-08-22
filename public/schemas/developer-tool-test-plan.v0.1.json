@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json",
+  "title": "DevAwesome developer tool test plan",
+  "description": "A portable declaration for a bounded developer-tool test. It plans a run but does not validate a result.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "generatedAt", "question", "subject", "fixture", "cases", "procedure", "evidenceToCapture", "knownLimits", "rerunTrigger", "editorial"],
+  "properties": {
+    "schema": { "const": "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "question": { "type": "string", "minLength": 1 },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["toolAndVersion", "environment"],
+      "properties": {
+        "toolAndVersion": { "type": "string", "minLength": 1 },
+        "environment": { "type": "string", "minLength": 1 }
+      }
+    },
+    "fixture": { "type": "string", "minLength": 1 },
+    "cases": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "expectedBehavior"],
+        "properties": {
+          "kind": { "enum": ["expected", "negative"] },
+          "expectedBehavior": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "procedure": { "type": "string", "minLength": 1 },
+    "evidenceToCapture": { "type": "string", "minLength": 1 },
+    "knownLimits": { "type": "string", "minLength": 1 },
+    "rerunTrigger": { "type": ["string", "null"] },
+    "editorial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["independentReviewRequiredForPublication", "secretsAndPersonalDataExcluded"],
+      "properties": {
+        "independentReviewRequiredForPublication": { "const": true },
+        "secretsAndPersonalDataExcluded": { "const": true }
+      }
+    }
+  }
+}

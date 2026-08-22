@@ -4,18 +4,9 @@ import { fileURLToPath } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const dist = join(root, "dist");
-const routes = ["", "guess-the-programming-language", "field-tests", "field-tests/astro-static-route-contract", "field-tests/pnpm-frozen-lockfile-contract", "labs", "methodology", "new-ownership", "archive/14", "archive/49", "impressum", "datenschutz"];
-const canonicals = new Map([
-  ["/", "https://devawesome.io/"],
-  ["/guess-the-programming-language", "https://devawesome.io/guess-the-programming-language/"],
-  ["/field-tests", "https://devawesome.io/field-tests"],
-  ["/field-tests/astro-static-route-contract", "https://devawesome.io/field-tests/astro-static-route-contract"],
-  ["/field-tests/pnpm-frozen-lockfile-contract", "https://devawesome.io/field-tests/pnpm-frozen-lockfile-contract"],
-  ["/labs", "https://devawesome.io/labs"], ["/methodology", "https://devawesome.io/methodology"],
-  ["/new-ownership", "https://devawesome.io/new-ownership"], ["/archive/14", "https://devawesome.io/archive/14"],
-  ["/archive/49", "https://devawesome.io/archive/49"], ["/impressum", "https://devawesome.io/impressum"],
-  ["/datenschutz", "https://devawesome.io/datenschutz"],
-]);
+const { canonicalRoutes, toCanonicalUrl } = await import("../src/data/routes.ts");
+const routes = canonicalRoutes.map(({ path }) => path.replace(/^\//, "").replace(/\/$/, ""));
+const canonicals = new Map(canonicalRoutes.map(({ path }) => [path.replace(/\/$/, "") || "/", toCanonicalUrl(path)]));
 const failures = [];
 async function builtRoute(route) {
   const candidates = route ? [join(dist, route, "index.html"), join(dist, route + ".html")] : [join(dist, "index.html")];
@@ -31,6 +22,13 @@ for (const [route, { html }] of built) {
   if (route === "/404" && html.includes('rel="canonical"')) failures.push("/404 must not claim a canonical");
   if (route !== "/404" && !html.includes(`rel="canonical" href="${canonicals.get(route)}"`)) failures.push(route + " has wrong canonical");
   if (!html.includes("Skip to content")) failures.push(route + " lacks skip link");
+  for (const property of ["og:type", "og:site_name", "og:title", "og:description"]) {
+    if (!html.includes(`property="${property}"`)) failures.push(route + " lacks " + property);
+  }
+  if (route !== "/404" && !html.includes('property="og:url"')) failures.push(route + " lacks og:url");
+  for (const name of ["twitter:card", "twitter:title", "twitter:description"]) {
+    if (!html.includes(`name="${name}"`)) failures.push(route + " lacks " + name);
+  }
 }
 const robots = await readFile(join(dist, "robots.txt"), "utf8");
 if (robots.trim() !== "User-agent: *\nAllow: /") failures.push("robots must be crawlable and must not advertise a sitemap during hold");
@@ -42,10 +40,12 @@ const rights = JSON.parse(await readFile(join(root, "src/data/manifests/rights-e
 const legacy = JSON.parse(await readFile(join(root, "src/data/manifests/legacy-urls.v1.json"), "utf8"));
 const vercel = JSON.parse(await readFile(join(root, "vercel.json"), "utf8"));
 const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
+const planSchema = JSON.parse(await readFile(join(dist, "schemas", "developer-tool-test-plan.v0.1.json"), "utf8"));
+if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 const headers = Object.fromEntries((vercel.headers?.[0]?.headers ?? []).map(({ key, value }) => [key.toLowerCase(), value]));
 if (rights.launchState !== "production_noindex") failures.push("rights manifest must record production_noindex");
 if (!rights.unknowns.includes("independent technical reviewer") || !rights.unknowns.includes("brand or mark clearance")) failures.push("open reviewer and identity gates must stay explicit");
-if (pkg.dependencies?.gsap || pkg.dependencies?.["@astrojs/sitemap"]) failures.push("global GSAP and automatic sitemap dependencies must be absent");
+if (pkg.dependencies?.gsap || pkg.dependencies?.["@astrojs/sitemap"]) failures.push("global GSAP and unused sitemap dependencies must be absent");
 if (headers["x-robots-tag"] !== "noindex, follow, noarchive") failures.push("Vercel X-Robots-Tag must match meta");
 for (const key of ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options", "cross-origin-opener-policy"]) if (!headers[key]) failures.push("missing security header " + key);
 if (!vercel.redirects?.some((r) => r.source === "/quiz" && r.destination === "/guess-the-programming-language/" && r.permanent === true)) failures.push("/quiz must permanently redirect");
@@ -62,6 +62,9 @@ if (!built.get("/field-tests").html.includes('"@type":"CollectionPage"')) failur
 if (!built.get("/labs").html.includes('"@type":"CollectionPage"')) failures.push("labs needs CollectionPage schema");
 if (!built.get("/guess-the-programming-language").html.includes('"@type":"Quiz"')) failures.push("quiz needs Quiz mainEntity schema");
 if (!built.get("/").html.includes('"@type":"WebSite"')) failures.push("home needs WebSite schema");
+if (!built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"TechArticle"') || !built.get("/guides/reproducible-developer-tool-tests").html.includes('"@type":"BreadcrumbList"')) failures.push("guide needs TechArticle and visible breadcrumb schema");
+if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"') || !built.get("/tools/developer-tool-test-plan").html.includes('"@type":"BreadcrumbList"')) failures.push("tool needs WebApplication and visible breadcrumb schema");
+if (!built.get("/tools/developer-tool-test-plan").html.includes('href="/schemas/developer-tool-test-plan.v0.1.json"')) failures.push("tool must expose its versioned JSON Schema");
 if (built.get("/404").html.includes("application/ld+json")) failures.push("404 must not emit page schema");
 
 const assetDir = join(dist, "_astro");
@@ -81,6 +84,10 @@ const quiz = built.get("/guess-the-programming-language").html;
 const quizScripts = [...quiz.matchAll(/<script[^>]+src="([^"]+\.js)"/g)].map((m) => m[1]).filter((src) => src.startsWith("/_astro/"));
 if (quizScripts.length === 0) failures.push("quiz route must load its route-specific script");
 if (quizScripts.some((src) => home.includes(src))) failures.push("quiz behavior must not be loaded on home");
+const tool = built.get("/tools/developer-tool-test-plan").html;
+const toolScripts = [...tool.matchAll(/<script[^>]+src="([^"]+\.js)"/g)].map((m) => m[1]);
+if (!toolScripts.includes("/test-plan.js")) failures.push("test-plan tool must load its external CSP-compatible script");
+if (home.includes("/test-plan.js") || quiz.includes("/test-plan.js")) failures.push("test-plan behavior must remain route-specific");
 
 const internalHref = /href="(\/[^"]*)"/g;
 for (const [route, { html }] of built) {
@@ -97,4 +104,4 @@ const forbidden = [/80,?000/i, /80k/i, /our subscribers/i, /weekly newsletter is
 for (const [route, { html }] of built) for (const claim of forbidden) if (claim.test(html)) failures.push(route + " contains forbidden historical claim");
 
 if (failures.length) { console.error(failures.join("\n")); process.exit(1); }
-console.log(`QA passed: ${routes.length} canonical routes plus 404, crawlable noindex, empty sitemap, schemas, security headers, route-scoped JS, legal/identity boundaries, internal links, and permanent alias.`);
+console.log(`QA passed: ${routes.length} registry-backed canonical routes plus 404, crawlable noindex, empty hold sitemap, OG/Twitter/schema metadata, security headers, route-scoped JS, legal/identity boundaries, internal links, and permanent aliases.`);
