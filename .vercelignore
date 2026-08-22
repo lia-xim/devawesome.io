@@ -3,4 +3,6 @@
 dist/
 node_modules/
 design/
-reports/
+reports/*
+!reports/field-tests/
+!reports/field-tests/*.json
