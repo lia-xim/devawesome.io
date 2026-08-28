@@ -1,0 +1,57 @@
+<div class="deep-workbench" data-crawl-list-workbench>
+  <div class="workbench-bar deep-workbench-bar">
+    <div><strong>Crawl list workbench</strong><span>Extract, normalize, group, review, export</span></div>
+    <div class="example-actions" aria-label="Crawl-list examples"><button type="button" data-crawl-example="sitemap">Sitemap XML</button><button type="button" data-crawl-example="csv">Crawler CSV</button><button type="button" data-crawl-example="mixed">Mixed list</button></div>
+  </div>
+
+  <section class="deep-workbench-step" aria-labelledby="crawl-source-title">
+    <div class="step-heading"><span>1</span><div><h2 id="crawl-source-title">Paste the source</h2><p>The workbench extracts URLs from lists, tables, Markdown links, or pasted sitemap XML.</p></div></div>
+    <div class="source-grid">
+      <label class="source-input"><span>Input</span><textarea rows="13" maxlength="1000000" spellcheck="false" data-crawl-input>Address,Status Code,Content Type
+https://example.com/,200,text/html
+https://example.com/page/?utm_source=news#top,200,text/html
+https://EXAMPLE.com/page,200,text/html
+https://example.com/Products,200,text/html
+not a url,0,unknown</textarea></label>
+      <div class="source-settings">
+        <label><span>Source type</span><select data-crawl-mode><option value="auto">Detect automatically</option><option value="sitemap">Pasted sitemap XML</option><option value="table" selected>CSV or spreadsheet table</option><option value="lines">One entry per line</option></select></label>
+        <label class="switch-row"><input type="checkbox" checked data-crawl-header /><span>First table row contains column names</span></label>
+        <label><span>URL column</span><select data-crawl-url-column></select></label>
+        <p data-crawl-source-summary>Reading the pasted source…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="crawl-rules-title">
+    <div class="step-heading"><span>2</span><div><h2 id="crawl-rules-title">Choose normalization rules</h2><p>Parameters may change page content. Remove only what the next crawl does not need.</p></div></div>
+    <div class="mapping-grid mapping-grid-url">
+      <label><span>Query parameters</span><select data-crawl-query><option value="tracking" selected>Remove common tracking parameters</option><option value="keep">Keep every parameter</option><option value="remove">Remove the complete query string</option></select></label>
+      <label class="switch-row"><input type="checkbox" checked data-crawl-add-https /><span>Add HTTPS to bare domains</span></label>
+      <label class="switch-row"><input type="checkbox" checked data-crawl-fragment /><span>Remove fragments</span></label>
+      <label class="switch-row"><input type="checkbox" checked data-crawl-trailing /><span>Remove trailing path slashes</span></label>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="crawl-review-title">
+    <div class="step-heading"><span>3</span><div><h2 id="crawl-review-title">Review hosts and exceptions</h2><p>Invalid entries and suspicious variants stay visible instead of disappearing silently.</p></div></div>
+    <div class="review-summary" data-crawl-review-summary></div>
+    <div class="review-grid crawl-review-grid">
+      <div class="preview-table-wrap"><table><caption>URLs by host</caption><thead><tr><th scope="col">Host</th><th scope="col">URLs</th></tr></thead><tbody data-crawl-hosts></tbody></table></div>
+      <div class="exception-panels">
+        <details open><summary data-crawl-suspicious-summary>Suspicious variants</summary><ul data-crawl-suspicious></ul></details>
+        <details><summary data-crawl-invalid-summary>Invalid entries</summary><ul data-crawl-invalid></ul></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="crawl-export-title">
+    <div class="step-heading"><span>4</span><div><h2 id="crawl-export-title">Export the crawl input</h2><p>Lines are best for a simple queue. CSV and JSON retain the review fields.</p></div></div>
+    <div class="export-controls">
+      <fieldset class="format-picker"><legend>Output</legend><div><label><input type="radio" name="crawl-format" value="lines" checked data-crawl-format /><span>Lines</span></label><label><input type="radio" name="crawl-format" value="csv" data-crawl-format /><span>CSV</span></label><label><input type="radio" name="crawl-format" value="json" data-crawl-format /><span>JSON</span></label></div></fieldset>
+      <div class="export-actions"><button type="button" data-crawl-copy>Copy</button><button class="toolbox-button toolbox-button-small" type="button" data-crawl-download>Download</button></div>
+    </div>
+    <label class="export-output"><span>Export preview</span><textarea rows="12" readonly spellcheck="false" data-crawl-output></textarea></label>
+    <p class="format-note">This output has not been crawled. Status, canonical, robots, and content still need a live request.</p>
+    <p data-crawl-status aria-live="polite">Ready</p>
+  </section>
+</div>

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "id": "workbench-core-contract",
+  "status": "passed",
+  "capturedAt": "2026-08-28T17:14:39.004Z",
+  "editor": "Matthias Ramahi",
+  "technicalReview": "Not independently reviewed",
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26200",
+    "architecture": "x64",
+    "node": "v24.15.0"
+  },
+  "command": "corepack pnpm field-test:workbench",
+  "cases": [
+    {
+      "id": "keyword-table",
+      "question": "Does table mapping preserve selected columns while cleaning keyword rows?",
+      "status": "passed",
+      "observed": {
+        "cleanRows": 2,
+        "duplicatesRemoved": 1,
+        "noiseRowsRemoved": 1,
+        "retainedHeaders": [
+          "volume",
+          "list"
+        ]
+      }
+    },
+    {
+      "id": "crawl-sitemap",
+      "question": "Does sitemap extraction normalize tracking and group the remaining URLs?",
+      "status": "passed",
+      "observed": {
+        "uniqueUrls": 2,
+        "duplicatesRemoved": 1,
+        "invalidEntries": 1,
+        "hosts": [
+          {
+            "host": "example.com",
+            "count": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "robots-longest-match",
+      "question": "Does the robots evaluator select the longest applicable rule and Allow on an equal tie?",
+      "status": "passed",
+      "observed": {
+        "path": "/private/public/page",
+        "group": "*",
+        "winningRule": "Allow: /private/public",
+        "allowed": true
+      }
+    },
+    {
+      "id": "indexability-noindex",
+      "question": "Does the debugger treat a 200 response with noindex as technically blocked?",
+      "status": "passed",
+      "observed": {
+        "state": "blocked",
+        "verdict": "Blocked by a noindex directive"
+      }
+    },
+    {
+      "id": "mcp-correction",
+      "question": "Does the MCP lab identify and repair core tools/call structure?",
+      "status": "passed",
+      "observed": {
+        "detectedType": "tools-call-request",
+        "errors": 2,
+        "correctedArgumentsType": "object",
+        "mismatchedPairDetected": true
+      }
+    }
+  ],
+  "limits": [
+    "These deterministic fixtures exercise parsing and decision logic. They do not crawl a live URL, query a search engine, or contact an MCP server.",
+    "The Contextter CSV assertion covers the verified keyword header and retained columns; the receiving importer still requires a user-reviewed column mapping.",
+    "Robots, canonical, and indexability results remain bounded to the values supplied to the local functions."
+  ]
+}

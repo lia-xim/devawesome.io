@@ -1,68 +1,77 @@
-(function () {
-  for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
-    const status = root.querySelector("[data-index-status]");
-    const canonical = root.querySelector("[data-index-canonical]");
-    const meta = root.querySelector("[data-index-meta]");
-    const header = root.querySelector("[data-index-header]");
-    const robots = root.querySelector("[data-index-robots]");
-    const verdict = root.querySelector("[data-index-verdict]");
-    const explanation = root.querySelector("[data-index-explanation]");
-    const checks = root.querySelector("[data-index-checks]");
-    if (!status || !canonical || !meta || !header || !robots || !verdict || !explanation || !checks) continue;
+import { diagnoseIndexability } from "./workbench-core.js";
 
-    const update = () => {
-      const items = [];
-      let state = "eligible";
-      let title = "Technically eligible";
-      let detail = "The supplied signals do not block indexing. Search engines still decide whether and when to index the page.";
+const examples = {
+  noindex: { status: "200", canonical: "self", meta: "noindex", header: "index", robots: "allowed" },
+  canonical: { status: "200", canonical: "other", meta: "index", header: "index", robots: "allowed" },
+  robots: { status: "200", canonical: "self", meta: "noindex", header: "index", robots: "blocked" },
+};
 
-      if (status.value !== "200") {
-        state = "blocked";
-        title = status.value === "redirect" ? "This URL is a redirect" : "The response is not indexable";
-        detail = status.value === "redirect"
-          ? "A redirecting URL is not the final indexable document. Check the destination and the complete redirect chain."
-          : "The supplied HTTP status does not describe an indexable page. Fix the response or verify that removal is intentional.";
-      } else if (meta.value === "noindex" || header.value === "noindex") {
-        state = "blocked";
-        title = "Blocked by a noindex directive";
-        detail = meta.value === "noindex"
-          ? "The supplied meta robots value asks search engines not to index this page."
-          : "The supplied X-Robots-Tag asks search engines not to index this response.";
-      } else if (robots.value === "blocked") {
-        state = "warning";
-        title = "Crawling is blocked";
-        detail = "A crawler may be unable to fetch the page and process its current canonical or noindex directives. Robots blocking is not a reliable removal method.";
-      } else if (canonical.value === "other") {
-        state = "warning";
-        title = "Canonical points elsewhere";
-        detail = "The page may be crawlable and indexable, but the supplied canonical asks search engines to consolidate signals with another URL.";
-      } else if (canonical.value === "missing") {
-        state = "warning";
-        title = "Eligible, with no declared canonical";
-        detail = "No supplied signal blocks indexing, but the page does not declare its preferred URL in this test.";
-      }
+for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
+  const fields = {
+    status: root.querySelector("[data-index-status]"),
+    canonical: root.querySelector("[data-index-canonical]"),
+    meta: root.querySelector("[data-index-meta]"),
+    header: root.querySelector("[data-index-header]"),
+    robots: root.querySelector("[data-index-robots]"),
+  };
+  const verdict = root.querySelector("[data-index-verdict]");
+  const explanation = root.querySelector("[data-index-explanation]");
+  const checks = root.querySelector("[data-index-checks]");
+  const copy = root.querySelector("[data-index-copy]");
+  const downloadButton = root.querySelector("[data-index-download]");
+  const statusText = root.querySelector("[data-index-report-status]");
+  if (Object.values(fields).some((field) => !field) || !verdict || !explanation || !checks) continue;
 
-      items.push(["HTTP response", status.value === "200" ? "Pass" : "Check"]);
-      items.push(["Meta robots", meta.value === "noindex" ? "Noindex" : "Pass"]);
-      items.push(["X-Robots-Tag", header.value === "noindex" ? "Noindex" : "Pass"]);
-      items.push(["Robots access", robots.value === "blocked" ? "Blocked" : "Allowed"]);
-      items.push(["Canonical", canonical.value === "self" ? "Self" : canonical.value === "other" ? "Other URL" : "Missing"]);
-
-      root.dataset.state = state;
-      verdict.textContent = title;
-      explanation.textContent = detail;
-      checks.replaceChildren(...items.map(([label, value]) => {
-        const item = document.createElement("div");
-        const term = document.createElement("dt");
-        const description = document.createElement("dd");
-        term.textContent = label;
-        description.textContent = value;
-        item.append(term, description);
-        return item;
-      }));
+  let report;
+  const signals = () => Object.fromEntries(Object.entries(fields).map(([key, field]) => [key, field.value]));
+  const update = () => {
+    const supplied = signals();
+    const result = diagnoseIndexability(supplied);
+    report = {
+      signals: supplied,
+      verdict: result.title,
+      state: result.state,
+      explanation: result.detail,
+      checks: Object.fromEntries(result.checks),
+      limits: [
+        "Technical eligibility is not proof of indexing, canonical selection, ranking, or traffic.",
+        "The values were entered manually; this report did not fetch the tested URL.",
+      ],
     };
+    root.dataset.state = result.state;
+    verdict.textContent = result.title;
+    explanation.textContent = result.detail;
+    checks.replaceChildren(...result.checks.map(([label, value]) => {
+      const item = document.createElement("div");
+      const term = document.createElement("dt");
+      const description = document.createElement("dd");
+      term.textContent = label;
+      description.textContent = value;
+      item.append(term, description);
+      return item;
+    }));
+    if (statusText) statusText.textContent = "Diagnosis updated. Verify the values against the final live response.";
+  };
 
-    for (const field of [status, canonical, meta, header, robots]) field.addEventListener("change", update);
+  for (const field of Object.values(fields)) field.addEventListener("change", update);
+  for (const button of document.querySelectorAll("[data-index-example]")) button.addEventListener("click", () => {
+    const example = examples[button.dataset.indexExample];
+    for (const [key, value] of Object.entries(example)) fields[key].value = value;
     update();
-  }
-})();
+  });
+  copy?.addEventListener("click", async () => {
+    const text = `${report.verdict}\n${report.explanation}\n\n${Object.entries(report.checks).map(([key, value]) => `${key}: ${value}`).join("\n")}`;
+    try { await navigator.clipboard.writeText(text); if (statusText) statusText.textContent = "Diagnosis copied."; }
+    catch { if (statusText) statusText.textContent = "Copy was blocked. Download the JSON report instead."; }
+  });
+  downloadButton?.addEventListener("click", () => {
+    const url = URL.createObjectURL(new Blob([`${JSON.stringify(report, null, 2)}\n`], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "indexability-diagnosis.json";
+    link.click();
+    URL.revokeObjectURL(url);
+    if (statusText) statusText.textContent = "JSON diagnosis downloaded.";
+  });
+  update();
+}

@@ -1,0 +1,43 @@
+<div class="deep-workbench mcp-payload-lab" data-mcp-payload-lab>
+  <div class="workbench-bar deep-workbench-bar">
+    <div><strong>MCP payload lab</strong><span>Classify, validate, correct, compare, save fixture</span></div>
+    <div class="example-actions" aria-label="MCP payload examples"><button type="button" data-mcp-lab-example="request">Request</button><button type="button" data-mcp-lab-example="response">Response pair</button><button type="button" data-mcp-lab-example="tool">Tool definition</button></div>
+  </div>
+
+  <section class="deep-workbench-step" aria-labelledby="mcp-source-title">
+    <div class="step-heading"><span>1</span><div><h2 id="mcp-source-title">Identify the source and message</h2><p>The source does not change validation. It records where the fixture came from.</p></div></div>
+    <div class="mapping-grid mapping-grid-mcp">
+      <label><span>Copied from</span><select data-mcp-lab-source><option>MCP Inspector</option><option>Client SDK log</option><option>Server log</option><option>Documentation example</option><option>Hand-written fixture</option></select></label>
+      <label><span>Message type</span><select data-mcp-lab-type><option value="auto">Detect automatically</option><option value="request">JSON-RPC request</option><option value="tools-call-request">tools/call request</option><option value="response">JSON-RPC response</option><option value="tools-list-response">tools/list response</option><option value="tool-definition">Tool definition</option></select></label>
+    </div>
+    <label class="source-input"><span>Primary message</span><textarea rows="14" maxlength="1000000" spellcheck="false" data-mcp-lab-input>{`{
+  "id": 7,
+  "method": "tools/call",
+  "params": {
+    "name": "crawl_page",
+    "arguments": "https://example.com"
+  }
+}`}</textarea></label>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="mcp-findings-title">
+    <div class="step-heading"><span>2</span><div><h2 id="mcp-findings-title">Read the structural findings</h2><p>Errors block the core shape. Warnings identify a likely interoperability problem.</p></div></div>
+    <div class="mcp-diagnosis">
+      <div><span>Detected type</span><strong data-mcp-lab-detected>—</strong></div>
+      <ul data-mcp-lab-findings></ul>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="mcp-correction-title">
+    <div class="step-heading"><span>3</span><div><h2 id="mcp-correction-title">Inspect the corrected fixture</h2><p>The correction fills only required core structure. It cannot infer server-specific arguments or permissions.</p></div></div>
+    <label class="export-output"><span>Corrected JSON</span><textarea rows="14" readonly spellcheck="false" data-mcp-lab-corrected></textarea></label>
+    <div class="export-actions export-actions-under"><button type="button" data-mcp-lab-copy>Copy corrected JSON</button><button class="toolbox-button toolbox-button-small" type="button" data-mcp-lab-download>Download fixture</button></div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="mcp-pair-title">
+    <div class="step-heading"><span>4</span><div><h2 id="mcp-pair-title">Compare a request and response</h2><p>Paste the related message to check direction and matching IDs. Leave it empty when you only have one message.</p></div></div>
+    <label class="source-input"><span>Related request or response</span><textarea rows="10" maxlength="1000000" spellcheck="false" data-mcp-lab-related placeholder='{"jsonrpc":"2.0","id":7,"result":{"content":[]}}'></textarea></label>
+    <ul class="pair-checks" data-mcp-pair-checks><li>Paste a related message to compare the pair.</li></ul>
+    <p data-mcp-lab-status aria-live="polite">Ready</p>
+  </section>
+</div>

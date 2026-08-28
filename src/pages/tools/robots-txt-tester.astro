@@ -22,5 +22,5 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Robots.txt Tes
     related={[{ label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Clean the paths and URLs you plan to test." }, { label: "SERP snippet preview", href: "/tools/serp-snippet-preview", note: "Review the search-result inputs for an allowed page." }]}
   />
   <WorkflowLink title="Combine the page's indexability signals" description="Use status, canonical, noindex, and robots access together instead of treating one rule as the complete answer." href="/workflows/debug-indexability" cta="Debug indexability" internal />
-  <script is:inline src="/robots-txt-tester.js" defer></script>
+  <script is:inline type="module" src="/robots-txt-tester.js"></script>
 </BaseLayout>

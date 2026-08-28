@@ -1,0 +1,31 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Guides", path: "/guides" },
+  { name: "Debug indexability signals", path: "/guides/debug-indexability-signals" },
+];
+const howTo = { "@type": "HowTo", name: "Debug page indexability signals", step: ["Check the HTTP response", "Check crawl access", "Check index directives", "Check the canonical target", "Confirm in a search engine tool"].map((name) => ({ "@type": "HowToStep", name })) };
+---
+
+<BaseLayout title="How to Debug Page Indexability Signals" description="Check status, crawl access, index directives, and canonical targets in the order that makes conflicts visible." canonicalPath="/guides/debug-indexability-signals" schemaType="TechArticle" schemaMainEntity={howTo} datePublished="2026-08-28" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="G4" label="Technical SEO guide" title="Indexability is a chain of conditions, not one tag." intro="A page can return 200 and still be ineligible for indexing. Check the response, crawl access, index directives, and canonical target separately before interpreting the combined result." />
+
+  <section class="guide-lede section-rule"><div><span class="section-label">The shortest useful order</span><h2>Response → crawl → directives → canonical.</h2></div><div><p>Start with what the crawler receives. A non-success response can end the diagnosis early. A robots.txt block can hide page-level directives from a crawler. A crawlable 200 page can still carry <code>noindex</code> or point its canonical elsewhere.</p><div class="action-row"><a class="action action-signal" href="/workflows/debug-indexability">Open the indexability debugger <span class="action-arrow" aria-hidden="true">→</span></a><a class="action action-dark" href="/tools/robots-txt-tester">Test pasted robots rules <span class="action-arrow" aria-hidden="true">→</span></a></div></div></section>
+
+  <ol class="guide-steps">
+    <li><div><small>01 / Response</small><h2>Record the final status.</h2></div><div><p>Follow redirects and record the final URL and status. A 404 is not rescued by a canonical tag in an old HTML body. A soft 404 may return 200 but still needs content-level review, which this signal-only debugger cannot perform.</p></div></li>
+    <li><div><small>02 / Crawl access</small><h2>Check robots.txt for the crawler.</h2></div><div><p>Test the exact user-agent and URL path. Robots.txt controls crawling, not canonical selection. If a crawler cannot fetch a page, it may not see a page-level <code>noindex</code> rule at all.</p><p class="guide-check"><strong>Conflict to avoid:</strong> blocking a URL in robots.txt while relying on a meta or header <code>noindex</code> on that same URL.</p></div></li>
+    <li><div><small>03 / Directives</small><h2>Read HTML and headers.</h2></div><div><p>Check the robots meta tag and every <code>X-Robots-Tag</code> response header. A restrictive rule can come from either location. Header directives are especially important for PDFs and other non-HTML resources.</p></div></li>
+    <li><div><small>04 / Canonical</small><h2>Compare the declared target.</h2></div><div><p>A canonical pointing elsewhere is a preference signal that this URL should not be the representative version. Confirm that the target is reachable, indexable, relevant, and consistent with redirects, sitemap entries, and internal links. Search engines can choose a different canonical.</p></div></li>
+    <li><div><small>05 / Confirmation</small><h2>Separate eligibility from indexing.</h2></div><div><p>Passing these technical conditions means the supplied signals do not block eligibility. It does not promise selection, indexing, ranking, or a particular snippet. Confirm the fetched and selected state with a live crawl and the search engine's inspection tooling.</p></div></li>
+  </ol>
+
+  <section class="source-panel section-rule"><div><span class="section-label">Primary references</span><h2>How the signals are defined.</h2></div><ul><li><a href="https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag">Google robots meta and X-Robots-Tag specification <span aria-hidden="true">↗</span></a><p>Defines page- and header-level indexing controls and explains why the page must be crawlable for those rules to be read.</p></li><li><a href="https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls">Google canonical URL methods <span aria-hidden="true">↗</span></a><p>Explains redirects, canonical annotations, sitemap inclusion, and the difference between a signal and a rule.</p></li><li><a href="/field-tests/workbench-core-contract">DevAwesome workbench core contract</a><p>Exercises the production diagnosis for a crawlable 200 response carrying <code>noindex</code>.</p></li></ul></section>
+
+  <section class="editorial-section"><div class="editorial-side"><span class="section-label">Boundary</span><h2>The debugger uses supplied observations.</h2><p>It does not request the page, render JavaScript, inspect content quality, or query a search index.</p></div><div class="editorial-main"><h2>Save a diagnosis, not a promise.</h2><p>The workflow can export its inputs, verdict, blockers, and next checks as JSON. Attach that report to the live evidence that produced the inputs.</p></div></section>
+</BaseLayout>

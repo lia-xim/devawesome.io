@@ -6,9 +6,9 @@ Public source repository for the current devawesome.io website.
 
 DevAwesome is a browser-local workbench for developers and SEO teams. The owner explicitly approved indexable publication on 28 August 2026. A visitor can either open one focused mini-tool or follow a complete workflow that turns a messy input or a group of technical signals into a reviewable result without signing up or uploading the data.
 
-The current workbench includes nine focused tools plus four guided workflows for keyword imports, crawl lists, indexability diagnosis, and MCP messages. The release also keeps an original programming-language quiz, three reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
+The current workbench includes nine focused tools plus four guided workflows for keyword imports, crawl lists, indexability diagnosis, and MCP messages. The release also keeps an original programming-language quiz, four reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
-Matthias Ramahi is the operator and editor. All three field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
+Matthias Ramahi is the operator and editor. All four field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
 
 ## Standalone purpose
 
@@ -27,13 +27,14 @@ Run the full release contract:
 
     corepack pnpm verify
 
-Run and recapture the three field tests:
+Run and recapture the four field tests:
 
     corepack pnpm field-test:astro:capture
     corepack pnpm field-test:pnpm:capture
     corepack pnpm field-test:receipt:capture
+    corepack pnpm field-test:workbench:capture
 
-The QA pass checks all canonical routes, index directives, crawlable robots, generated sitemap membership, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all three test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, security headers, governance disclosures, and historical-identity claims.
+The QA pass checks all canonical routes, index directives, crawlable robots, generated sitemap membership, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all four test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, security headers, governance disclosures, and historical-identity claims.
 
 ## Deployment
 

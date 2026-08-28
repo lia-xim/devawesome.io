@@ -21,7 +21,7 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
   </header>
 
   <section class="workflow-tool-surface" aria-label="Indexability workbench">
-    <div class="workflow-local-note"><strong>Manual input.</strong><span>This page does not fetch a URL or query Google Search Console.</span></div>
+    <div class="workflow-local-note workflow-local-note-actions"><div><strong>Manual input.</strong><span>This page does not fetch a URL or query Google Search Console.</span></div><div class="example-actions" aria-label="Indexability examples"><button type="button" data-index-example="noindex">200 + noindex</button><button type="button" data-index-example="canonical">Canonical elsewhere</button><button type="button" data-index-example="robots">Robots conflict</button></div></div>
     <div class="indexability-workbench" data-indexability-workflow data-state="eligible">
       <div class="indexability-fields">
         <div><h2>Signals you observed</h2><p>Use the final response and rendered directives, not assumptions from a template.</p></div>
@@ -36,6 +36,8 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
         <h2 data-index-verdict>Technically eligible</h2>
         <p data-index-explanation></p>
         <dl data-index-checks></dl>
+        <div class="indexability-actions"><button type="button" data-index-copy>Copy diagnosis</button><button type="button" data-index-download>Download JSON report</button></div>
+        <p class="indexability-status" data-index-report-status aria-live="polite">Diagnosis updates as signals change.</p>
       </div>
     </div>
   </section>
@@ -46,8 +48,8 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
     <div class="workflow-section-heading"><h2 id="index-order-title">Read the signals in this order</h2><p>Later signals cannot repair a response that is not an indexable document.</p></div>
     <ol class="decision-order">
       <li><span>1</span><div><strong>Response</strong><p>Confirm that the tested URL returns the final 200 document rather than a redirect or error.</p></div></li>
-      <li><span>2</span><div><strong>Index directives</strong><p>Check both rendered meta robots and the final HTTP X-Robots-Tag.</p></div></li>
-      <li><span>3</span><div><strong>Crawl access</strong><p>A blocked crawler may not see changed directives on the page.</p></div></li>
+      <li><span>2</span><div><strong>Crawl access</strong><p>A blocked crawler may not see changed directives on the page.</p></div></li>
+      <li><span>3</span><div><strong>Index directives</strong><p>Check both rendered meta robots and the final HTTP X-Robots-Tag.</p></div></li>
       <li><span>4</span><div><strong>Canonical</strong><p>A canonical is a consolidation signal, not a command or an indexing guarantee.</p></div></li>
     </ol>
     <p class="workflow-boundary">“Technically eligible” does not mean indexed, ranking, or selected as canonical. Search demand, quality, duplication, discovery, and search-engine processing remain outside this local check.</p>
@@ -66,6 +68,6 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
 
   <WorkflowHandoff title="Fetch the live page" description="AnalyseSpider can request one public URL and show the response and directives it actually receives." href="https://analysespider.com/" cta="Check one live URL" disclosure="DevAwesome and AnalyseSpider are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
 
-  <section class="workflow-related" aria-labelledby="index-related-title"><div><h2 id="index-related-title">Related tools</h2><p>Use the focused tool when one signal needs closer inspection.</p></div><div><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>See which pasted rule wins for one crawler and path.</span><ArrowIcon /></a><a href="/tools/serp-snippet-preview"><strong>SERP snippet preview</strong><span>Review title and description after eligibility is clear.</span><ArrowIcon /></a><a href="/workflows/build-clean-crawl-list"><strong>Build a clean crawl list</strong><span>Prepare a larger URL set before testing.</span><ArrowIcon /></a></div></section>
-  <script is:inline src="/indexability-workflow.js" defer></script>
+  <section class="workflow-related" aria-labelledby="index-related-title"><div><h2 id="index-related-title">Related guide and tools</h2><p>Use the guide for the full decision order and a focused tool for one signal.</p></div><div><a href="/guides/debug-indexability-signals"><strong>Indexability signals guide</strong><span>Understand the full chain, common conflicts, and proof boundary.</span><ArrowIcon /></a><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>See which pasted rule wins for one crawler and path.</span><ArrowIcon /></a><a href="/workflows/build-clean-crawl-list"><strong>Build a clean crawl list</strong><span>Prepare a larger URL set before testing.</span><ArrowIcon /></a></div></section>
+  <script is:inline type="module" src="/indexability-workflow.js"></script>
 </BaseLayout>

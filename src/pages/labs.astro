@@ -5,7 +5,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Labs" description="Public DevAwesome fixtures, runners, saved results, and reproduction steps for published field tests." schemaType="CollectionPage">
-  <PageIntro number="L3" label="Reproduction bench" title="Run the material behind the verdict." intro="Each published test links the smallest useful fixture, exact runner, saved result, and limits. The first three rigs cover the production repository, an isolated dependency fixture, and a browser-facing integrity module." />
+  <PageIntro number="L4" label="Reproduction bench" title="Run the material behind the verdict." intro="Each published test links the smallest useful fixture, exact runner, saved result, and limits. The fourth rig now covers the production core behind the main SEO and MCP workbenches." />
 
   <section class="proof-section">
     <span class="section-label">Artifact flow</span>
@@ -19,12 +19,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </section>
 
   <section class="editorial-section">
-    <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>Three public rigs passed.</h2><p>All were run on 22 August 2026 and remain bounded to their declared environment.</p></div>
+    <div class="editorial-side" data-reveal><span class="section-label">Bench state</span><h2>Four public rigs passed.</h2><p>The original three were captured on 22 August 2026; the workbench contract was added on 28 August 2026.</p></div>
     <div class="editorial-main" data-reveal>
       <ul class="proof-list">
         <li><strong>Astro static contract</strong><span>Production build, generated routes, index directives, registry-backed sitemap, and a custom noindex 404.</span></li>
         <li><strong>pnpm frozen lockfile</strong><span>Offline positive case plus a deliberate stale-manifest negative case in an automatically deleted temporary fixture.</span></li>
         <li><strong>SHA-256 evidence receipt</strong><span>Known vectors, normalized line endings, Unicode input, and Node/Web Crypto equivalence for the browser-facing core.</span></li>
+        <li><strong>SEO and MCP workbench core</strong><span>Keyword column mapping, crawl-list normalization, robots matching, noindex diagnosis, and MCP correction.</span></li>
       </ul>
       <div class="action-row">
         <a class="action action-dark" href="/field-tests">Read all field tests <span class="action-arrow" aria-hidden="true">→</span></a>

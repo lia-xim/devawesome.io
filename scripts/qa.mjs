@@ -60,7 +60,7 @@ if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
 if (!built.get("/datenschutz").html.includes("keine Webanalyse")) failures.push("privacy copy must match analytics-free runtime");
 if (!built.get("/new-ownership").html.includes("now eligible for search indexing")) failures.push("ownership page must disclose the current indexable launch status");
-for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract"]) {
+for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract", "/field-tests/workbench-core-contract"]) {
   const html = built.get(route).html;
   if (!html.includes("Not independently reviewed")) failures.push(route + " must disclose review boundary");
   if (!html.includes('"@type":"TechArticle"') || !html.includes('"editor":{"@id":"https://devawesome.io/#operator"}')) failures.push(route + " needs truthful TechArticle editor schema");
@@ -122,19 +122,28 @@ const mcpWorkflow = built.get("/workflows/validate-mcp-message").html;
 const indexabilityWorkflow = built.get("/workflows/debug-indexability").html;
 const jsonTool = built.get("/tools/json-formatter").html;
 const uuidTool = built.get("/tools/uuid-generator").html;
-if (!home.includes('src="/keyword-list-cleaner.js"') || !keywordTool.includes('src="/keyword-list-cleaner.js"') || !keywordWorkflow.includes('src="/keyword-list-cleaner.js"')) failures.push("home, keyword tool and keyword workflow must load the shared cleaner behavior");
+if (!home.includes('src="/keyword-list-cleaner.js"') || !keywordTool.includes('src="/keyword-list-cleaner.js"')) failures.push("home and keyword tool must load the focused cleaner behavior");
+if (!keywordWorkflow.includes('src="/keyword-import-workbench.js"')) failures.push("keyword workflow must load the complete import-workbench behavior");
 if (quiz.includes("/keyword-list-cleaner.js") || tool.includes("/keyword-list-cleaner.js") || receiptTool.includes("/keyword-list-cleaner.js") || uuidTool.includes("/keyword-list-cleaner.js") || jsonTool.includes("/keyword-list-cleaner.js") || urlTool.includes("/keyword-list-cleaner.js")) failures.push("keyword cleaner behavior must stay on its intended surfaces");
 if (!jsonTool.includes('src="/json-formatter.js"')) failures.push("JSON tool must load formatter behavior");
 if (home.includes("/json-formatter.js") || quiz.includes("/json-formatter.js") || tool.includes("/json-formatter.js") || receiptTool.includes("/json-formatter.js") || uuidTool.includes("/json-formatter.js") || keywordTool.includes("/json-formatter.js") || urlTool.includes("/json-formatter.js")) failures.push("JSON formatter behavior must stay on its intended surface");
-if (!urlTool.includes('src="/url-list-normalizer.js"') || !urlWorkflow.includes('src="/url-list-normalizer.js"')) failures.push("URL normalizer tool and workflow must load the shared behavior");
+if (!urlTool.includes('src="/url-list-normalizer.js"')) failures.push("URL normalizer tool must load its focused behavior");
+if (!urlWorkflow.includes('src="/crawl-list-workbench.js"')) failures.push("crawl-list workflow must load the complete workbench behavior");
 if (home.includes("/url-list-normalizer.js") || quiz.includes("/url-list-normalizer.js") || tool.includes("/url-list-normalizer.js") || receiptTool.includes("/url-list-normalizer.js") || uuidTool.includes("/url-list-normalizer.js") || keywordTool.includes("/url-list-normalizer.js") || jsonTool.includes("/url-list-normalizer.js")) failures.push("URL normalizer behavior must stay on its intended surfaces");
-if (!mcpWorkflow.includes('src="/mcp-json-rpc-validator.js"')) failures.push("MCP workflow must load validator behavior");
+if (!mcpWorkflow.includes('src="/mcp-payload-lab.js"')) failures.push("MCP workflow must load payload-lab behavior");
 if (!indexabilityWorkflow.includes('src="/indexability-workflow.js"')) failures.push("indexability workflow must load its route-specific behavior");
 if (!uuidTool.includes('src="/uuid-generator.js"')) failures.push("UUID tool must load its route-specific behavior");
 if (home.includes("/uuid-generator.js") || quiz.includes("/uuid-generator.js") || tool.includes("/uuid-generator.js") || receiptTool.includes("/uuid-generator.js") || jsonTool.includes("/uuid-generator.js")) failures.push("UUID behavior must remain route-specific");
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js"]) {
+const utilityBudgets = {
+  "workbench-core.js": 30000,
+  "keyword-import-workbench.js": 16000,
+  "crawl-list-workbench.js": 14000,
+  "mcp-payload-lab.js": 12000,
+};
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", ...Object.keys(utilityBudgets)]) {
   const source = await readFile(join(root, "public", asset), "utf8");
-  if ((await stat(join(root, "public", asset))).size > 8000) failures.push(asset + " exceeds 8 KB utility budget");
+  const budget = utilityBudgets[asset] ?? 8000;
+  if ((await stat(join(root, "public", asset))).size > budget) failures.push(`${asset} exceeds its ${budget} byte utility budget`);
   if (/\bfetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage/.test(source)) failures.push(asset + " must stay request-free and storage-free");
 }
 

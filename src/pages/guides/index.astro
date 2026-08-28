@@ -6,9 +6,12 @@ const guideList = {
   "@type": "ItemList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Task workflows", url: "https://devawesome.io/workflows" },
-    { "@type": "ListItem", position: 2, name: "How to run a reproducible developer tool test", url: "https://devawesome.io/guides/reproducible-developer-tool-tests" },
-    { "@type": "ListItem", position: 3, name: "DevAwesome methodology", url: "https://devawesome.io/methodology" },
-    { "@type": "ListItem", position: 4, name: "Published field tests", url: "https://devawesome.io/field-tests" },
+    { "@type": "ListItem", position: 2, name: "Clean a keyword import file", url: "https://devawesome.io/guides/clean-keyword-import-files" },
+    { "@type": "ListItem", position: 3, name: "Prepare a URL list for crawling", url: "https://devawesome.io/guides/prepare-crawl-list" },
+    { "@type": "ListItem", position: 4, name: "Debug page indexability signals", url: "https://devawesome.io/guides/debug-indexability-signals" },
+    { "@type": "ListItem", position: 5, name: "How to run a reproducible developer tool test", url: "https://devawesome.io/guides/reproducible-developer-tool-tests" },
+    { "@type": "ListItem", position: 6, name: "DevAwesome methodology", url: "https://devawesome.io/methodology" },
+    { "@type": "ListItem", position: 7, name: "Published field tests", url: "https://devawesome.io/field-tests" },
   ],
 };
 ---
@@ -34,6 +37,21 @@ const guideList = {
       <a href="/workflows">
         <strong>Follow a complete task workflow</strong>
         <span>Move from messy input to a reviewed, portable result.</span>
+        <ArrowIcon />
+      </a>
+      <a href="/guides/clean-keyword-import-files">
+        <strong>Clean a keyword import without losing columns</strong>
+        <span>Map the keyword field, keep useful metrics, review removals, and choose the right export.</span>
+        <ArrowIcon />
+      </a>
+      <a href="/guides/prepare-crawl-list">
+        <strong>Prepare a deliberate crawl input</strong>
+        <span>Extract URLs, handle parameters carefully, and keep suspicious variants visible.</span>
+        <ArrowIcon />
+      </a>
+      <a href="/guides/debug-indexability-signals">
+        <strong>Debug conflicting indexability signals</strong>
+        <span>Check response, crawl access, directives, and canonical target in a useful order.</span>
         <ArrowIcon />
       </a>
       <a href="/guides/reproducible-developer-tool-tests">

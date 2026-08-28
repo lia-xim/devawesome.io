@@ -3,11 +3,12 @@ import PageIntro from "../components/PageIntro.astro";
 import astroResult from "../../reports/field-tests/astro-static-contract-2026-08-22.json";
 import receiptResult from "../../reports/field-tests/evidence-receipt-contract-2026-08-22.json";
 import pnpmResult from "../../reports/field-tests/pnpm-frozen-lockfile-2026-08-22.json";
+import workbenchResult from "../../reports/field-tests/workbench-core-contract-2026-08-28.json";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Field Tests" description="The DevAwesome field-test library and the evidence gate every verdict must pass." schemaType="CollectionPage">
-  <PageIntro number="03" label="Field-test index" title="Three runs. Every limit stays attached." intro="These tests use the site's release toolchain and a browser-facing integrity module as public fixtures. They answer small engineering questions with executable runners, saved results, and an explicit review boundary." />
+  <PageIntro number="04" label="Field-test index" title="Four runs. Every limit stays attached." intro="The latest rig exercises the production core behind the main SEO and MCP workbenches. Every test keeps its runner, saved result, environment, and review boundary visible." />
 
   <section class="field-test-grid section-rule" data-stagger>
     <article class="field-test-card">
@@ -31,12 +32,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <dl><div><dt>Fixture</dt><dd>Four normalized-text vectors</dd></div><div><dt>Review</dt><dd>Not independently reviewed</dd></div></dl>
       <a href="/field-tests/evidence-receipt-contract">Read the evidence <span aria-hidden="true">→</span></a>
     </article>
+    <article class="field-test-card">
+      <div class="test-card-top"><span>FT-04 / Workbench core</span><strong>{workbenchResult.status}</strong></div>
+      <h2>SEO and MCP workbench contract</h2>
+      <p>Run the same parsing and decision functions used by the keyword, crawl-list, robots, indexability, and MCP workflow pages.</p>
+      <dl><div><dt>Fixture</dt><dd>Five deterministic edge cases</dd></div><div><dt>Review</dt><dd>Not independently reviewed</dd></div></dl>
+      <a href="/field-tests/workbench-core-contract">Read the evidence <span aria-hidden="true">→</span></a>
+    </article>
   </section>
 
   <section class="editorial-section">
     <div class="editorial-side" data-reveal><span class="section-label">Editorial boundary</span><h2>Named editor. No invented reviewer.</h2><p>Matthias Ramahi is the operator and editor of this publication.</p></div>
     <div class="editorial-main" data-reveal>
-      <h2>These three tests were not independently reviewed.</h2>
+      <h2>These four tests were not independently reviewed.</h2>
       <p>The runner, result JSON, environment, limits, and repository history are public so another developer can challenge or reproduce the observations. Until an independent reviewer signs a future test, the disclosure stays beside every verdict.</p>
       <div class="action-row"><a class="action action-dark" href="/methodology">Inspect the complete method <span class="action-arrow" aria-hidden="true">→</span></a><a class="action" href="/labs">Open the reproduction bench <span class="action-arrow" aria-hidden="true">→</span></a></div>
     </div>

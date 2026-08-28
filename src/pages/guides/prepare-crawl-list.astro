@@ -1,0 +1,31 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Guides", path: "/guides" },
+  { name: "Prepare a crawl list", path: "/guides/prepare-crawl-list" },
+];
+const howTo = { "@type": "HowTo", name: "Prepare a URL list for crawling", step: ["Extract URLs", "Choose normalization rules", "Review ambiguous variants", "Export the crawl input", "Verify with a live crawl"].map((name) => ({ "@type": "HowToStep", name })) };
+---
+
+<BaseLayout title="How to Prepare a URL List for Crawling" description="Extract URLs, choose safe normalization rules, review variants, and export a crawl-ready list." canonicalPath="/guides/prepare-crawl-list" schemaType="TechArticle" schemaMainEntity={howTo} datePublished="2026-08-28" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="G3" label="Technical SEO guide" title="Build the crawl input before you run the crawl." intro="A URL list is a scope decision. Normalize obvious formatting differences, keep ambiguous variants visible, and know what still requires a live request." />
+
+  <section class="guide-lede section-rule"><div><span class="section-label">The decision</span><h2>Do not let cleanup redefine the site.</h2></div><div><p>Removing a fragment is usually appropriate for an HTTP crawl target. Removing every query parameter is not. Parameters may control pagination, filters, language, or content. The safe workflow separates obvious tracking parameters from variants that need review.</p><div class="action-row"><a class="action action-signal" href="/workflows/build-clean-crawl-list">Open the crawl-list workbench <span class="action-arrow" aria-hidden="true">→</span></a><a class="action action-dark" href="/field-tests/workbench-core-contract">Inspect the contract test <span class="action-arrow" aria-hidden="true">→</span></a></div></div></section>
+
+  <ol class="guide-steps">
+    <li><div><small>01 / Extract</small><h2>Identify the URL source.</h2></div><div><p>A sitemap uses <code>&lt;loc&gt;</code> elements. A crawler export may contain several URL-like columns. Markdown can hide a URL behind link text. Choose the source type and, for a table, map the URL column instead of treating every cell as a crawl target.</p></div></li>
+    <li><div><small>02 / Normalize</small><h2>Make each rule explicit.</h2></div><div><p>Lowercasing the hostname is safe; lowercasing the path can change the resource on case-sensitive servers. Removing fragments does not change the HTTP request target. Adding HTTPS to a bare domain is a convenience assumption and still needs a live redirect or status check.</p><p class="guide-check"><strong>Use a narrow default:</strong> remove common campaign parameters, strip fragments, preserve content parameters, and report invalid entries.</p></div></li>
+    <li><div><small>03 / Variants</small><h2>Review what looks similar.</h2></div><div><p><code>/products</code> and <code>/Products</code>, a trailing slash variant, and two parameter orders may resolve to the same page—or not. Group by host and flag suspicious forms. A preparatory tool should surface this ambiguity instead of silently choosing a canonical URL.</p></div></li>
+    <li><div><small>04 / Scope</small><h2>Export only the intended crawl set.</h2></div><div><p>Use plain lines for a crawler queue, CSV when host and source information matter, or JSON for a scripted handoff. Save invalid rows separately when they came from a source that may need correction.</p></div></li>
+    <li><div><small>05 / Verify</small><h2>Separate normalization from observation.</h2></div><div><p>The exported list does not prove that a URL exists, returns 200, is allowed by robots.txt, declares itself canonical, or contains indexable content. Check one URL with <a href="https://analysespider.com/">AnalyseSpider</a> or run the larger list through an actual crawler or site audit.</p></div></li>
+  </ol>
+
+  <section class="source-panel section-rule"><div><span class="section-label">Primary references</span><h2>URL and sitemap contracts.</h2></div><ul><li><a href="https://www.sitemaps.org/protocol.html">Sitemaps XML protocol <span aria-hidden="true">↗</span></a><p>The protocol defines the required <code>&lt;loc&gt;</code> URL element and sitemap structure.</p></li><li><a href="https://developers.google.com/search/docs/crawling-indexing/url-structure">Google Search URL structure guidance <span aria-hidden="true">↗</span></a><p>Reference for crawlable URL structures and parameter handling considerations.</p></li><li><a href="/field-tests/workbench-core-contract">DevAwesome workbench core contract</a><p>Executable assertions for sitemap extraction, tracking-parameter removal, deduplication, invalid input, and host grouping.</p></li></ul></section>
+
+  <section class="editorial-section"><div class="editorial-side"><span class="section-label">Boundary</span><h2>No request is made here.</h2><p>The browser-local workbench parses pasted text. It does not fetch the sitemap or any listed URL.</p></div><div class="editorial-main"><h2>Treat the list as an input artifact.</h2><p>Record the source, chosen rules, date, and excluded rows when crawl scope matters. That makes a later result explainable instead of merely repeatable.</p></div></section>
+</BaseLayout>

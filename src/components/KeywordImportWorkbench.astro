@@ -1,0 +1,61 @@
+<div class="deep-workbench" data-keyword-import-workbench>
+  <div class="workbench-bar deep-workbench-bar">
+    <div><strong>Keyword import workbench</strong><span>Paste, map, clean, review, export</span></div>
+    <div class="example-actions" aria-label="Keyword examples">
+      <button type="button" data-keyword-example="spreadsheet">Spreadsheet</button>
+      <button type="button" data-keyword-example="csv">SEO CSV</button>
+      <button type="button" data-keyword-example="messy">Messy list</button>
+    </div>
+  </div>
+
+  <section class="deep-workbench-step" aria-labelledby="keyword-source-title">
+    <div class="step-heading"><span>1</span><div><h2 id="keyword-source-title">Paste the source</h2><p>Use a table when other columns should survive the cleanup.</p></div></div>
+    <div class="source-grid">
+      <label class="source-input"><span>Input</span><textarea rows="13" maxlength="1000000" spellcheck="false" data-keyword-workbench-input>keyword	volume	list
+technical seo audit	210	Audit
+Keyword Clustering	90	Content
+1. technical seo audit	210	Audit
+/		
+search intent	140	Research</textarea></label>
+      <div class="source-settings">
+        <label><span>Separator</span><select data-keyword-workbench-mode><option value="auto">Detect automatically</option><option value="tab" selected>Tabs / spreadsheet</option><option value=",">Comma-separated CSV</option><option value=";">Semicolon-separated</option><option value="|">Pipes</option><option value="lines">One keyword per line</option></select></label>
+        <label class="switch-row"><input type="checkbox" checked data-keyword-workbench-header /><span>First row contains column names</span></label>
+        <p data-keyword-source-summary>Reading the pasted table…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="keyword-map-title">
+    <div class="step-heading"><span>2</span><div><h2 id="keyword-map-title">Choose what each row means</h2><p>Pick the keyword column. Keep only the extra columns needed later.</p></div></div>
+    <div class="mapping-grid">
+      <label><span>Keyword column</span><select data-keyword-column></select></label>
+      <fieldset><legend>Keep additional columns</legend><div class="retained-columns" data-keyword-retained></div></fieldset>
+      <label><span>Letter case</span><select data-keyword-case><option value="preserve">Keep first spelling</option><option value="lower">Convert keywords to lowercase</option></select></label>
+    </div>
+    <div class="cleanup-options deep-cleanup-options">
+      <label><input type="checkbox" checked data-keyword-workbench-ignore-case /> Deduplicate regardless of capitalization</label>
+      <label><input type="checkbox" checked data-keyword-workbench-strip-noise /> Remove bullets, numbering, and empty separator rows</label>
+      <label><input type="checkbox" checked data-keyword-workbench-whitespace /> Collapse repeated whitespace</label>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="keyword-review-title">
+    <div class="step-heading"><span>3</span><div><h2 id="keyword-review-title">Review the result</h2><p>Counts and preview rows show what the cleaner changed before export.</p></div></div>
+    <div class="review-summary" data-keyword-review-summary></div>
+    <div class="review-grid">
+      <div class="preview-table-wrap"><table><caption>First cleaned rows</caption><thead data-keyword-preview-head></thead><tbody data-keyword-preview-body></tbody></table></div>
+      <div class="change-log"><strong>Change log</strong><ul data-keyword-change-log></ul></div>
+    </div>
+  </section>
+
+  <section class="deep-workbench-step" aria-labelledby="keyword-export-title">
+    <div class="step-heading"><span>4</span><div><h2 id="keyword-export-title">Choose the handoff format</h2><p>The output changes immediately. No file is uploaded.</p></div></div>
+    <div class="export-controls">
+      <fieldset class="format-picker"><legend>Output</legend><div><label><input type="radio" name="keyword-workbench-format" value="txt" checked data-keyword-workbench-format /><span>TXT</span></label><label><input type="radio" name="keyword-workbench-format" value="csv" data-keyword-workbench-format /><span>CSV</span></label><label><input type="radio" name="keyword-workbench-format" value="json" data-keyword-workbench-format /><span>JSON</span></label><label><input type="radio" name="keyword-workbench-format" value="contextter" data-keyword-workbench-format /><span>Contextter CSV</span></label></div></fieldset>
+      <div class="export-actions"><button type="button" data-keyword-workbench-copy>Copy</button><button class="toolbox-button toolbox-button-small" type="button" data-keyword-workbench-download>Download</button></div>
+    </div>
+    <label class="export-output"><span>Export preview</span><textarea rows="12" readonly spellcheck="false" data-keyword-workbench-output></textarea></label>
+    <p class="format-note" data-keyword-format-note>TXT contains one cleaned keyword per line.</p>
+    <p data-keyword-workbench-status aria-live="polite">Ready</p>
+  </section>
+</div>

@@ -1,6 +1,6 @@
 ---
 import ArrowIcon from "../../components/ArrowIcon.astro";
-import KeywordListCleaner from "../../components/KeywordListCleaner.astro";
+import KeywordImportWorkbench from "../../components/KeywordImportWorkbench.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -13,7 +13,7 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Prepare a keyword import",
-  step: ["Clean the list", "Review what changed", "Export the result"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Paste the source", "Map the keyword column", "Review what changed", "Choose the export format"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
@@ -22,12 +22,12 @@ const howTo = {
     <a href="/workflows">← All workflows</a>
     <h1>Prepare a keyword import</h1>
     <p>Turn a copied list, CSV export, or spreadsheet column into a clean file you can review and reuse.</p>
-    <WorkflowProgress steps={["Clean the list", "Review changes", "Export the result"]} />
+    <WorkflowProgress steps={["Paste the source", "Map columns", "Review changes", "Choose the export"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="Keyword import workbench">
     <div class="workflow-local-note"><strong>Runs locally.</strong><span>No upload, account, analytics, or saved draft.</span></div>
-    <KeywordListCleaner />
+    <KeywordImportWorkbench />
   </section>
 
   <section class="workflow-scenario-list" aria-labelledby="keyword-scenarios-title">
@@ -86,8 +86,8 @@ site audit</pre></div>
     <div>
       <a href="/tools/url-list-normalizer"><strong>URL list normalizer</strong><span>Prepare the pages behind the keyword set.</span><ArrowIcon /></a>
       <a href="/tools/json-formatter"><strong>JSON formatter</strong><span>Inspect or repair structured export data.</span><ArrowIcon /></a>
-      <a href="/guides/reproducible-developer-tool-tests"><strong>Reproducible tool tests</strong><span>Turn a critical edge case into a repeatable check.</span><ArrowIcon /></a>
+      <a href="/guides/clean-keyword-import-files"><strong>Keyword import guide</strong><span>Understand mapping, safe cleanup rules, review, and format choices.</span><ArrowIcon /></a>
     </div>
   </section>
-  <script is:inline src="/keyword-list-cleaner.js" defer></script>
+  <script is:inline type="module" src="/keyword-import-workbench.js"></script>
 </BaseLayout>

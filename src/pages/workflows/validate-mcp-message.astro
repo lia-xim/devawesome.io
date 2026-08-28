@@ -1,6 +1,6 @@
 ---
 import ArrowIcon from "../../components/ArrowIcon.astro";
-import McpJsonRpcValidator from "../../components/McpJsonRpcValidator.astro";
+import McpPayloadLab from "../../components/McpPayloadLab.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -13,7 +13,7 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Validate an MCP message",
-  step: ["Identify the message", "Check the structure", "Record the next test"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Identify the message", "Read structural findings", "Inspect the corrected fixture", "Compare a request and response"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
@@ -22,12 +22,12 @@ const howTo = {
     <a href="/workflows">← All workflows</a>
     <h1>Validate an MCP message</h1>
     <p>Start with one copied message. Identify its role, fix the core JSON-RPC or tool-definition shape, and write down what still needs an SDK test.</p>
-    <WorkflowProgress steps={["Identify the message", "Check the structure", "Record the next test"]} />
+    <WorkflowProgress steps={["Identify the message", "Read findings", "Inspect correction", "Compare the pair"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="MCP message workbench">
     <div class="workflow-local-note"><strong>Remove secrets first.</strong><span>Validation stays in this browser tab and does not contact an MCP server.</span></div>
-    <McpJsonRpcValidator />
+    <McpPayloadLab />
   </section>
 
   <section class="workflow-scenario-list" aria-labelledby="mcp-scenarios-title"><h2 id="mcp-scenarios-title">Use this workflow when…</h2><ul><li>MCP Inspector shows a message but the failure is not obvious.</li><li>An SDK test or debug log contains a tools/list or tools/call payload.</li><li>You need to separate JSON-RPC envelope errors from runtime, transport, auth, or tool errors.</li></ul></section>
@@ -56,5 +56,5 @@ const howTo = {
   <WorkflowHandoff title="Read the versioned SEO MCP reference" description="seo-mcp.de covers capability design, permission boundaries, integration choices, and version-specific implementation details." href="https://seo-mcp.de/" cta="Open the SEO MCP reference" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
 
   <section class="workflow-related" aria-labelledby="mcp-related-title"><div><h2 id="mcp-related-title">Related tools and guide</h2><p>Fix syntax first, then preserve the expected behavior as a test.</p></div><div><a href="/tools/json-formatter"><strong>JSON formatter</strong><span>Find and repair JSON syntax errors.</span><ArrowIcon /></a><a href="/tools/developer-tool-test-plan"><strong>Simple test case builder</strong><span>Record one expected MCP response or failure.</span><ArrowIcon /></a><a href="/guides/reproducible-developer-tool-tests"><strong>Reproducible tool tests</strong><span>Publish a bounded result with versions and failure cases.</span><ArrowIcon /></a></div></section>
-  <script is:inline src="/mcp-json-rpc-validator.js" defer></script>
+  <script is:inline type="module" src="/mcp-payload-lab.js"></script>
 </BaseLayout>

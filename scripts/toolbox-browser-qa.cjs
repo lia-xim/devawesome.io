@@ -115,8 +115,22 @@ async function runMobile(browser) {
   });
   check(Number.parseFloat(mobileStyles.heroSize) >= 33, "mobile hero type is too small");
   check(mobileStyles.rowHeight >= 56, "mobile tool rows need usable tap targets");
-
   await page.screenshot({ path: join(screenshots, "toolbox-home-mobile.png"), fullPage: true });
+
+  for (const route of [
+    "/workflows/prepare-keyword-import",
+    "/workflows/build-clean-crawl-list",
+    "/workflows/debug-indexability",
+    "/workflows/validate-mcp-message",
+    "/guides/clean-keyword-import-files",
+    "/guides/prepare-crawl-list",
+    "/guides/debug-indexability-signals",
+  ]) {
+    await page.goto(origin + route, { waitUntil: "networkidle" });
+    await verifyStructure(page, route + " mobile");
+  }
+  await page.goto(origin + "/workflows/prepare-keyword-import", { waitUntil: "networkidle" });
+  await page.screenshot({ path: join(screenshots, "keyword-workbench-mobile.png"), fullPage: true });
   await context.close();
   return mobileStyles;
 }
@@ -142,12 +156,23 @@ async function runTools(browser) {
 
   await page.goto(origin + "/workflows/prepare-keyword-import", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/prepare-keyword-import");
-  check((await page.locator(".workflow-progress li").count()) === 3, "keyword workflow must show its three-step sequence");
+  check((await page.locator(".workflow-progress li").count()) === 4, "keyword workflow must show its four-step sequence");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator("[data-keyword-input]").fill("1. seo audit, SEO Audit | keyword tracking");
-  await page.locator("[data-keyword-clean]").click();
-  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking", "keyword workflow must reuse the tested cleaner behavior");
+  await page.locator('[data-keyword-example="csv"]').click();
+  check((await page.locator("[data-keyword-workbench-output]").inputValue()).includes("running shoes, women"), "keyword workflow must preserve a quoted comma inside a keyword");
+  await page.locator('[data-keyword-workbench-format][value="contextter"]').check();
+  check((await page.locator("[data-keyword-workbench-output]").inputValue()).startsWith("keyword,"), "keyword workflow must export a mapped Contextter CSV header");
+  check((await page.locator("[data-keyword-review-summary]").textContent()).includes("duplicates removed"), "keyword workflow must explain removed duplicates");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword workflow must not create a request");
+
+  await page.goto(origin + "/workflows/build-clean-crawl-list", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/workflows/build-clean-crawl-list");
+  check((await page.locator(".workflow-progress li").count()) === 4, "crawl workflow must show its four-step sequence");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator('[data-crawl-example="sitemap"]').click();
+  check((await page.locator("[data-crawl-output]").inputValue()) === "https://example.com/\nhttps://example.com/about\nhttps://example.com/products", "crawl workflow must extract sitemap loc values and apply the selected safe defaults");
+  check((await page.locator("[data-crawl-hosts] tr").count()) === 1, "crawl workflow must group the output by host");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "crawl workflow must not create a request");
 
   await page.goto(origin + "/workflows/debug-indexability", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/debug-indexability");
@@ -158,6 +183,16 @@ async function runTools(browser) {
   await page.locator("[data-index-meta]").selectOption("noindex");
   check((await page.locator("[data-index-verdict]").textContent()).includes("noindex"), "indexability workflow must reject a noindex directive");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "indexability workflow must not create a request");
+
+  await page.goto(origin + "/workflows/validate-mcp-message", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/workflows/validate-mcp-message");
+  check((await page.locator(".workflow-progress li").count()) === 4, "MCP workflow must show its four-step sequence");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator('[data-mcp-lab-example="request"]').click();
+  check((await page.locator("[data-mcp-lab-corrected]").inputValue()).includes('"jsonrpc": "2.0"'), "MCP workflow must propose the missing JSON-RPC version");
+  await page.locator('[data-mcp-lab-example="response"]').click();
+  check((await page.locator("[data-mcp-pair-checks]").textContent()).includes("Request and response ids match") && (await page.locator("[data-mcp-pair-checks]").textContent()).includes("Check"), "MCP workflow must flag mismatched request and response IDs");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP workflow must not create a request");
 
   await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/url-list-normalizer");
@@ -283,7 +318,7 @@ async function captureConceptViewports(browser) {
       consoleErrors: 0,
       externalRequests: 0,
       checkedTools: 9,
-      checkedWorkflows: 2,
+      checkedWorkflows: 4,
     }, null, 2));
   } finally {
     await browser.close();

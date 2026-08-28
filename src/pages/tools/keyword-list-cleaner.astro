@@ -60,6 +60,7 @@ const toolSchema = {
     relatedIntro="Use another cleaner when the next input is a URL set or structured JSON."
     sources={[
       { label: "RFC 4180: Common Format and MIME Type for CSV Files", href: "https://www.rfc-editor.org/info/rfc4180/", note: "Reference for quoted and comma-separated CSV fields." },
+      { label: "Workbench core contract · 28 August 2026", href: "/field-tests/workbench-core-contract", note: "Executable coverage for column mapping, cleanup, deduplication, and export headers." },
     ]}
     related={[
       { label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Prepare the crawl targets behind a keyword set." },
@@ -74,6 +75,8 @@ const toolSchema = {
     cta="Open the keyword workflow"
     internal
   />
+
+  <WorkflowLink title="Read the keyword import guide" description="Learn which cleanup rules are safe, which columns to retain, and how to audit removed rows." href="/guides/clean-keyword-import-files" cta="Open the guide" internal />
 
   <script is:inline src="/keyword-list-cleaner.js" defer></script>
 </BaseLayout>

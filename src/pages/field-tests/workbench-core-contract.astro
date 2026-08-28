@@ -1,0 +1,75 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import resultJson from "../../../reports/field-tests/workbench-core-contract-2026-08-28.json";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const result: any = resultJson;
+const cases: any[] = result.cases ?? [];
+const limits: string[] = result.limits ?? [];
+const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Berlin" }) : "Evidence capture pending";
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "/field-tests" }, { name: "Workbench Core Contract", path: "/field-tests/workbench-core-contract" }];
+---
+
+<BaseLayout title="Workbench Core Contract" description="Reproduce the parsing and decision contracts behind the keyword, crawl-list, robots, indexability, and MCP workbenches." schemaType="TechArticle" datePublished="2026-08-28" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="FT-04" label="Browser-local workbench core" title="Do the main SEO and MCP tools match their declared edge cases?" intro="One runner imports the same public core used by the workflow pages. It checks multi-column keyword cleanup, sitemap URL normalization, robots rule selection, noindex diagnosis, and MCP fixture correction." />
+
+  <section class="test-verdict section-rule">
+    <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
+    <p>All five deterministic cases matched their declared outputs. The runner makes no live network request and does not treat a local pass as proof that a remote page, crawler, or MCP server behaves the same way.</p>
+  </section>
+
+  <section class="test-layout section-rule">
+    <aside class="test-rail">
+      <span class="section-label">Evidence record</span>
+      <dl>
+        <div><dt>Captured</dt><dd>{captured}</dd></div>
+        <div><dt>Editor</dt><dd>{result.editor ?? "Matthias Ramahi"}</dd></div>
+        <div><dt>Technical review</dt><dd>{result.technicalReview ?? "Not independently reviewed"}</dd></div>
+        <div><dt>Cases</dt><dd>{cases.length}</dd></div>
+      </dl>
+    </aside>
+    <div class="test-body">
+      <section>
+        <span class="section-label">Question and method</span>
+        <h2>The runner imports the production core.</h2>
+        <p>The fixtures call the exact functions loaded by the complete workflow pages. Assertions cover the output and the failure boundary; they do not repeat a second implementation inside the test.</p>
+        <pre class="command-block"><code>{result.command ?? "corepack pnpm field-test:workbench"}</code></pre>
+      </section>
+
+      <section>
+        <span class="section-label">Observed cases</span>
+        <ul class="assertion-list">
+          {cases.map((testCase) => <li><span>{testCase.question}</span><strong>{testCase.status === "passed" ? "PASS" : "FAIL"}</strong></li>)}
+        </ul>
+      </section>
+
+      <section>
+        <span class="section-label">Locked environment</span>
+        <div class="metric-grid">
+          <div><small>Cases</small><strong>{cases.length}</strong></div>
+          <div><small>Node</small><strong>{result.environment?.node ?? "v24.x"}</strong></div>
+          <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"}</strong></div>
+          <div><small>External requests</small><strong>0</strong></div>
+        </div>
+      </section>
+
+      <section>
+        <span class="section-label">Limits</span>
+        <h2>A fixture is not a live crawl.</h2>
+        <ul class="limit-list">{limits.map((limit) => <li>{limit}</li>)}</ul>
+      </section>
+
+      <section>
+        <span class="section-label">Reproduce</span>
+        <p>Run the saved contract, or recapture the dated JSON after intentionally reviewing a core change.</p>
+        <pre class="command-block"><code>corepack pnpm field-test:workbench:capture</code></pre>
+        <div class="action-row">
+          <a class="action action-dark" href="https://github.com/lia-xim/devawesome.io/blob/main/scripts/field-tests/workbench-core-contract.mjs">Inspect the runner <span class="action-arrow" aria-hidden="true">↗</span></a>
+          <a class="action action-signal" href="/workflows">Use the tested workflows <span class="action-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>

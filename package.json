@@ -19,7 +19,9 @@
     "field-test:pnpm:capture": "node scripts/field-tests/pnpm-frozen-lockfile.mjs --capture",
     "field-test:receipt": "node scripts/field-tests/evidence-receipt-contract.mjs",
     "field-test:receipt:capture": "node scripts/field-tests/evidence-receipt-contract.mjs --capture",
-    "verify": "pnpm build && pnpm field-test:astro && pnpm field-test:pnpm && pnpm field-test:receipt && pnpm qa"
+    "field-test:workbench": "node scripts/field-tests/workbench-core-contract.mjs",
+    "field-test:workbench:capture": "node scripts/field-tests/workbench-core-contract.mjs --capture",
+    "verify": "pnpm build && pnpm field-test:astro && pnpm field-test:pnpm && pnpm field-test:receipt && pnpm field-test:workbench && pnpm qa"
   },
   "dependencies": {
     "astro": "7.2.1"

@@ -1,0 +1,38 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Guides", path: "/guides" },
+  { name: "Clean a keyword import file", path: "/guides/clean-keyword-import-files" },
+];
+const howTo = {
+  "@type": "HowTo",
+  name: "Clean a keyword import file without losing useful columns",
+  step: ["Inspect the source", "Map the keyword column", "Apply narrow cleanup rules", "Review removals", "Export for the destination"].map((name) => ({ "@type": "HowToStep", name })),
+};
+---
+
+<BaseLayout title="How to Clean a Keyword Import File" description="Map, clean, review, and export a keyword CSV without losing the columns needed by the destination tool." canonicalPath="/guides/clean-keyword-import-files" schemaType="TechArticle" schemaMainEntity={howTo} datePublished="2026-08-28" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
+  <Breadcrumbs items={breadcrumbs} />
+  <PageIntro number="G2" label="Keyword data guide" title="Clean the keyword column. Keep the data you still need." intro="A good import cleanup removes formatting noise and duplicate keyword rows without flattening a useful spreadsheet into a text list." />
+
+  <section class="guide-lede section-rule">
+    <div><span class="section-label">The decision</span><h2>Map first. Clean second.</h2></div>
+    <div><p>Start by choosing which column contains the keyword and which supporting columns must survive. Then normalize only the keyword values. Search volume, list names, language, intent, or custom tags may be needed by the receiving product even when the keyword text itself needs cleanup.</p><div class="action-row"><a class="action action-signal" href="/workflows/prepare-keyword-import">Open the import workbench <span class="action-arrow" aria-hidden="true">→</span></a><a class="action action-dark" href="/field-tests/workbench-core-contract">Inspect the contract test <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
+  </section>
+
+  <ol class="guide-steps">
+    <li><div><small>01 / Source</small><h2>Find the real table shape.</h2></div><div><p>Check whether the source uses commas, tabs, semicolons, pipes, or one item per line. Quoted CSV fields can contain commas, so splitting every comma blindly can corrupt a keyword or supporting field.</p><p class="guide-check"><strong>Before cleanup:</strong> identify the separator, header row, keyword column, and columns required after import.</p></div></li>
+    <li><div><small>02 / Mapping</small><h2>Name the keyword column explicitly.</h2></div><div><p>Do not assume the first column is the keyword. Crawler and SEO exports often start with an ID, URL, date, or project name. Preview several rows before choosing the field and keep only the additional columns with a clear downstream job.</p></div></li>
+    <li><div><small>03 / Cleanup</small><h2>Remove presentation noise, not meaning.</h2></div><div><p>Whitespace, list numbering, blank separator rows, and accidental duplicate capitalization are usually safe cleanup targets. Punctuation inside a phrase, accents, hyphens, numbers, and slashes can carry meaning. Do not remove them with a generic “special character” rule.</p><p class="guide-check"><strong>Safe default:</strong> trim edges, collapse repeated spaces, remove obvious bullet prefixes, and deduplicate case-insensitively while retaining the first spelling.</p></div></li>
+    <li><div><small>04 / Review</small><h2>Make every loss countable.</h2></div><div><p>Compare input rows, valid keyword rows, duplicate removals, noise removals, and final rows. Inspect a preview with the retained columns. If a tool cannot explain why a row disappeared, do not trust the export with a large file.</p><p>The <a href="/field-tests/workbench-core-contract">workbench core contract</a> exercises multi-column mapping, duplicate handling, noise removal, and the Contextter-compatible keyword header against the same production module used in the browser.</p></div></li>
+    <li><div><small>05 / Export</small><h2>Choose the next system, then the format.</h2></div><div><p>Use one keyword per line for a plain queue, CSV when columns must survive, and JSON when another script needs explicit field names. The Contextter CSV option names the selected field <code>keyword</code> and retains selected supporting columns for manual mapping; it does not upload or import the file.</p></div></li>
+  </ol>
+
+  <section class="source-panel section-rule"><div><span class="section-label">Primary references</span><h2>Format and product contracts.</h2></div><ul><li><a href="https://www.rfc-editor.org/info/rfc4180/">RFC 4180: Common Format and MIME Type for CSV Files <span aria-hidden="true">↗</span></a><p>The baseline reference for comma-separated records, headers, and quoted fields.</p></li><li><a href="/field-tests/workbench-core-contract">DevAwesome workbench core contract</a><p>The executable local assertions behind mapping, cleanup, deduplication, and export behavior.</p></li></ul></section>
+
+  <section class="editorial-section"><div class="editorial-side"><span class="section-label">Boundary</span><h2>Cleanup cannot choose your keyword strategy.</h2><p>The workflow does not calculate volume, intent, difficulty, clustering, or ranking value. It prepares a reviewable input for a separate analysis.</p></div><div class="editorial-main"><h2>One result should be easy to audit.</h2><p>Keep the raw source until the destination has accepted the import. A clean export is useful; it is not a replacement for the original evidence.</p></div></section>
+</BaseLayout>

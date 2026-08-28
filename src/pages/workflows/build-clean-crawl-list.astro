@@ -1,5 +1,6 @@
 ---
 import ArrowIcon from "../../components/ArrowIcon.astro";
+import CrawlListWorkbench from "../../components/CrawlListWorkbench.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -12,7 +13,7 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Build a clean crawl list",
-  step: ["Normalize URLs", "Review invalid entries", "Export the crawl list"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Extract URLs", "Choose normalization rules", "Review hosts and exceptions", "Export the crawl list"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
@@ -21,32 +22,12 @@ const howTo = {
     <a href="/workflows">← All workflows</a>
     <h1>Build a clean crawl list</h1>
     <p>Normalize copied URLs, expose invalid entries, and export one stable list before a crawler touches it.</p>
-    <WorkflowProgress steps={["Normalize URLs", "Review exceptions", "Export the list"]} />
+    <WorkflowProgress steps={["Extract URLs", "Choose rules", "Review exceptions", "Export the list"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="Crawl list workbench">
     <div class="workflow-local-note"><strong>No crawl.</strong><span>The browser parses your text without requesting any URL.</span></div>
-    <div class="list-workbench" data-url-normalizer>
-      <div class="workbench-bar"><strong>URL list normalizer</strong><div><button type="button" data-url-clear>Clear</button><button type="button" data-url-copy disabled>Copy</button><button type="button" data-url-download disabled>Download</button></div></div>
-      <div class="list-panes">
-        <label><span>Paste URLs</span><textarea rows="14" maxlength="1000000" spellcheck="false" data-url-input>1. https://EXAMPLE.com/
-https://example.com
-example.com/page/#top | https://example.com/page?utm_source=news
-[About](https://example.com/about/)
-not a url</textarea></label>
-        <label><span>Normalized crawl list</span><textarea rows="14" readonly spellcheck="false" data-url-output></textarea></label>
-      </div>
-      <div class="list-control-panel">
-        <div class="list-control-grid list-control-grid-three">
-          <label class="list-select-field"><span>Read the input as</span><select data-url-input-mode><option value="smart">Auto-detect separators</option><option value="lines">One URL per line</option><option value="comma">Comma-separated values</option></select><small>Use Lines when a URL contains commas or semicolons.</small></label>
-          <label class="list-select-field"><span>Query parameters</span><select data-url-query-mode><option value="tracking" selected>Remove common tracking parameters</option><option value="keep">Keep all parameters</option><option value="remove">Remove the full query string</option></select><small>Review parameters before removing them.</small></label>
-          <fieldset class="format-picker"><legend>Output format</legend><div><label><input type="radio" name="workflow-url-format" value="lines" checked data-url-format /><span>Lines</span></label><label><input type="radio" name="workflow-url-format" value="comma" data-url-format /><span>Commas</span></label><label><input type="radio" name="workflow-url-format" value="json" data-url-format /><span>JSON</span></label></div></fieldset>
-        </div>
-        <div class="cleanup-options"><label><input type="checkbox" checked data-url-add-https /> Add https:// to bare domains</label><label><input type="checkbox" checked data-url-strip-fragment /> Remove #fragments</label><label><input type="checkbox" checked data-url-strip-trailing /> Remove trailing slashes from paths</label></div>
-        <div class="list-action-row"><p data-url-status aria-live="polite">Ready</p><button class="toolbox-button toolbox-button-small" type="button" data-url-normalize>Normalize list</button></div>
-      </div>
-      <details class="invalid-list" data-url-invalid-wrap hidden><summary data-url-invalid-summary>Invalid entries</summary><ul data-url-invalid></ul></details>
-    </div>
+    <CrawlListWorkbench />
   </section>
 
   <section class="workflow-scenario-list" aria-labelledby="crawl-scenarios-title"><h2 id="crawl-scenarios-title">Use this workflow when…</h2><ul><li>A crawl export contains the same page in several URL forms.</li><li>You copied URLs from a spreadsheet, sitemap, Markdown file, or issue.</li><li>You need to separate invalid text before a crawl or import.</li></ul></section>
@@ -80,6 +61,8 @@ https://example.com/about</pre></div>
 
   <WorkflowHandoff title="Check one URL live" description="AnalyseSpider requests one public URL and reports the response, directives, links, and page signals it receives." href="https://analysespider.com/" cta="Open AnalyseSpider" disclosure="DevAwesome and AnalyseSpider are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
 
-  <section class="workflow-related" aria-labelledby="crawl-related-title"><div><h2 id="crawl-related-title">Related tools and workflow</h2><p>Use the cleaned list as the input for the next distinct check.</p></div><div><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>Test a crawler and path against pasted rules.</span><ArrowIcon /></a><a href="/workflows/debug-indexability"><strong>Debug indexability</strong><span>Combine the signals for one page.</span><ArrowIcon /></a><a href="/tools/developer-tool-test-plan"><strong>Simple test case builder</strong><span>Record expected status, redirect, or canonical behavior.</span><ArrowIcon /></a></div></section>
-  <script is:inline src="/url-list-normalizer.js" defer></script>
+  <WorkflowHandoff title="Run the complete list as a site audit" description="Contextter Site Audit is the next step when the reviewed list belongs to a larger crawl, prioritization, and monitoring workflow." href="https://contextter.com/features/site-audit" cta="Open Contextter Site Audit" disclosure="DevAwesome and Contextter are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
+
+  <section class="workflow-related" aria-labelledby="crawl-related-title"><div><h2 id="crawl-related-title">Related tools and guide</h2><p>Use the cleaned list as the input for the next distinct check.</p></div><div><a href="/guides/prepare-crawl-list"><strong>Crawl-list guide</strong><span>Understand safe normalization, ambiguous variants, and the live-check boundary.</span><ArrowIcon /></a><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>Test a crawler and path against pasted rules.</span><ArrowIcon /></a><a href="/workflows/debug-indexability"><strong>Debug indexability</strong><span>Combine the signals for one page.</span><ArrowIcon /></a></div></section>
+  <script is:inline type="module" src="/crawl-list-workbench.js"></script>
 </BaseLayout>

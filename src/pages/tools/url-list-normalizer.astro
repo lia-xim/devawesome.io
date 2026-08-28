@@ -125,6 +125,7 @@ not a url</textarea>
     relatedIntro="Run a live crawl check next, or clean the search terms attached to the URL set."
     sources={[
       { label: "WHATWG URL Standard", href: "https://url.spec.whatwg.org/", note: "The parsing and serialization model used by modern browsers." },
+      { label: "Workbench core contract · 28 August 2026", href: "/field-tests/workbench-core-contract", note: "Executable coverage for sitemap extraction, parameters, invalid rows, deduplication, and host grouping." },
     ]}
     related={[
       { label: "Keyword list cleaner", href: "/tools/keyword-list-cleaner", note: "Clean the queries associated with a URL set." },
@@ -139,6 +140,8 @@ not a url</textarea>
     cta="Open the crawl-list workflow"
     internal
   />
+
+  <WorkflowLink title="Read the crawl-list guide" description="Learn where normalization is safe, where URL variants remain ambiguous, and what still requires a live request." href="/guides/prepare-crawl-list" cta="Open the guide" internal />
 
   <script is:inline src="/url-list-normalizer.js" defer></script>
 </BaseLayout>

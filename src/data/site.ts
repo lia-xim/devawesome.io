@@ -25,7 +25,7 @@ export const site = {
     phoneHref: "+4917642449858",
   },
   launchGates: {
-    publishedFieldTests: 3,
+    publishedFieldTests: 4,
     minimumFieldTests: 2,
     namedEditor: "Matthias Ramahi",
     namedTechnicalReviewer: null,
