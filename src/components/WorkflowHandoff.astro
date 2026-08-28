@@ -1,0 +1,34 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+  disclosure: string;
+}
+
+const { title, description, href, cta, disclosure } = Astro.props;
+---
+
+<section class="workflow-handoff" aria-labelledby="workflow-handoff-title">
+  <div>
+    <h2 id="workflow-handoff-title">Where the result can go</h2>
+    <p>Download the result first. It stays useful without another product.</p>
+  </div>
+  <div class="handoff-options">
+    <div>
+      <span class="handoff-number">1</span>
+      <strong>Keep the file</strong>
+      <p>Copy or download the cleaned output and use it in any compatible workflow.</p>
+    </div>
+    <div>
+      <span class="handoff-number">2</span>
+      <strong>{title}</strong>
+      <p>{description}</p>
+      <a href={href}>{cta}<ArrowIcon /></a>
+      <small>{disclosure}</small>
+    </div>
+  </div>
+</section>

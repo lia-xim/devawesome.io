@@ -1,0 +1,71 @@
+---
+import ArrowIcon from "../../components/ArrowIcon.astro";
+import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
+import WorkflowProgress from "../../components/WorkflowProgress.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Workflows", path: "/workflows" },
+  { name: "Debug indexability", path: "/workflows/debug-indexability" },
+];
+const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability Debugger", applicationCategory: "BusinessApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
+---
+
+<BaseLayout title="Debug Page Indexability" description="Combine HTTP status, canonical, robots access, and index directives into a clear technical eligibility verdict." canonicalPath="/workflows/debug-indexability" schemaMainEntity={toolSchema} breadcrumbs={breadcrumbs}>
+  <header class="workflow-page-header">
+    <a href="/workflows">← All workflows</a>
+    <h1>Debug indexability</h1>
+    <p>Enter the signals you already observed. The workflow identifies the first technical blocker and explains what the result does not prove.</p>
+    <WorkflowProgress steps={["Enter signals", "Read the conflict", "Verify live"]} />
+  </header>
+
+  <section class="workflow-tool-surface" aria-label="Indexability workbench">
+    <div class="workflow-local-note"><strong>Manual input.</strong><span>This page does not fetch a URL or query Google Search Console.</span></div>
+    <div class="indexability-workbench" data-indexability-workflow data-state="eligible">
+      <div class="indexability-fields">
+        <div><h2>Signals you observed</h2><p>Use the final response and rendered directives, not assumptions from a template.</p></div>
+        <label><span>HTTP response</span><select data-index-status><option value="200">200 OK</option><option value="redirect">3xx redirect</option><option value="404">404 / 410</option><option value="error">Other 4xx / 5xx</option></select></label>
+        <label><span>Canonical</span><select data-index-canonical><option value="self">Self-referencing</option><option value="other">Points to another URL</option><option value="missing">Missing</option></select></label>
+        <label><span>Meta robots</span><select data-index-meta><option value="index">Index or absent</option><option value="noindex">Noindex</option></select></label>
+        <label><span>X-Robots-Tag</span><select data-index-header><option value="index">Index or absent</option><option value="noindex">Noindex</option></select></label>
+        <label><span>Robots.txt access</span><select data-index-robots><option value="allowed">Allowed</option><option value="blocked">Blocked</option></select></label>
+      </div>
+      <div class="indexability-result" aria-live="polite">
+        <span>Technical verdict</span>
+        <h2 data-index-verdict>Technically eligible</h2>
+        <p data-index-explanation></p>
+        <dl data-index-checks></dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="workflow-scenario-list" aria-labelledby="index-scenarios-title"><h2 id="index-scenarios-title">Use this workflow when…</h2><ul><li>A page is missing from search and you need to separate eligibility from ranking.</li><li>Canonical, robots.txt, and noindex signals appear to contradict one another.</li><li>You need a concise diagnosis before opening a crawler or Search Console.</li></ul></section>
+
+  <section class="workflow-explanation" aria-labelledby="index-order-title">
+    <div class="workflow-section-heading"><h2 id="index-order-title">Read the signals in this order</h2><p>Later signals cannot repair a response that is not an indexable document.</p></div>
+    <ol class="decision-order">
+      <li><span>1</span><div><strong>Response</strong><p>Confirm that the tested URL returns the final 200 document rather than a redirect or error.</p></div></li>
+      <li><span>2</span><div><strong>Index directives</strong><p>Check both rendered meta robots and the final HTTP X-Robots-Tag.</p></div></li>
+      <li><span>3</span><div><strong>Crawl access</strong><p>A blocked crawler may not see changed directives on the page.</p></div></li>
+      <li><span>4</span><div><strong>Canonical</strong><p>A canonical is a consolidation signal, not a command or an indexing guarantee.</p></div></li>
+    </ol>
+    <p class="workflow-boundary">“Technically eligible” does not mean indexed, ranking, or selected as canonical. Search demand, quality, duplication, discovery, and search-engine processing remain outside this local check.</p>
+  </section>
+
+  <section class="edge-case-section" aria-labelledby="index-edge-title">
+    <div class="workflow-section-heading"><h2 id="index-edge-title">Common conflicts</h2><p>The workflow calls these out because a single green signal can be misleading.</p></div>
+    <div class="edge-case-table" role="table" aria-label="Indexability conflicts">
+      <div role="row"><strong role="columnheader">Signals</strong><strong role="columnheader">What it means</strong><strong role="columnheader">Next check</strong></div>
+      <div role="row"><code role="cell">200 + noindex</code><span role="cell">Crawlable document, not eligible</span><span role="cell">Find the directive source</span></div>
+      <div role="row"><code role="cell">robots blocked + noindex</code><span role="cell">Crawler may not see the noindex</span><span role="cell">Allow crawl before relying on removal</span></div>
+      <div role="row"><code role="cell">200 + canonical elsewhere</code><span role="cell">Signals request consolidation</span><span role="cell">Compare content and internal links</span></div>
+      <div role="row"><code role="cell">redirect + self-canonical</code><span role="cell">Canonical on the old response is irrelevant</span><span role="cell">Inspect the final destination</span></div>
+    </div>
+  </section>
+
+  <WorkflowHandoff title="Fetch the live page" description="AnalyseSpider can request one public URL and show the response and directives it actually receives." href="https://analysespider.com/" cta="Check one live URL" disclosure="DevAwesome and AnalyseSpider are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
+
+  <section class="workflow-related" aria-labelledby="index-related-title"><div><h2 id="index-related-title">Related tools</h2><p>Use the focused tool when one signal needs closer inspection.</p></div><div><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>See which pasted rule wins for one crawler and path.</span><ArrowIcon /></a><a href="/tools/serp-snippet-preview"><strong>SERP snippet preview</strong><span>Review title and description after eligibility is clear.</span><ArrowIcon /></a><a href="/workflows/build-clean-crawl-list"><strong>Build a clean crawl list</strong><span>Prepare a larger URL set before testing.</span><ArrowIcon /></a></div></section>
+  <script is:inline src="/indexability-workflow.js" defer></script>
+</BaseLayout>

@@ -5,9 +5,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const guideList = {
   "@type": "ItemList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "How to run a reproducible developer tool test", url: "https://devawesome.io/guides/reproducible-developer-tool-tests" },
-    { "@type": "ListItem", position: 2, name: "DevAwesome methodology", url: "https://devawesome.io/methodology" },
-    { "@type": "ListItem", position: 3, name: "Published field tests", url: "https://devawesome.io/field-tests" },
+    { "@type": "ListItem", position: 1, name: "Task workflows", url: "https://devawesome.io/workflows" },
+    { "@type": "ListItem", position: 2, name: "How to run a reproducible developer tool test", url: "https://devawesome.io/guides/reproducible-developer-tool-tests" },
+    { "@type": "ListItem", position: 3, name: "DevAwesome methodology", url: "https://devawesome.io/methodology" },
+    { "@type": "ListItem", position: 4, name: "Published field tests", url: "https://devawesome.io/field-tests" },
   ],
 };
 ---
@@ -30,6 +31,11 @@ const guideList = {
   <section class="guide-directory" aria-labelledby="guide-directory-title">
     <h2 id="guide-directory-title">Start with a real task</h2>
     <div>
+      <a href="/workflows">
+        <strong>Follow a complete task workflow</strong>
+        <span>Move from messy input to a reviewed, portable result.</span>
+        <ArrowIcon />
+      </a>
       <a href="/guides/reproducible-developer-tool-tests">
         <strong>Run a reproducible developer tool test</strong>
         <span>Define the claim, environment, failure case, evidence, and review boundary.</span>

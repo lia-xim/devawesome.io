@@ -1,0 +1,60 @@
+---
+import ArrowIcon from "../../components/ArrowIcon.astro";
+import McpJsonRpcValidator from "../../components/McpJsonRpcValidator.astro";
+import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
+import WorkflowProgress from "../../components/WorkflowProgress.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Workflows", path: "/workflows" },
+  { name: "Validate an MCP message", path: "/workflows/validate-mcp-message" },
+];
+const howTo = {
+  "@type": "HowTo",
+  name: "Validate an MCP message",
+  step: ["Identify the message", "Check the structure", "Record the next test"].map((name) => ({ "@type": "HowToStep", name })),
+};
+---
+
+<BaseLayout title="Validate an MCP Message" description="Check an MCP JSON message, understand its structure, and turn the result into a repeatable test case." canonicalPath="/workflows/validate-mcp-message" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
+  <header class="workflow-page-header">
+    <a href="/workflows">← All workflows</a>
+    <h1>Validate an MCP message</h1>
+    <p>Start with one copied message. Identify its role, fix the core JSON-RPC or tool-definition shape, and write down what still needs an SDK test.</p>
+    <WorkflowProgress steps={["Identify the message", "Check the structure", "Record the next test"]} />
+  </header>
+
+  <section class="workflow-tool-surface" aria-label="MCP message workbench">
+    <div class="workflow-local-note"><strong>Remove secrets first.</strong><span>Validation stays in this browser tab and does not contact an MCP server.</span></div>
+    <McpJsonRpcValidator />
+  </section>
+
+  <section class="workflow-scenario-list" aria-labelledby="mcp-scenarios-title"><h2 id="mcp-scenarios-title">Use this workflow when…</h2><ul><li>MCP Inspector shows a message but the failure is not obvious.</li><li>An SDK test or debug log contains a tools/list or tools/call payload.</li><li>You need to separate JSON-RPC envelope errors from runtime, transport, auth, or tool errors.</li></ul></section>
+
+  <section class="workflow-explanation" aria-labelledby="mcp-message-title">
+    <div class="workflow-section-heading"><h2 id="mcp-message-title">Identify the message before fixing it</h2><p>A request, response, tools/list result, and single tool definition have different required fields.</p></div>
+    <div class="message-type-rail">
+      <div><span>Request</span><code>jsonrpc + method + id?</code><p>Check the method and whether a response is expected.</p></div>
+      <div><span>Response</span><code>jsonrpc + id + result/error</code><p>A response cannot contain both result and error.</p></div>
+      <div><span>Tool definition</span><code>name + inputSchema</code><p>The schema describes the arguments accepted by that tool.</p></div>
+    </div>
+    <p class="workflow-boundary">A structurally valid message can still fail because of protocol-version differences, transport framing, authorization, server state, invalid arguments, or tool execution. Run the corrected message through the exact client and server versions you use.</p>
+  </section>
+
+  <section class="edge-case-section" aria-labelledby="mcp-edge-title">
+    <div class="workflow-section-heading"><h2 id="mcp-edge-title">Check these failure boundaries</h2><p>The local validator deliberately stops before transport and execution.</p></div>
+    <div class="edge-case-table" role="table" aria-label="MCP validation boundaries">
+      <div role="row"><strong role="columnheader">Observed result</strong><strong role="columnheader">This workflow checks</strong><strong role="columnheader">Test elsewhere</strong></div>
+      <div role="row"><span role="cell">JSON parse error</span><span role="cell">JSON syntax</span><span role="cell">Nothing until syntax is fixed</span></div>
+      <div role="row"><span role="cell">Missing method</span><span role="cell">Request envelope</span><span role="cell">Client serialization</span></div>
+      <div role="row"><span role="cell">Tool has no inputSchema</span><span role="cell">Tool definition</span><span role="cell">SDK schema compatibility</span></div>
+      <div role="row"><span role="cell">Valid message, runtime failure</span><span role="cell">Core structure only</span><span role="cell">Transport, auth, server, and tool code</span></div>
+    </div>
+  </section>
+
+  <WorkflowHandoff title="Read the versioned SEO MCP reference" description="seo-mcp.de covers capability design, permission boundaries, integration choices, and version-specific implementation details." href="https://seo-mcp.de/" cta="Open the SEO MCP reference" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation." />
+
+  <section class="workflow-related" aria-labelledby="mcp-related-title"><div><h2 id="mcp-related-title">Related tools and guide</h2><p>Fix syntax first, then preserve the expected behavior as a test.</p></div><div><a href="/tools/json-formatter"><strong>JSON formatter</strong><span>Find and repair JSON syntax errors.</span><ArrowIcon /></a><a href="/tools/developer-tool-test-plan"><strong>Simple test case builder</strong><span>Record one expected MCP response or failure.</span><ArrowIcon /></a><a href="/guides/reproducible-developer-tool-tests"><strong>Reproducible tool tests</strong><span>Publish a bounded result with versions and failure cases.</span><ArrowIcon /></a></div></section>
+  <script is:inline src="/mcp-json-rpc-validator.js" defer></script>
+</BaseLayout>

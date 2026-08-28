@@ -1,0 +1,93 @@
+---
+import ArrowIcon from "../../components/ArrowIcon.astro";
+import KeywordListCleaner from "../../components/KeywordListCleaner.astro";
+import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
+import WorkflowProgress from "../../components/WorkflowProgress.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Workflows", path: "/workflows" },
+  { name: "Prepare a keyword import", path: "/workflows/prepare-keyword-import" },
+];
+const howTo = {
+  "@type": "HowTo",
+  name: "Prepare a keyword import",
+  step: ["Clean the list", "Review what changed", "Export the result"].map((name) => ({ "@type": "HowToStep", name })),
+};
+---
+
+<BaseLayout title="Prepare a Keyword Import" description="Clean a copied keyword list or CSV export, review the changes, and export lines, CSV, or JSON locally." canonicalPath="/workflows/prepare-keyword-import" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
+  <header class="workflow-page-header">
+    <a href="/workflows">← All workflows</a>
+    <h1>Prepare a keyword import</h1>
+    <p>Turn a copied list, CSV export, or spreadsheet column into a clean file you can review and reuse.</p>
+    <WorkflowProgress steps={["Clean the list", "Review changes", "Export the result"]} />
+  </header>
+
+  <section class="workflow-tool-surface" aria-label="Keyword import workbench">
+    <div class="workflow-local-note"><strong>Runs locally.</strong><span>No upload, account, analytics, or saved draft.</span></div>
+    <KeywordListCleaner />
+  </section>
+
+  <section class="workflow-scenario-list" aria-labelledby="keyword-scenarios-title">
+    <h2 id="keyword-scenarios-title">Use this workflow when…</h2>
+    <ul>
+      <li>You copied keywords from a spreadsheet or notes file and need one clean list.</li>
+      <li>A CSV export contains repeated entries, blank cells, bullets, or numbering.</li>
+      <li>You need lines, comma-separated values, or JSON for another tool.</li>
+    </ul>
+  </section>
+
+  <section class="workflow-explanation" aria-labelledby="keyword-changes-title">
+    <div class="workflow-section-heading"><h2 id="keyword-changes-title">What changes, exactly?</h2><p>The cleaner removes only the noise you select. It does not invent SEO data.</p></div>
+    <div class="workflow-comparison">
+      <div><span>Before · 7 entries</span><pre>1. technical seo audit
+"keyword clustering"
+Technical SEO Audit
+/
+search intent
+keyword clustering
+site audit</pre></div>
+      <dl>
+        <div><dt>Unique output</dt><dd>4</dd></div>
+        <div><dt>Duplicates removed</dt><dd>2</dd></div>
+        <div><dt>Noise removed</dt><dd>1</dd></div>
+      </dl>
+      <div class="is-result"><span>After · 4 keywords</span><pre>technical seo audit
+keyword clustering
+search intent
+site audit</pre></div>
+    </div>
+    <p class="workflow-boundary">Search volume, intent, difficulty, rankings, and clustering are not inferred or added. This workflow only cleans and standardizes the supplied text.</p>
+  </section>
+
+  <section class="edge-case-section" aria-labelledby="keyword-edge-title">
+    <div class="workflow-section-heading"><h2 id="keyword-edge-title">Check these edge cases</h2><p>Use the input mode deliberately when punctuation belongs inside a keyword.</p></div>
+    <div class="edge-case-table" role="table" aria-label="Keyword cleaner edge cases">
+      <div role="row"><strong role="columnheader">Edge case</strong><strong role="columnheader">Input</strong><strong role="columnheader">Expected result</strong></div>
+      <div role="row"><span role="cell">Quoted comma</span><code role="cell">"running shoes, women"</code><code role="cell">running shoes, women</code></div>
+      <div role="row"><span role="cell">Slash in a keyword</span><code role="cell">running / jogging shoes</code><code role="cell">Keep in Lines mode</code></div>
+      <div role="row"><span role="cell">Numbered list</span><code role="cell">2) trail running shoes</code><code role="cell">trail running shoes</code></div>
+      <div role="row"><span role="cell">Capitalized duplicate</span><code role="cell">SEO Audit / seo audit</code><code role="cell">Keep the first spelling</code></div>
+    </div>
+  </section>
+
+  <WorkflowHandoff
+    title="Organize and track the list"
+    description="Contextter can take over when you need a shared keyword database, prioritization, or ongoing tracking."
+    href="https://contextter.com/features/keyword-database"
+    cta="Continue in Contextter"
+    disclosure="DevAwesome and Contextter are operated by Matthias Ramahi. This is a related workflow handoff, not an independent recommendation."
+  />
+
+  <section class="workflow-related" aria-labelledby="keyword-related-title">
+    <div><h2 id="keyword-related-title">Related tools and guide</h2><p>Keep moving only when the next job is different.</p></div>
+    <div>
+      <a href="/tools/url-list-normalizer"><strong>URL list normalizer</strong><span>Prepare the pages behind the keyword set.</span><ArrowIcon /></a>
+      <a href="/tools/json-formatter"><strong>JSON formatter</strong><span>Inspect or repair structured export data.</span><ArrowIcon /></a>
+      <a href="/guides/reproducible-developer-tool-tests"><strong>Reproducible tool tests</strong><span>Turn a critical edge case into a repeatable check.</span><ArrowIcon /></a>
+    </div>
+  </section>
+  <script is:inline src="/keyword-list-cleaner.js" defer></script>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import { workflows } from "../data/workflows";
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<div class:list={["workflow-list", compact && "workflow-list-compact"]}>
+  {workflows.map((workflow, index) => (
+    <a href={workflow.path}>
+      <span class="workflow-number" aria-hidden="true">{index + 1}</span>
+      <strong>{workflow.name}</strong>
+      <span>{compact ? workflow.description : workflow.shortDescription}</span>
+      <ArrowIcon />
+    </a>
+  ))}
+</div>

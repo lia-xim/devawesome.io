@@ -2,69 +2,91 @@
 import ArrowIcon from "../components/ArrowIcon.astro";
 import KeywordListCleaner from "../components/KeywordListCleaner.astro";
 import ToolDirectory from "../components/ToolDirectory.astro";
+import WorkflowDirectory from "../components/WorkflowDirectory.astro";
+import WorkflowProgress from "../components/WorkflowProgress.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Simple Browser Tools for Developers and SEO Teams"
-  description="Clean SEO data, test robots rules, validate MCP payloads, format JSON, generate UUIDs, and create hashes locally in your browser."
+  title="Browser Workbench for SEO and Developer Data"
+  description="Clean inputs, test technical rules, and export usable SEO or developer data locally in your browser."
   canonicalPath="/"
 >
-  <section class="toolbox-hero" aria-labelledby="home-title">
-    <div class="toolbox-hero-copy">
-      <h1 id="home-title">Simple tools for developers and SEO teams.</h1>
-      <p>Clean SEO data, test crawler rules, validate MCP payloads, format JSON, generate IDs, and create hashes. No signup. No uploads.</p>
+  <section class="workbench-hero" aria-labelledby="home-title">
+    <div class="workbench-hero-copy">
+      <h1 id="home-title">Fix messy SEO and developer data before it reaches your workflow.</h1>
+      <p>Clean inputs, test technical rules, and export a result you can actually use. Everything runs in your browser.</p>
       <div class="toolbox-actions">
-        <a class="toolbox-button" href="#tools">Browse tools <ArrowIcon /></a>
-        <a class="toolbox-button toolbox-button-secondary" href="/tools/keyword-list-cleaner">Clean a keyword list <ArrowIcon /></a>
+        <a class="toolbox-button" href="/workflows">Start with a workflow <ArrowIcon /></a>
+        <a class="workbench-text-link" href="/tools">Browse all tools <ArrowIcon /></a>
       </div>
     </div>
-    <div class="hero-tool-preview">
+    <div class="hero-workflow-preview" aria-label="Keyword cleaning workflow preview">
+      <WorkflowProgress steps={["Paste list", "Clean and review", "Export"]} />
       <KeywordListCleaner compact />
     </div>
   </section>
 
-  <section class="toolbox-section tool-picker" id="tools" aria-labelledby="tools-title">
-    <h2 id="tools-title">Pick one small job</h2>
+  <section class="home-workflow-section" aria-labelledby="workflow-title">
+    <h2 id="workflow-title">Start with the job, not the tool.</h2>
+    <WorkflowDirectory compact />
+  </section>
+
+  <section class="quick-tool-section" aria-labelledby="quick-tools-title">
+    <div class="section-heading-row">
+      <div>
+        <h2 id="quick-tools-title">Quick tools for the small stuff.</h2>
+        <p>Open one focused utility when you already know the exact transformation you need.</p>
+      </div>
+      <a href="/tools">All tools <ArrowIcon /></a>
+    </div>
     <ToolDirectory />
   </section>
 
-  <section class="trust-strip" aria-label="How the tools handle your data">
-    <p>Runs in your browser</p>
-    <p>No signup</p>
-    <p>No analytics</p>
+  <section class="change-example" aria-labelledby="change-example-title">
+    <div class="change-example-heading">
+      <h2 id="change-example-title">A result is useful when you know what changed.</h2>
+      <p>The URL workflow shows the cleaned list and the decisions that produced it. Nothing is crawled in the background.</p>
+    </div>
+    <div class="change-example-panes">
+      <div>
+        <span>Before</span>
+        <pre>https://EXAMPLE.com/
+https://example.com
+https://example.com/page/#top
+https://example.com/page?utm_source=news
+https://example.com/about/</pre>
+      </div>
+      <ArrowIcon />
+      <div class="change-example-after">
+        <span>After · 3 unique URLs</span>
+        <pre>https://example.com/
+https://example.com/page
+https://example.com/about</pre>
+      </div>
+    </div>
+    <p class="change-summary">Duplicate root removed. Host normalized. Fragment, tracking parameter, and trailing path slashes removed.</p>
+    <a class="workbench-text-link" href="/workflows/build-clean-crawl-list">See the crawl-list workflow <ArrowIcon /></a>
   </section>
 
-  <section class="toolbox-section simple-explainer" aria-labelledby="explain-title">
+  <section class="private-band" aria-labelledby="private-title">
+    <div class="private-mark" aria-hidden="true"><span></span></div>
     <div>
-      <h2 id="explain-title">Use the tool first. Check the details when they matter.</h2>
-      <p>Every tool page explains the input, the exact transformation, its limits, and the primary specification behind it.</p>
-    </div>
-    <div class="simple-links">
-      <a href="/guides/reproducible-developer-tool-tests">
-        <strong>Reproducible tool testing</strong>
-        <span>Read the practical guide</span>
-        <ArrowIcon />
-      </a>
-      <a href="/guess-the-programming-language/">
-        <strong>Guess the programming language</strong>
-        <span>Take the quiz</span>
-        <ArrowIcon />
-      </a>
+      <h2 id="private-title">Private by default.</h2>
+      <p>No account, no uploads, no analytics, and no saved input. Your data stays in the current browser tab.</p>
     </div>
   </section>
 
-  <section class="workflow-section" aria-labelledby="workflow-title">
-    <div class="workflow-section-heading">
-      <h2 id="workflow-title">The next step depends on the job.</h2>
-      <p>DevAwesome prepares the input locally. These related tools continue only when you need a live crawl, an AI-search trace, or an ongoing SEO workspace.</p>
+  <section class="evidence-entry" aria-labelledby="evidence-entry-title">
+    <div>
+      <h2 id="evidence-entry-title">Examples, limits, and evidence.</h2>
+      <p>The useful details live next to the job: realistic inputs, edge cases, technical limits, and reproducible tests.</p>
     </div>
-    <div class="workflow-directory">
-      <a href="https://contextter.com/features/keyword-database"><strong>Organize and track a keyword list</strong><span>Contextter Keyword Database</span><ArrowIcon /></a>
-      <a href="https://analysespider.com/"><strong>Check one public URL live</strong><span>AnalyseSpider</span><ArrowIcon /></a>
-      <a href="https://ai-fanout.com/"><strong>Inspect AI search queries and sources</strong><span>AI-Fanout</span><ArrowIcon /></a>
+    <div class="evidence-links">
+      <a href="/guides"><strong>Practical guides</strong><span>Use a method when the decision matters more than the transformation.</span><ArrowIcon /></a>
+      <a href="/workflows"><strong>Tested edge cases</strong><span>See how the main workflows handle messy inputs and ambiguous signals.</span><ArrowIcon /></a>
+      <a href="/field-tests"><strong>Published field tests</strong><span>Inspect the repository fixtures, runners, results, and review limits.</span><ArrowIcon /></a>
     </div>
-    <p class="ownership-disclosure">DevAwesome, AnalyseSpider, AI-Fanout, and Contextter are operated by Matthias Ramahi. These links connect related workflow steps and are not independent recommendations.</p>
   </section>
 
   <script is:inline src="/keyword-list-cleaner.js" defer></script>

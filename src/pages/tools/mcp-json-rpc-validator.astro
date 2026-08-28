@@ -22,6 +22,6 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome MCP JSON-RPC V
     sources={[{ label: "MCP 2025-11-25 tools specification", href: "https://modelcontextprotocol.io/specification/2025-11-25/server/tools", note: "Primary MCP definitions for tools/list, tools/call, and tool results." }, { label: "JSON-RPC 2.0 specification", href: "https://www.jsonrpc.org/specification", note: "Envelope, request, response, and error object rules." }]}
     related={[{ label: "JSON formatter", href: "/tools/json-formatter", note: "Repair JSON syntax before checking the protocol shape." }, { label: "Simple test case builder", href: "/tools/developer-tool-test-plan", note: "Record one expected MCP behavior as a test case." }]}
   />
-  <WorkflowLink title="Read the SEO MCP reference" description="The versioned reference covers SEO-specific capabilities, integration choices, and security after the JSON structure is clean." href="https://seo-mcp.de/" cta="Open the SEO MCP guide" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." />
+  <WorkflowLink title="Finish the MCP validation workflow" description="Identify the message type, check failure boundaries, and record what still needs an SDK or server test." href="/workflows/validate-mcp-message" cta="Open the MCP workflow" internal />
   <script is:inline src="/mcp-json-rpc-validator.js" defer></script>
 </BaseLayout>

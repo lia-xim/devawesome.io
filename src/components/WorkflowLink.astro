@@ -5,9 +5,10 @@ interface Props {
   href: string;
   cta: string;
   disclosure?: string;
+  internal?: boolean;
 }
 
-const { title, description, href, cta, disclosure = "DevAwesome, AnalyseSpider, AI-Fanout, and Contextter are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." } = Astro.props;
+const { title, description, href, cta, internal = false, disclosure = internal ? "" : "DevAwesome, AnalyseSpider, AI-Fanout, and Contextter are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." } = Astro.props;
 ---
 
 <aside class="workflow-link" aria-label={`Next workflow step: ${title}`}>
@@ -15,6 +16,6 @@ const { title, description, href, cta, disclosure = "DevAwesome, AnalyseSpider, 
     <h2>{title}</h2>
     <p>{description}</p>
   </div>
-  <a href={href}>{cta}<span aria-hidden="true">↗</span></a>
-  <p class="ownership-disclosure">{disclosure}</p>
+  <a href={href}>{cta}<span aria-hidden="true">{internal ? "→" : "↗"}</span></a>
+  {disclosure && <p class="ownership-disclosure">{disclosure}</p>}
 </aside>

@@ -42,23 +42,24 @@ async function runDesktop(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/");
 
-  await page.getByRole("heading", { level: 1, name: /Simple tools for developers and SEO teams/ }).waitFor();
+  await page.getByRole("heading", { level: 1, name: /Fix messy SEO and developer data/ }).waitFor();
+  check((await page.locator(".workflow-list a").count()) === 4, "home must show four complete workflows");
   check((await page.locator(".tool-row").count()) === 9, "home must show exactly nine real tool rows");
-  check(await page.getByRole("link", { name: /Browse tools/ }).first().isVisible(), "primary Browse tools CTA must be visible");
-  check(await page.locator(".hero-tool-preview").isVisible(), "desktop must show the working keyword cleaner preview");
+  check(await page.getByRole("link", { name: /Start with a workflow/ }).isVisible(), "primary workflow CTA must be visible");
+  check(await page.locator(".hero-workflow-preview").isVisible(), "desktop must show the working keyword workflow preview");
 
   const initialRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  const heroInput = page.locator(".hero-tool-preview [data-keyword-input]");
-  const heroOutput = page.locator(".hero-tool-preview [data-keyword-output]");
+  const heroInput = page.locator(".hero-workflow-preview [data-keyword-input]");
+  const heroOutput = page.locator(".hero-workflow-preview [data-keyword-output]");
   await heroInput.fill("seo audit\nSEO Audit\nkeyword tracking");
-  await page.locator(".hero-tool-preview [data-keyword-clean]").click();
+  await page.locator(".hero-workflow-preview [data-keyword-clean]").click();
   check((await heroOutput.inputValue()) === "seo audit\nkeyword tracking", "hero keyword preview must trim and deduplicate the list");
   const postInteractionRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
   check(postInteractionRequestCount === initialRequestCount, "home keyword interaction must not create a request");
 
   const desktopStyles = await page.evaluate(() => {
     const body = getComputedStyle(document.body);
-    const hero = getComputedStyle(document.querySelector(".toolbox-hero-copy h1"));
+    const hero = getComputedStyle(document.querySelector(".workbench-hero-copy h1"));
     const row = getComputedStyle(document.querySelector(".tool-row"));
     const primary = getComputedStyle(document.querySelector(".toolbox-button"));
     return {
@@ -72,7 +73,7 @@ async function runDesktop(browser) {
   });
   check(desktopStyles.bodyBackground === "rgb(255, 255, 255)", "toolbox background must be true white");
   check(Number.parseFloat(desktopStyles.heroSize) >= 50, "desktop hero type is too small");
-  check(desktopStyles.primaryBackground === "rgb(181, 242, 10)", "primary action must use the locked lime accent");
+  check(desktopStyles.primaryBackground === "rgb(67, 56, 244)", "primary action must use the workbench violet accent");
 
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await page.keyboard.press("Tab");
@@ -100,7 +101,7 @@ async function runMobile(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/ mobile");
 
-  check(!(await page.locator(".hero-tool-preview").isVisible()), "mobile must prioritize the tool list over the JSON preview");
+  check(await page.locator(".hero-workflow-preview").isVisible(), "mobile must keep the first workflow immediately usable");
   check(await page.locator(".mobile-nav summary").isVisible(), "mobile navigation control must be visible");
   await page.locator(".mobile-nav summary").click();
   check(await page.locator(".mobile-nav nav").isVisible(), "mobile navigation must open");
@@ -108,12 +109,12 @@ async function runMobile(browser) {
   check((await page.locator(".tool-row").count()) === 9, "mobile must show all nine tools");
 
   const mobileStyles = await page.evaluate(() => {
-    const hero = getComputedStyle(document.querySelector(".toolbox-hero-copy h1"));
+    const hero = getComputedStyle(document.querySelector(".workbench-hero-copy h1"));
     const row = document.querySelector(".tool-row").getBoundingClientRect();
     return { heroSize: hero.fontSize, rowHeight: row.height };
   });
   check(Number.parseFloat(mobileStyles.heroSize) >= 33, "mobile hero type is too small");
-  check(mobileStyles.rowHeight >= 88, "mobile tool rows need large tap targets");
+  check(mobileStyles.rowHeight >= 56, "mobile tool rows need usable tap targets");
 
   await page.screenshot({ path: join(screenshots, "toolbox-home-mobile.png"), fullPage: true });
   await context.close();
@@ -138,6 +139,25 @@ async function runTools(browser) {
   await page.locator('[data-keyword-format][value="comma"]').check();
   check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit, keyword tracking, content brief", "keyword cleaner must switch the output to comma-separated values");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword cleaner must not create a request");
+
+  await page.goto(origin + "/workflows/prepare-keyword-import", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/workflows/prepare-keyword-import");
+  check((await page.locator(".workflow-progress li").count()) === 3, "keyword workflow must show its three-step sequence");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-keyword-input]").fill("1. seo audit, SEO Audit | keyword tracking");
+  await page.locator("[data-keyword-clean]").click();
+  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking", "keyword workflow must reuse the tested cleaner behavior");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword workflow must not create a request");
+
+  await page.goto(origin + "/workflows/debug-indexability", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/workflows/debug-indexability");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-index-status]").selectOption("404");
+  check((await page.locator("[data-index-verdict]").textContent()).includes("not indexable"), "indexability workflow must reject a 404 response");
+  await page.locator("[data-index-status]").selectOption("200");
+  await page.locator("[data-index-meta]").selectOption("noindex");
+  check((await page.locator("[data-index-verdict]").textContent()).includes("noindex"), "indexability workflow must reject a noindex directive");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "indexability workflow must not create a request");
 
   await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/url-list-normalizer");
@@ -231,7 +251,7 @@ async function captureConceptViewports(browser) {
   const lowerContext = await browser.newContext({ viewport: { width: 1555, height: 1012 }, deviceScaleFactor: 1 });
   const lowerPage = await lowerContext.newPage();
   await lowerPage.goto(origin + "/", { waitUntil: "networkidle" });
-  await lowerPage.evaluate(() => window.scrollTo(0, document.querySelector(".tool-picker").offsetTop));
+  await lowerPage.evaluate(() => window.scrollTo(0, document.querySelector(".quick-tool-section").offsetTop));
   await lowerPage.screenshot({ path: join(screenshots, "toolbox-home-lower-native.png") });
   await lowerContext.close();
 }
@@ -263,6 +283,7 @@ async function captureConceptViewports(browser) {
       consoleErrors: 0,
       externalRequests: 0,
       checkedTools: 9,
+      checkedWorkflows: 2,
     }, null, 2));
   } finally {
     await browser.close();

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A simple browser-local developer toolbox under new ownership.",
+  "description": "A browser-local workbench for developer and SEO data jobs under new ownership.",
   "engines": {
     "node": "24.x"
   },

@@ -5,13 +5,18 @@ export interface CanonicalRoute {
   title: string;
   description: string;
   job: string;
-  cluster: "home" | "field-tests" | "tools" | "method" | "quiz" | "identity" | "legacy" | "legal";
+  cluster: "home" | "field-tests" | "tools" | "workflows" | "method" | "quiz" | "identity" | "legacy" | "legal";
   searchEligible: boolean;
   evidence: EvidenceState;
 }
 
 export const canonicalRoutes: CanonicalRoute[] = [
-  { path: "/", title: "Simple Browser Tools for Developers and SEO Teams", description: "Clean keyword lists, normalize URLs, format JSON, generate UUIDs, create SHA-256 hashes, and build test cases locally in your browser.", job: "Choose and use one small developer or SEO data tool immediately.", cluster: "home", searchEligible: true, evidence: "verified" },
+  { path: "/", title: "Browser Workbench for SEO and Developer Data", description: "Clean inputs, test technical rules, and export usable SEO or developer data locally in your browser.", job: "Choose a complete workflow or one small browser-local tool.", cluster: "home", searchEligible: true, evidence: "verified" },
+  { path: "/workflows", title: "SEO and Developer Data Workflows", description: "Complete browser-local workflows for keyword imports, crawl lists, indexability checks, and MCP messages.", job: "Choose a multi-step data preparation or technical debugging workflow.", cluster: "workflows", searchEligible: true, evidence: "supported" },
+  { path: "/workflows/prepare-keyword-import", title: "Prepare a Keyword Import", description: "Clean a copied keyword list or CSV export, review the changes, and export lines, CSV, or JSON locally.", job: "Turn a messy keyword source into a reviewed, reusable import file.", cluster: "workflows", searchEligible: true, evidence: "experiment" },
+  { path: "/workflows/build-clean-crawl-list", title: "Build a Clean Crawl List", description: "Normalize a mixed URL list, inspect invalid entries, and export a stable crawl-ready file locally.", job: "Prepare a consistent URL set before crawling or auditing it.", cluster: "workflows", searchEligible: true, evidence: "experiment" },
+  { path: "/workflows/debug-indexability", title: "Debug Page Indexability", description: "Combine HTTP status, canonical, robots access, and index directives into a clear technical eligibility verdict.", job: "Identify which supplied signal prevents or qualifies a page's indexability.", cluster: "workflows", searchEligible: true, evidence: "experiment" },
+  { path: "/workflows/validate-mcp-message", title: "Validate an MCP Message", description: "Check an MCP JSON message, understand its structure, and turn the result into a repeatable test case.", job: "Move from copied MCP debug output to a message and next test you understand.", cluster: "workflows", searchEligible: true, evidence: "experiment" },
   { path: "/field-tests", title: "Field Tests", description: "The DevAwesome field-test library and the evidence gate every verdict must pass.", job: "Find a published, executable field test.", cluster: "field-tests", searchEligible: true, evidence: "verified" },
   { path: "/field-tests/astro-static-route-contract", title: "Astro Static Route Contract", description: "A reproducible Astro field test for canonical routes, index directives, sitemap membership, redirects, and 404 output.", job: "Reproduce the Astro route and indexability assertions.", cluster: "field-tests", searchEligible: true, evidence: "verified" },
   { path: "/field-tests/pnpm-frozen-lockfile-contract", title: "pnpm Frozen Lockfile Contract", description: "A reproducible pnpm field test for a matching offline frozen install and a deliberately stale manifest failure.", job: "Reproduce pnpm frozen-lockfile success and failure behavior.", cluster: "field-tests", searchEligible: true, evidence: "verified" },

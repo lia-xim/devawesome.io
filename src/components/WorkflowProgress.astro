@@ -1,0 +1,16 @@
+---
+interface Props {
+  steps: [string, string, string];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="workflow-progress" aria-label="Workflow steps">
+  {steps.map((step, index) => (
+    <li class={index === 0 ? "is-active" : undefined}>
+      <span>{index + 1}</span>
+      <strong>{step}</strong>
+    </li>
+  ))}
+</ol>

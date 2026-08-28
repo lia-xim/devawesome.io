@@ -4,9 +4,9 @@ import { site } from "../data/site";
 const currentPath = Astro.url.pathname;
 const links = [
   { href: "/tools", label: "Tools" },
-  { href: "/tools#categories", label: "Categories" },
+  { href: "/workflows", label: "Workflows" },
   { href: "/guides", label: "Guides" },
-  { href: "/new-ownership", label: "About" },
+  { href: "/field-tests", label: "Evidence" },
 ];
 
 const isCurrent = (href: string) => {
@@ -20,8 +20,7 @@ const isCurrent = (href: string) => {
 <header class="site-header">
   <a class="brand" href="/" aria-label={`${site.title} home`}>
     <svg class="brand-cube" viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M16 2.5 28 9.3v13.4L16 29.5 4 22.7V9.3L16 2.5Z" />
-      <path d="m4 9.3 12 6.9 12-6.9M16 16.2v13.3" />
+      <path d="m12 8-7 8 7 8M20 8l7 8-7 8M18 5l-4 22" />
     </svg>
     <span>DevAwesome</span>
   </a>
@@ -30,7 +29,7 @@ const isCurrent = (href: string) => {
       <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>{link.label}</a>
     ))}
   </nav>
-  <a class="header-cta" href="/tools">Browse tools <span aria-hidden="true">→</span></a>
+  <a class="header-cta" href="/tools">Open a tool <span aria-hidden="true">→</span></a>
   <a class="ownership-status" href="/new-ownership" aria-label={site.ownershipLabel}></a>
   <details class="mobile-nav">
     <summary aria-label="Open navigation">

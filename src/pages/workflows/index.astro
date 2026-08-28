@@ -1,0 +1,40 @@
+---
+import WorkflowDirectory from "../../components/WorkflowDirectory.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { workflows } from "../../data/workflows";
+
+const workflowList = {
+  "@type": "ItemList",
+  itemListElement: workflows.map((workflow, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: workflow.name,
+    url: new URL(workflow.path, "https://devawesome.io").href,
+  })),
+};
+---
+
+<BaseLayout
+  title="SEO and Developer Data Workflows"
+  description="Complete browser-local workflows for keyword imports, crawl lists, indexability checks, and MCP messages."
+  canonicalPath="/workflows"
+  schemaType="CollectionPage"
+  schemaMainEntity={workflowList}
+>
+  <header class="workflow-hub-header">
+    <div>
+      <a href="/">← Home</a>
+      <h1>Finish the job, not just one step.</h1>
+    </div>
+    <p>A workflow connects the input, the checks, the edge cases, and the export. Use a single tool when the task is already clear.</p>
+  </header>
+  <section class="workflow-hub-list" aria-labelledby="workflow-hub-title">
+    <h2 id="workflow-hub-title">Choose what you need to finish</h2>
+    <WorkflowDirectory />
+  </section>
+  <section class="workflow-principles" aria-label="Workflow principles">
+    <div><strong>Local input</strong><p>The workflow does not send pasted data to a server.</p></div>
+    <div><strong>Visible decisions</strong><p>You can see what changed and which choices remain yours.</p></div>
+    <div><strong>Portable output</strong><p>The result can be copied or downloaded before any optional handoff.</p></div>
+  </section>
+</BaseLayout>
