@@ -13,7 +13,7 @@ const { title, description, href, cta, disclosure } = Astro.props;
 const headingId = `workflow-handoff-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
 ---
 
-<section class="workflow-handoff" aria-labelledby={headingId}>
+<section class="workflow-handoff" aria-label={`Where the result can go: ${title}`}>
   <div>
     <h2 id={headingId}>Where the result can go</h2>
     <p>Download the result first. It stays useful without another product.</p>
