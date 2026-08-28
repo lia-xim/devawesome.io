@@ -1,4 +1,4 @@
-const { mkdir } = require("node:fs/promises");
+const { mkdir, readFile } = require("node:fs/promises");
 const { join } = require("node:path");
 const { chromium } = require(process.env.DEVAWESOME_PLAYWRIGHT_MODULE || "playwright");
 
@@ -42,20 +42,17 @@ async function runDesktop(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/");
 
-  await page.getByRole("heading", { level: 1, name: /Fix messy SEO and developer data/ }).waitFor();
-  check((await page.locator(".workflow-list a").count()) === 4, "home must show four complete workflows");
+  await page.getByRole("heading", { level: 1, name: /Turn raw SEO exports into inputs you can review and reuse/ }).waitFor();
+  check((await page.locator(".hero-flagship-preview a").count()) === 2, "home must lead with two flagship preparation workflows");
+  check((await page.locator(".secondary-workflows a").count()) === 2, "home must expose the two evidence and protocol workflows");
   check((await page.locator(".tool-row").count()) === 9, "home must show exactly nine real tool rows");
-  check(await page.getByRole("link", { name: /Start with a workflow/ }).isVisible(), "primary workflow CTA must be visible");
-  check(await page.locator(".hero-workflow-preview").isVisible(), "desktop must show the working keyword workflow preview");
+  check(await page.getByRole("link", { name: /Prepare a keyword import/ }).first().isVisible(), "primary workflow CTA must be visible");
+  check(await page.locator(".hero-flagship-preview").isVisible(), "desktop must show the flagship workflow preview");
 
   const initialRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  const heroInput = page.locator(".hero-workflow-preview [data-keyword-input]");
-  const heroOutput = page.locator(".hero-workflow-preview [data-keyword-output]");
-  await heroInput.fill("seo audit\nSEO Audit\nkeyword tracking");
-  await page.locator(".hero-workflow-preview [data-keyword-clean]").click();
-  check((await heroOutput.inputValue()) === "seo audit\nkeyword tracking", "hero keyword preview must trim and deduplicate the list");
+  await page.locator(".hero-flagship-preview a").first().focus();
   const postInteractionRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  check(postInteractionRequestCount === initialRequestCount, "home keyword interaction must not create a request");
+  check(postInteractionRequestCount === initialRequestCount, "home navigation preview must not create a request");
 
   const desktopStyles = await page.evaluate(() => {
     const body = getComputedStyle(document.body);
@@ -101,7 +98,7 @@ async function runMobile(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/ mobile");
 
-  check(await page.locator(".hero-workflow-preview").isVisible(), "mobile must keep the first workflow immediately usable");
+  check(await page.locator(".hero-flagship-preview").isVisible(), "mobile must keep both flagship workflows immediately visible");
   check(await page.locator(".mobile-nav summary").isVisible(), "mobile navigation control must be visible");
   await page.locator(".mobile-nav summary").click();
   check(await page.locator(".mobile-nav nav").isVisible(), "mobile navigation must open");
@@ -159,29 +156,53 @@ async function runTools(browser) {
   check((await page.locator(".workflow-progress li").count()) === 4, "keyword workflow must show its four-step sequence");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   await page.locator('[data-keyword-example="csv"]').click();
+  check(await page.locator("[data-keyword-conflict-review]").isVisible(), "keyword workflow must expose duplicate column conflicts");
+  check((await page.locator("[data-keyword-conflicts] select").count()) === 1, "keyword workflow must expose one decision control per conflict");
+  check(await page.locator("[data-keyword-workbench-download]").isDisabled(), "keyword export must remain locked while a conflict is unresolved");
+  await page.locator("[data-keyword-conflicts] select").selectOption("merge");
+  check(!(await page.locator("[data-keyword-workbench-download]").isDisabled()), "keyword export must unlock after the conflict is resolved");
   check((await page.locator("[data-keyword-workbench-output]").inputValue()).includes("running shoes, women"), "keyword workflow must preserve a quoted comma inside a keyword");
   await page.locator('[data-keyword-workbench-format][value="contextter"]').check();
   check((await page.locator("[data-keyword-workbench-output]").inputValue()).startsWith("keyword,"), "keyword workflow must export a mapped Contextter CSV header");
-  check((await page.locator("[data-keyword-review-summary]").textContent()).includes("duplicates removed"), "keyword workflow must explain removed duplicates");
+  check((await page.locator("[data-keyword-review-summary]").textContent()).includes("data conflicts"), "keyword workflow must count data conflicts");
+  const recipeDownload = page.waitForEvent("download");
+  await page.locator("[data-recipe-save]").click();
+  const recipe = await recipeDownload;
+  const recipeJson = JSON.parse(await readFile(await recipe.path(), "utf8"));
+  check(recipeJson.tool === "keyword-import" && !JSON.stringify(recipeJson).includes("running shoes"), "keyword recipe must contain configuration without pasted input");
+  const inputBeforeRecipeLoad = await page.locator("[data-keyword-workbench-input]").inputValue();
+  await page.locator("[data-recipe-load]").setInputFiles(join(process.cwd(), "public", "fixtures", "keyword-import-conflicts.recipe.json"));
+  await page.waitForFunction(() => document.querySelector("[data-keyword-conflict-strategy]")?.value === "merge");
+  check((await page.locator("[data-keyword-conflict-strategy]").inputValue()) === "merge", "keyword recipe must restore the saved duplicate strategy");
+  check((await page.locator("[data-keyword-workbench-input]").inputValue()) === inputBeforeRecipeLoad, "loading a keyword recipe must not replace pasted input");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword workflow must not create a request");
 
   await page.goto(origin + "/workflows/build-clean-crawl-list", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/build-clean-crawl-list");
-  check((await page.locator(".workflow-progress li").count()) === 4, "crawl workflow must show its four-step sequence");
+  check((await page.locator(".workflow-progress li").count()) === 5, "crawl workflow must show its five-step sequence");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator('[data-crawl-example="sitemap"]').click();
-  check((await page.locator("[data-crawl-output]").inputValue()) === "https://example.com/\nhttps://example.com/about\nhttps://example.com/products", "crawl workflow must extract sitemap loc values and apply the selected safe defaults");
+  await page.locator("[data-crawl-input]").fill("https://example.com/a\nhttps://shop.example.com/b\nhttp://example.com/c\nhttps://example.com/private/x\nhttps://example.com/file.pdf");
+  await page.locator("[data-crawl-mode]").selectOption("lines");
+  await page.locator("[data-crawl-scope-mode]").selectOption("exact");
+  await page.locator("[data-crawl-scope-host]").fill("example.com");
+  await page.locator("[data-crawl-protocol]").selectOption("https");
+  await page.locator("[data-crawl-exclude]").fill("/private/*");
+  check((await page.locator("[data-crawl-output]").inputValue()) === "https://example.com/a\nhttps://example.com/file.pdf", "crawl workflow must apply protocol, exact-host, and wildcard exclusion scope");
   check((await page.locator("[data-crawl-hosts] tr").count()) === 1, "crawl workflow must group the output by host");
+  check((await page.locator("[data-crawl-excluded] li").count()) === 3, "crawl workflow must retain every excluded URL with a reason");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "crawl workflow must not create a request");
 
   await page.goto(origin + "/workflows/debug-indexability", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/debug-indexability");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator("[data-index-status]").selectOption("404");
-  check((await page.locator("[data-index-verdict]").textContent()).includes("not indexable"), "indexability workflow must reject a 404 response");
-  await page.locator("[data-index-status]").selectOption("200");
-  await page.locator("[data-index-meta]").selectOption("noindex");
-  check((await page.locator("[data-index-verdict]").textContent()).includes("noindex"), "indexability workflow must reject a noindex directive");
+  await page.locator("[data-index-url]").fill("https://example.com/private/page");
+  await page.locator("[data-index-headers]").fill("HTTP/2 200\nx-robots-tag: noindex");
+  await page.locator("[data-index-html]").fill('<link rel="canonical" href="https://example.com/other"><meta name="robots" content="index,follow">');
+  await page.locator("[data-index-robots-text]").fill("User-agent: *\nDisallow: /private/");
+  await page.locator("[data-index-extract]").click();
+  check((await page.locator("[data-index-verdict]").textContent()).includes("noindex"), "indexability workflow must extract and reject an X-Robots-Tag noindex directive");
+  check((await page.locator("[data-index-canonical]").inputValue()) === "other", "indexability workflow must extract a non-self canonical");
+  check((await page.locator("[data-index-robots]").inputValue()) === "blocked", "indexability workflow must evaluate pasted robots.txt for the tested URL");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "indexability workflow must not create a request");
 
   await page.goto(origin + "/workflows/validate-mcp-message", { waitUntil: "networkidle" });
@@ -189,9 +210,12 @@ async function runTools(browser) {
   check((await page.locator(".workflow-progress li").count()) === 4, "MCP workflow must show its four-step sequence");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   await page.locator('[data-mcp-lab-example="request"]').click();
-  check((await page.locator("[data-mcp-lab-corrected]").inputValue()).includes('"jsonrpc": "2.0"'), "MCP workflow must propose the missing JSON-RPC version");
-  await page.locator('[data-mcp-lab-example="response"]').click();
-  check((await page.locator("[data-mcp-pair-checks]").textContent()).includes("Request and response ids match") && (await page.locator("[data-mcp-pair-checks]").textContent()).includes("Check"), "MCP workflow must flag mismatched request and response IDs");
+  check((await page.locator("[data-mcp-lab-version]").inputValue()) === "2026-07-28", "MCP workflow must default to the current declared revision");
+  check((await page.locator("[data-mcp-lab-corrected]").inputValue()).includes('"io.modelcontextprotocol/protocolVersion": "2026-07-28"'), "MCP workflow must propose current request metadata");
+  await page.locator("[data-mcp-compare-mode]").selectOption("expected");
+  await page.locator("[data-mcp-lab-input]").fill('{"jsonrpc":"2.0","id":7,"result":{"content":[{"type":"text"}]}}');
+  await page.locator("[data-mcp-lab-related]").fill('{"jsonrpc":"2.0","id":7,"result":{"content":[{"type":"text","text":"ok"}]}}');
+  check((await page.locator('[data-mcp-pair-checks] li[data-state="error"]').count()) === 0 && (await page.locator("[data-mcp-pair-checks]").textContent()).includes("$.result.content[0].type matches expected value"), "MCP workflow must compare expected and actual response shapes");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP workflow must not create a request");
 
   await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });

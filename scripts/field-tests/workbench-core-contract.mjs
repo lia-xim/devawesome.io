@@ -5,8 +5,11 @@ import { fileURLToPath } from "node:url";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import {
   analyzeMcpMessage,
+  compareMcpExpectedActual,
   compareMcpPair,
   diagnoseIndexability,
+  extractIndexabilitySignals,
+  formatCrawlList,
   formatKeywordImport,
   prepareCrawlList,
   prepareKeywordImport,
@@ -18,6 +21,18 @@ const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const resultPath = join(root, "reports", "field-tests", "workbench-core-contract-2026-08-28.json");
 const capture = process.argv.includes("--capture");
 const cases = [];
+const fixture = (...parts) => join(root, "public", "fixtures", ...parts);
+const keywordInput = await readFile(fixture("keyword-import-conflicts.input.csv"), "utf8");
+const keywordExpected = (await readFile(fixture("keyword-import-conflicts.expected.csv"), "utf8")).trim();
+const keywordRecipe = JSON.parse(await readFile(fixture("keyword-import-conflicts.recipe.json"), "utf8"));
+const crawlInput = await readFile(fixture("crawl-scope.input.txt"), "utf8");
+const crawlExpected = (await readFile(fixture("crawl-scope.expected.txt"), "utf8")).trim();
+const crawlExcludedExpected = (await readFile(fixture("crawl-scope.excluded.csv"), "utf8")).trim();
+const crawlRecipe = JSON.parse(await readFile(fixture("crawl-scope.recipe.json"), "utf8"));
+const indexInput = JSON.parse(await readFile(fixture("indexability-evidence.input.json"), "utf8"));
+const indexExpected = JSON.parse(await readFile(fixture("indexability-evidence.expected.json"), "utf8"));
+const mcpExpected = await readFile(fixture("mcp-expected.json"), "utf8");
+const mcpActual = await readFile(fixture("mcp-actual.json"), "utf8");
 
 function runCase(id, question, execute) {
   try {
@@ -28,25 +43,45 @@ function runCase(id, question, execute) {
   }
 }
 
-runCase("keyword-table", "Does table mapping preserve selected columns while cleaning keyword rows?", () => {
-  const input = 'keyword,volume,list\n"running shoes, women",1200,Commercial\nTrail Running Shoes,800,Commercial\ntrail running shoes,800,Commercial\n/,0,Noise';
-  const result = prepareKeywordImport(input, { mode: ",", hasHeader: true, keywordColumn: 0, retainedColumns: [1, 2], ignoreCase: true, stripNoise: true, whitespace: true });
+runCase("keyword-conflict-review", "Does keyword cleanup expose conflicting duplicate metadata and apply the saved decision?", () => {
+  const unresolved = prepareKeywordImport(keywordInput, { ...keywordRecipe.settings, duplicateStrategy: "manual", conflictResolutions: {} });
+  assert.equal(unresolved.unresolvedConflicts, 1);
+  assert.equal(unresolved.conflicts[0].keyword, "technical seo audit");
+  const result = prepareKeywordImport(keywordInput, keywordRecipe.settings);
   assert.equal(result.rows.length, 2);
-  assert.equal(result.duplicates, 1);
+  assert.equal(result.duplicates, 2);
   assert.equal(result.ignored, 1);
-  assert.deepEqual(result.rows[0], { keyword: "running shoes, women", values: ["1200", "Commercial"], source: ["running shoes, women", "1200", "Commercial"] });
-  assert.match(formatKeywordImport(result, "contextter"), /^keyword,volume,list/m);
-  return { cleanRows: result.rows.length, duplicatesRemoved: result.duplicates, noiseRowsRemoved: result.ignored, retainedHeaders: result.retainedHeaders };
+  assert.equal(result.unresolvedConflicts, 0);
+  assert.equal(formatKeywordImport(result, "contextter"), keywordExpected);
+  return { cleanRows: result.rows.length, duplicateRows: result.duplicates, conflicts: result.conflicts.length, unresolvedBeforeDecision: unresolved.unresolvedConflicts, selectedResolution: result.conflicts[0].resolution };
 });
 
-runCase("crawl-sitemap", "Does sitemap extraction normalize tracking and group the remaining URLs?", () => {
-  const input = '<urlset><url><loc>https://example.com/</loc></url><url><loc>https://example.com/page/?utm_source=test#top</loc></url><url><loc>https://EXAMPLE.com/page</loc></url><url><loc>not a url</loc></url></urlset>';
-  const result = prepareCrawlList(input, { mode: "sitemap", queryMode: "tracking", addHttps: true, stripFragment: true, stripTrailing: true });
-  assert.deepEqual(result.entries.map((entry) => entry.normalized), ["https://example.com/", "https://example.com/page"]);
+runCase("line-mode-first-entry", "Do line-based keyword and crawl inputs keep their first entry even when a previous table setting marked the first row as a header?", () => {
+  const keywords = prepareKeywordImport("first keyword\nsecond keyword", { mode: "lines", hasHeader: true });
+  const urls = prepareCrawlList("https://example.com/first\nhttps://example.com/second", { mode: "lines", hasHeader: true });
+  assert.deepEqual(keywords.rows.map((row) => row.keyword), ["first keyword", "second keyword"]);
+  assert.deepEqual(urls.entries.map((entry) => entry.normalized), ["https://example.com/first", "https://example.com/second"]);
+  return { keywordRows: keywords.rows.length, crawlTargets: urls.entries.length, firstKeyword: keywords.rows[0].keyword, firstUrl: urls.entries[0].normalized };
+});
+
+runCase("crawl-scope", "Does crawl preparation enforce host, protocol, include, and exclude rules while preserving rejection reasons?", () => {
+  const result = prepareCrawlList(crawlInput, crawlRecipe.settings);
+  assert.equal(formatCrawlList(result, "lines"), crawlExpected);
+  assert.equal(formatCrawlList(result, "excluded"), crawlExcludedExpected);
   assert.equal(result.duplicates, 1);
   assert.equal(result.invalid.length, 1);
-  assert.deepEqual(result.hosts, [{ host: "example.com", count: 2 }]);
-  return { uniqueUrls: result.entries.length, duplicatesRemoved: result.duplicates, invalidEntries: result.invalid.length, hosts: result.hosts };
+  assert.equal(result.excluded.length, 4);
+  assert.deepEqual(result.resourceTypes, [{ type: "page", count: 1 }]);
+  return { crawlTargets: result.entries.length, excludedWithReasons: result.excluded.length, duplicatesRemoved: result.duplicates, invalidEntries: result.invalid.length, resourceTypes: result.resourceTypes };
+});
+
+runCase("sitemap-index-boundary", "Does a pasted sitemap index stay separate from page crawl targets?", () => {
+  const input = '<sitemapindex><sitemap><loc>https://example.com/posts.xml</loc></sitemap><sitemap><loc>https://example.com/pages.xml</loc></sitemap></sitemapindex>';
+  const result = prepareCrawlList(input, { mode: "sitemap", includeSitemapFiles: false });
+  assert.equal(result.sourceType, "sitemap-index");
+  assert.equal(result.entries.length, 0);
+  assert.equal(result.excluded.length, 2);
+  return { sourceType: result.sourceType, childSitemaps: result.excluded.length, pageTargets: result.entries.length };
 });
 
 runCase("robots-longest-match", "Does the robots evaluator select the longest applicable rule and Allow on an equal tie?", () => {
@@ -65,16 +100,26 @@ runCase("indexability-noindex", "Does the debugger treat a 200 response with noi
   return { state: result.state, verdict: result.title };
 });
 
+runCase("indexability-evidence-extraction", "Does pasted response evidence produce the declared status, canonical, robots, and index signals?", () => {
+  const extracted = extractIndexabilitySignals(indexInput);
+  assert.deepEqual(extracted.signals, indexExpected);
+  assert.ok(extracted.evidence.length >= 4);
+  return { signals: extracted.signals, evidenceItems: extracted.evidence.length, warnings: extracted.warnings };
+});
+
 runCase("mcp-correction", "Does the MCP lab identify and repair core tools/call structure?", () => {
   const input = { id: 7, method: "tools/call", params: { name: "crawl_page", arguments: "https://example.com" } };
-  const result = analyzeMcpMessage(input);
+  const result = analyzeMcpMessage(input, "auto", "2026-07-28");
   assert.equal(result.type, "tools-call-request");
   assert.equal(result.valid, false);
   assert.equal(result.corrected.jsonrpc, "2.0");
   assert.deepEqual(result.corrected.params.arguments, {});
+  assert.equal(result.corrected.params._meta["io.modelcontextprotocol/protocolVersion"], "2026-07-28");
   const pair = compareMcpPair({ jsonrpc: "2.0", id: 7, method: "tools/list", params: {} }, { jsonrpc: "2.0", id: 8, result: { tools: [] } });
   assert.equal(pair.valid, false);
-  return { detectedType: result.type, errors: result.issues.filter((entry) => entry.level === "error").length, correctedArgumentsType: typeof result.corrected.params.arguments, mismatchedPairDetected: !pair.valid };
+  const expectedActual = compareMcpExpectedActual(mcpExpected, mcpActual);
+  assert.equal(expectedActual.valid, true);
+  return { detectedType: result.type, protocolVersion: result.protocolVersion, errors: result.issues.filter((entry) => entry.level === "error").length, correctedArgumentsType: typeof result.corrected.params.arguments, mismatchedPairDetected: !pair.valid, expectedShapeMatched: expectedActual.valid };
 });
 
 const allPassed = cases.every((entry) => entry.status === "passed");
@@ -94,8 +139,9 @@ const recorded = {
   command: "corepack pnpm field-test:workbench",
   cases,
   limits: [
-    "These deterministic fixtures exercise parsing and decision logic. They do not crawl a live URL, query a search engine, or contact an MCP server.",
-    "The Contextter CSV assertion covers the verified keyword header and retained columns; the receiving importer still requires a user-reviewed column mapping.",
+    "These downloadable deterministic fixtures exercise parsing and decision logic. They do not crawl a live URL, query a search engine, or contact an MCP server.",
+    "The keyword fixture proves that conflicting metadata becomes visible and requires an explicit resolution; the receiving importer still requires a user-reviewed column mapping.",
+    "The MCP checks cover selected version-specific core fields and expected-shape comparison, not the complete normative schema or a real client/server exchange.",
     "Robots, canonical, and indexability results remain bounded to the values supplied to the local functions.",
   ],
 };

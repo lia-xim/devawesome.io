@@ -13,11 +13,11 @@ const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "
 
 <BaseLayout title="Workbench Core Contract" description="Reproduce the parsing and decision contracts behind the keyword, crawl-list, robots, indexability, and MCP workbenches." schemaType="TechArticle" datePublished="2026-08-28" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
   <Breadcrumbs items={breadcrumbs} />
-  <PageIntro number="FT-04" label="Browser-local workbench core" title="Do the main SEO and MCP tools match their declared edge cases?" intro="One runner imports the same public core used by the workflow pages. It checks multi-column keyword cleanup, sitemap URL normalization, robots rule selection, noindex diagnosis, and MCP fixture correction." />
+  <PageIntro number="FT-04" label="Browser-local workbench core" title="Do the main SEO and MCP workbenches preserve their declared decisions?" intro="One runner imports the public production core and uses the same downloadable fixtures as the guides. It checks duplicate metadata, crawl scope, sitemap indexes, robots rules, indexability evidence, and versioned MCP messages." />
 
   <section class="test-verdict section-rule">
     <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
-    <p>All five deterministic cases matched their declared outputs. The runner makes no live network request and does not treat a local pass as proof that a remote page, crawler, or MCP server behaves the same way.</p>
+    <p>All {cases.length} deterministic cases matched their declared outputs. The runner makes no live network request and does not treat a local pass as proof that a remote page, crawler, or MCP server behaves the same way.</p>
   </section>
 
   <section class="test-layout section-rule">
@@ -42,6 +42,18 @@ const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "
         <span class="section-label">Observed cases</span>
         <ul class="assertion-list">
           {cases.map((testCase) => <li><span>{testCase.question}</span><strong>{testCase.status === "passed" ? "PASS" : "FAIL"}</strong></li>)}
+        </ul>
+      </section>
+
+      <section>
+        <span class="section-label">Downloadable fixtures</span>
+        <h2>Inspect the files before trusting the verdict.</h2>
+        <p>The inputs, expected outputs, and portable recipes are public. They contain synthetic test data, not customer exports.</p>
+        <ul class="fixture-link-list">
+          <li><a href="/fixtures/keyword-import-conflicts.input.csv" download>Keyword input</a><a href="/fixtures/keyword-import-conflicts.expected.csv" download>Expected keyword CSV</a><a href="/fixtures/keyword-import-conflicts.recipe.json" download>Keyword recipe</a></li>
+          <li><a href="/fixtures/crawl-scope.input.txt" download>Crawl input</a><a href="/fixtures/crawl-scope.excluded.csv" download>Expected exclusions</a><a href="/fixtures/crawl-scope.recipe.json" download>Crawl recipe</a></li>
+          <li><a href="/fixtures/indexability-evidence.input.json" download>Indexability evidence</a><a href="/fixtures/indexability-evidence.expected.json" download>Expected signals</a><a href="/fixtures/indexability.recipe.json" download>Indexability recipe</a></li>
+          <li><a href="/fixtures/mcp-expected.json" download>MCP expected JSON</a><a href="/fixtures/mcp-actual.json" download>MCP actual JSON</a><a href="/fixtures/mcp-payload.recipe.json" download>MCP recipe</a></li>
         </ul>
       </section>
 

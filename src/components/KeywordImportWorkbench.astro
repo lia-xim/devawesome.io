@@ -1,3 +1,7 @@
+---
+import RecipeControls from "./RecipeControls.astro";
+---
+
 <div class="deep-workbench" data-keyword-import-workbench>
   <div class="workbench-bar deep-workbench-bar">
     <div><strong>Keyword import workbench</strong><span>Paste, map, clean, review, export</span></div>
@@ -27,10 +31,11 @@ search intent	140	Research</textarea></label>
 
   <section class="deep-workbench-step" aria-labelledby="keyword-map-title">
     <div class="step-heading"><span>2</span><div><h2 id="keyword-map-title">Choose what each row means</h2><p>Pick the keyword column. Keep only the extra columns needed later.</p></div></div>
-    <div class="mapping-grid">
+    <div class="mapping-grid mapping-grid-keyword">
       <label><span>Keyword column</span><select data-keyword-column></select></label>
       <fieldset><legend>Keep additional columns</legend><div class="retained-columns" data-keyword-retained></div></fieldset>
       <label><span>Letter case</span><select data-keyword-case><option value="preserve">Keep first spelling</option><option value="lower">Convert keywords to lowercase</option></select></label>
+      <label><span>Conflicting duplicates</span><select data-keyword-conflict-strategy><option value="manual" selected>Review each conflict</option><option value="first">Keep the first row</option><option value="last">Keep the last row</option><option value="merge">Merge distinct values</option></select></label>
     </div>
     <div class="cleanup-options deep-cleanup-options">
       <label><input type="checkbox" checked data-keyword-workbench-ignore-case /> Deduplicate regardless of capitalization</label>
@@ -46,6 +51,10 @@ search intent	140	Research</textarea></label>
       <div class="preview-table-wrap"><table><caption>First cleaned rows</caption><thead data-keyword-preview-head></thead><tbody data-keyword-preview-body></tbody></table></div>
       <div class="change-log"><strong>Change log</strong><ul data-keyword-change-log></ul></div>
     </div>
+    <div class="conflict-review" data-keyword-conflict-review hidden>
+      <div><strong>Conflicting duplicate data</strong><span>Choose how each keyword should be resolved. Export stays locked while a conflict is unresolved.</span></div>
+      <div data-keyword-conflicts></div>
+    </div>
   </section>
 
   <section class="deep-workbench-step" aria-labelledby="keyword-export-title">
@@ -58,4 +67,5 @@ search intent	140	Research</textarea></label>
     <p class="format-note" data-keyword-format-note>TXT contains one cleaned keyword per line.</p>
     <p data-keyword-workbench-status aria-live="polite">Ready</p>
   </section>
+  <RecipeControls label="Keyword import recipe" />
 </div>

@@ -1,0 +1,5 @@
+url,reason,resource_type
+https://www.example.com/docs/subpage,Outside exact host example.com,page
+http://example.com/docs/legacy,Outside HTTPS protocol scope,page
+https://example.com/private/login,Does not match an include pattern,page
+https://example.com/docs/report.pdf,Matches an exclude pattern,document

@@ -1,0 +1,7 @@
+{
+  "status": "200",
+  "canonical": "self",
+  "meta": "noindex",
+  "header": "index",
+  "robots": "blocked"
+}

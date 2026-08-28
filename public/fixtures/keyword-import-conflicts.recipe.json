@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "kind": "devawesome-workbench-recipe",
+  "tool": "keyword-import",
+  "toolVersion": "1.0.0",
+  "sourceType": ",",
+  "settings": {
+    "mode": ",",
+    "hasHeader": true,
+    "keywordColumn": 0,
+    "retainedColumns": [1, 2, 3],
+    "caseMode": "preserve",
+    "ignoreCase": true,
+    "stripNoise": true,
+    "whitespace": true,
+    "duplicateStrategy": "merge"
+  },
+  "privacy": "Configuration only. No pasted input or generated output is stored in this file."
+}

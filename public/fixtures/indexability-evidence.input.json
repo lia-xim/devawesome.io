@@ -1,0 +1,7 @@
+{
+  "url": "https://example.com/private/report",
+  "userAgent": "Googlebot",
+  "headers": "HTTP/2 200\ncontent-type: text/html; charset=utf-8\nx-robots-tag: index, follow",
+  "html": "<head><link rel=\"canonical\" href=\"https://example.com/private/report\"><meta name=\"robots\" content=\"noindex,follow\"></head>",
+  "robots": "User-agent: *\nDisallow: /private/"
+}

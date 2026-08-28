@@ -95,7 +95,7 @@ for (const name of js) {
   if (bytes > 20000) failures.push(name + " exceeds 20 KB route chunk budget: " + bytes);
 }
 const home = built.get("/").html;
-for (const copy of ["Fix messy SEO and developer data before it reaches your workflow.", "Start with the job, not the tool.", "A result is useful when you know what changed."]) if (!home.includes(copy)) failures.push("home lacks workflow-first copy: " + copy);
+for (const copy of ["Turn raw SEO exports into inputs you can review and reuse.", "Prepare a keyword import", "Build a clean crawl list", "A result is useful when you know what changed."]) if (!home.includes(copy)) failures.push("home lacks workflow-first copy: " + copy);
 for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const path of ["/workflows/prepare-keyword-import", "/workflows/build-clean-crawl-list", "/workflows/debug-indexability", "/workflows/validate-mcp-message"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const route of canonicalRoutes.map(({ path }) => path.replace(/\/$/, "") || "/")) if (!built.get(route).html.includes('class="toolbox-page"')) failures.push(route + " must use the unified toolbox surface");
@@ -122,7 +122,7 @@ const mcpWorkflow = built.get("/workflows/validate-mcp-message").html;
 const indexabilityWorkflow = built.get("/workflows/debug-indexability").html;
 const jsonTool = built.get("/tools/json-formatter").html;
 const uuidTool = built.get("/tools/uuid-generator").html;
-if (!home.includes('src="/keyword-list-cleaner.js"') || !keywordTool.includes('src="/keyword-list-cleaner.js"')) failures.push("home and keyword tool must load the focused cleaner behavior");
+if (home.includes('/keyword-list-cleaner.js') || !keywordTool.includes('src="/keyword-list-cleaner.js"')) failures.push("the focused keyword cleaner behavior must load only on its tool page");
 if (!keywordWorkflow.includes('src="/keyword-import-workbench.js"')) failures.push("keyword workflow must load the complete import-workbench behavior");
 if (quiz.includes("/keyword-list-cleaner.js") || tool.includes("/keyword-list-cleaner.js") || receiptTool.includes("/keyword-list-cleaner.js") || uuidTool.includes("/keyword-list-cleaner.js") || jsonTool.includes("/keyword-list-cleaner.js") || urlTool.includes("/keyword-list-cleaner.js")) failures.push("keyword cleaner behavior must stay on its intended surfaces");
 if (!jsonTool.includes('src="/json-formatter.js"')) failures.push("JSON tool must load formatter behavior");
@@ -135,12 +135,14 @@ if (!indexabilityWorkflow.includes('src="/indexability-workflow.js"')) failures.
 if (!uuidTool.includes('src="/uuid-generator.js"')) failures.push("UUID tool must load its route-specific behavior");
 if (home.includes("/uuid-generator.js") || quiz.includes("/uuid-generator.js") || tool.includes("/uuid-generator.js") || receiptTool.includes("/uuid-generator.js") || jsonTool.includes("/uuid-generator.js")) failures.push("UUID behavior must remain route-specific");
 const utilityBudgets = {
-  "workbench-core.js": 30000,
+  // Shared only by the four deep workflow routes. The budget covers the
+  // conflict, scope, evidence-extraction, and versioned MCP contracts.
+  "workbench-core.js": 34000,
   "keyword-import-workbench.js": 16000,
   "crawl-list-workbench.js": 14000,
   "mcp-payload-lab.js": 12000,
 };
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", ...Object.keys(utilityBudgets)]) {
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", ...Object.keys(utilityBudgets)]) {
   const source = await readFile(join(root, "public", asset), "utf8");
   const budget = utilityBudgets[asset] ?? 8000;
   if ((await stat(join(root, "public", asset))).size > budget) failures.push(`${asset} exceeds its ${budget} byte utility budget`);

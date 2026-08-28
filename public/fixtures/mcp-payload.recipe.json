@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "kind": "devawesome-workbench-recipe",
+  "tool": "mcp-payload",
+  "toolVersion": "1.0.0",
+  "sourceType": "MCP Inspector",
+  "settings": {
+    "source": "MCP Inspector",
+    "declaredType": "auto",
+    "protocolVersion": "2026-07-28",
+    "comparisonMode": "expected"
+  },
+  "privacy": "Configuration only. No payload or log content is stored in this file."
+}

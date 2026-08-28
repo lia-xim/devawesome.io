@@ -1,35 +1,44 @@
 ---
 import ArrowIcon from "../components/ArrowIcon.astro";
-import KeywordListCleaner from "../components/KeywordListCleaner.astro";
 import ToolDirectory from "../components/ToolDirectory.astro";
-import WorkflowDirectory from "../components/WorkflowDirectory.astro";
-import WorkflowProgress from "../components/WorkflowProgress.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Browser Workbench for SEO and Developer Data"
-  description="Clean inputs, test technical rules, and export usable SEO or developer data locally in your browser."
+  title="Prepare SEO and Developer Data Locally"
+  description="Turn keyword exports, URL sets, indexability evidence, and MCP messages into reviewable files without uploading the input."
   canonicalPath="/"
 >
   <section class="workbench-hero" aria-labelledby="home-title">
     <div class="workbench-hero-copy">
-      <h1 id="home-title">Fix messy SEO and developer data before it reaches your workflow.</h1>
-      <p>Clean inputs, test technical rules, and export a result you can actually use. Everything runs in your browser.</p>
+      <h1 id="home-title">Turn raw SEO exports into inputs you can review and reuse.</h1>
+      <p>Map keyword columns, control crawl scope, inspect what was excluded, and save the rules as a portable recipe. Everything runs in your browser.</p>
       <div class="toolbox-actions">
-        <a class="toolbox-button" href="/workflows">Start with a workflow <ArrowIcon /></a>
-        <a class="workbench-text-link" href="/tools">Browse all tools <ArrowIcon /></a>
+        <a class="toolbox-button" href="/workflows/prepare-keyword-import">Prepare a keyword import <ArrowIcon /></a>
+        <a class="workbench-text-link" href="/workflows/build-clean-crawl-list">Build a crawl list <ArrowIcon /></a>
       </div>
     </div>
-    <div class="hero-workflow-preview" aria-label="Keyword cleaning workflow preview">
-      <WorkflowProgress steps={["Paste list", "Clean and review", "Export"]} />
-      <KeywordListCleaner compact />
+    <div class="hero-flagship-preview" aria-label="Flagship workflow preview">
+      <a href="/workflows/prepare-keyword-import">
+        <span class="hero-flagship-number">01</span>
+        <div><strong>Prepare a keyword import</strong><p>Map columns → find conflicting duplicates → choose a resolution → export the reviewed file</p></div>
+        <ArrowIcon />
+      </a>
+      <a href="/workflows/build-clean-crawl-list">
+        <span class="hero-flagship-number">02</span>
+        <div><strong>Build a clean crawl list</strong><p>Extract URLs → define scope → inspect exclusions → export targets and rejection reasons</p></div>
+        <ArrowIcon />
+      </a>
+      <div class="hero-recipe-note"><strong>Portable recipes</strong><span>Save the rules without saving the pasted data.</span></div>
     </div>
   </section>
 
   <section class="home-workflow-section" aria-labelledby="workflow-title">
-    <h2 id="workflow-title">Start with the job, not the tool.</h2>
-    <WorkflowDirectory compact />
+    <div class="section-heading-row"><div><h2 id="workflow-title">Two more jobs, when the input is evidence or a protocol message.</h2><p>The first two workbenches prepare data. These two help explain a technical result.</p></div><a href="/workflows">All workflows <ArrowIcon /></a></div>
+    <div class="secondary-workflows">
+      <a href="/workflows/debug-indexability"><strong>Debug indexability</strong><span>Paste headers, rendered head markup, and robots.txt. Extract the signals before reading the verdict.</span><ArrowIcon /></a>
+      <a href="/workflows/validate-mcp-message"><strong>Validate an MCP message</strong><span>Choose the protocol revision, import a log, correct the structure, and compare expected with actual JSON.</span><ArrowIcon /></a>
+    </div>
   </section>
 
   <section class="quick-tool-section" aria-labelledby="quick-tools-title">
@@ -89,5 +98,4 @@ https://example.com/about</pre>
     </div>
   </section>
 
-  <script is:inline src="/keyword-list-cleaner.js" defer></script>
 </BaseLayout>

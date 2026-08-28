@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "kind": "devawesome-workbench-recipe",
+  "tool": "crawl-list",
+  "toolVersion": "1.0.0",
+  "sourceType": "lines",
+  "settings": {
+    "mode": "lines",
+    "hasHeader": false,
+    "urlColumn": 0,
+    "queryMode": "tracking",
+    "addHttps": true,
+    "stripFragment": true,
+    "stripTrailing": true,
+    "scopeMode": "exact",
+    "scopeHost": "example.com",
+    "protocolMode": "https",
+    "includePatterns": "/docs/*",
+    "excludePatterns": "*.pdf",
+    "includeSitemapFiles": false
+  },
+  "privacy": "Configuration only. No pasted input or generated output is stored in this file."
+}

@@ -1,0 +1,18 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = "Recipe" } = Astro.props;
+---
+
+<div class="recipe-controls">
+  <div>
+    <strong>{label}</strong>
+    <span>Save or reload the rules. Input and output are never included.</span>
+  </div>
+  <div>
+    <button type="button" data-recipe-save>Download recipe</button>
+    <label class="recipe-load">Load recipe<input type="file" accept="application/json,.json" data-recipe-load /></label>
+  </div>
+</div>

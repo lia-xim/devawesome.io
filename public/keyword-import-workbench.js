@@ -1,4 +1,5 @@
 import { formatKeywordImport, prepareKeywordImport } from "./workbench-core.js";
+import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
 
 const examples = {
   spreadsheet: {
@@ -9,7 +10,7 @@ const examples = {
   csv: {
     mode: ",",
     header: true,
-    input: 'query,search volume,intent\n"running shoes, women",1200,commercial\ntrail running shoes,800,commercial\nTrail Running Shoes,800,commercial\nseo audit checklist,260,informational',
+    input: 'query,search volume,intent\n"running shoes, women",1200,commercial\ntrail running shoes,800,commercial\nTrail Running Shoes,950,transactional\nseo audit checklist,260,informational',
   },
   messy: {
     mode: "lines",
@@ -46,6 +47,9 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
   const ignoreCase = root.querySelector("[data-keyword-workbench-ignore-case]");
   const stripNoise = root.querySelector("[data-keyword-workbench-strip-noise]");
   const whitespace = root.querySelector("[data-keyword-workbench-whitespace]");
+  const conflictStrategy = root.querySelector("[data-keyword-conflict-strategy]");
+  const conflictReview = root.querySelector("[data-keyword-conflict-review]");
+  const conflictRows = root.querySelector("[data-keyword-conflicts]");
   const formats = [...root.querySelectorAll("[data-keyword-workbench-format]")];
   const output = root.querySelector("[data-keyword-workbench-output]");
   const sourceSummary = root.querySelector("[data-keyword-source-summary]");
@@ -57,11 +61,14 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
   const status = root.querySelector("[data-keyword-workbench-status]");
   const copy = root.querySelector("[data-keyword-workbench-copy]");
   const downloadButton = root.querySelector("[data-keyword-workbench-download]");
+  const recipeSave = root.querySelector("[data-recipe-save]");
+  const recipeLoad = root.querySelector("[data-recipe-load]");
   if (!input || !mode || !header || !keywordColumn || !retained || !output || !status) continue;
 
   let currentResult;
   let currentFormat = "txt";
   let knownHeaders = [];
+  let conflictResolutions = {};
 
   const options = () => ({
     mode: mode.value,
@@ -72,9 +79,14 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     ignoreCase: ignoreCase.checked,
     stripNoise: stripNoise.checked,
     whitespace: whitespace.checked,
+    duplicateStrategy: conflictStrategy.value,
+    conflictResolutions,
   });
 
   const rebuildMapping = () => {
+    const lineMode = mode.value === "lines";
+    header.disabled = lineMode;
+    if (lineMode) header.checked = false;
     const probe = prepareKeywordImport(input.value, { mode: mode.value, hasHeader: header.checked });
     const previousKeyword = knownHeaders[Number(keywordColumn.value || 0)];
     const previousRetained = new Set([...retained.querySelectorAll("input:checked")].map((field) => knownHeaders[Number(field.value)]));
@@ -109,28 +121,58 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     }));
   };
 
+  const renderConflicts = (result) => {
+    conflictReview.hidden = result.conflicts.length === 0;
+    conflictRows.replaceChildren(...result.conflicts.map((conflict) => {
+      const item = document.createElement("article");
+      item.className = "conflict-row";
+      const summary = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = conflict.keyword;
+      const detail = document.createElement("span");
+      detail.textContent = conflict.rows.map((row) => `Row ${row.sourceRow}: ${row.values.join(" · ") || "no retained values"}`).join(" | ");
+      summary.append(title, detail);
+      const select = document.createElement("select");
+      select.setAttribute("aria-label", `Resolve conflicting rows for ${conflict.keyword}`);
+      for (const [value, label] of [["unresolved", "Choose a resolution"], ["first", "Keep first row"], ["last", "Keep last row"], ["merge", "Merge distinct values"]]) select.append(option(value, label));
+      select.value = conflict.resolution;
+      select.disabled = conflictStrategy.value !== "manual";
+      select.addEventListener("change", () => {
+        if (select.value === "unresolved") delete conflictResolutions[conflict.id];
+        else conflictResolutions[conflict.id] = select.value;
+        run();
+      });
+      item.append(summary, select);
+      return item;
+    }));
+  };
+
   function run() {
     for (const field of retained.querySelectorAll("input")) field.disabled = Number(field.value) === Number(keywordColumn.value);
     currentResult = prepareKeywordImport(input.value, options());
     currentFormat = formats.find((field) => field.checked)?.value || "txt";
     output.value = formatKeywordImport(currentResult, currentFormat);
     sourceSummary.textContent = `${currentResult.inputRows} data rows · ${currentResult.headers.length} column${currentResult.headers.length === 1 ? "" : "s"} · ${currentResult.hasHeader ? "header kept for mapping" : "no header row"}`;
-    reviewSummary.innerHTML = `<strong>${currentResult.rows.length}</strong><span>clean rows</span><strong>${currentResult.duplicates}</strong><span>duplicates removed</span><strong>${currentResult.ignored}</strong><span>empty or noise rows removed</span>`;
+    reviewSummary.innerHTML = `<strong>${currentResult.rows.length}</strong><span>clean rows</span><strong>${currentResult.duplicates}</strong><span>duplicate rows</span><strong>${currentResult.conflicts.length}</strong><span>data conflicts</span><strong>${currentResult.ignored}</strong><span>empty or noise rows</span>`;
     changeLog.replaceChildren(...[
       `${currentResult.inputRows} source rows read`,
       `${currentResult.rows.length} unique keywords kept`,
       `${currentResult.retainedHeaders.length} additional column${currentResult.retainedHeaders.length === 1 ? "" : "s"} retained`,
-      currentResult.duplicates ? `${currentResult.duplicates} duplicate row${currentResult.duplicates === 1 ? "" : "s"} removed` : "No duplicates found",
+      currentResult.duplicates ? `${currentResult.duplicates} duplicate row${currentResult.duplicates === 1 ? "" : "s"} reviewed` : "No duplicates found",
+      currentResult.unresolvedConflicts ? `${currentResult.unresolvedConflicts} conflict${currentResult.unresolvedConflicts === 1 ? "" : "s"} still need a decision` : "No unresolved data conflicts",
     ].map((text) => { const item = document.createElement("li"); item.textContent = text; return item; }));
     renderPreview(currentResult);
+    renderConflicts(currentResult);
     formatNote.textContent = currentFormat === "contextter"
       ? 'Contextter CSV renames the selected keyword column to "keyword". The current Contextter importer can map retained columns during import.'
       : currentFormat === "csv" ? "CSV keeps the selected keyword column and any retained columns."
       : currentFormat === "json" ? "JSON exports one object per cleaned keyword row."
       : "TXT contains one cleaned keyword per line and drops additional columns.";
-    status.textContent = `${currentResult.rows.length} rows ready for ${currentFormat === "contextter" ? "Contextter CSV" : currentFormat.toUpperCase()} export.`;
-    copy.disabled = !output.value;
-    downloadButton.disabled = !output.value;
+    status.textContent = currentResult.unresolvedConflicts
+      ? `Resolve ${currentResult.unresolvedConflicts} conflicting keyword${currentResult.unresolvedConflicts === 1 ? "" : "s"} before export.`
+      : `${currentResult.rows.length} rows ready for ${currentFormat === "contextter" ? "Contextter CSV" : currentFormat.toUpperCase()} export.`;
+    copy.disabled = !output.value || currentResult.unresolvedConflicts > 0;
+    downloadButton.disabled = !output.value || currentResult.unresolvedConflicts > 0;
   }
 
   const rebuildAndRun = () => { rebuildMapping(); run(); };
@@ -139,6 +181,7 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
   header.addEventListener("change", rebuildAndRun);
   keywordColumn.addEventListener("change", run);
   for (const field of [caseMode, ignoreCase, stripNoise, whitespace, ...formats]) field.addEventListener("change", run);
+  conflictStrategy.addEventListener("change", () => { conflictResolutions = {}; run(); });
   for (const button of root.querySelectorAll("[data-keyword-example]")) button.addEventListener("click", () => {
     const example = examples[button.dataset.keywordExample];
     input.value = example.input;
@@ -146,6 +189,7 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     header.checked = example.header;
     knownHeaders = [];
     retained.replaceChildren();
+    conflictResolutions = {};
     rebuildAndRun();
     input.focus();
   });
@@ -154,5 +198,32 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     catch { output.focus(); output.select(); status.textContent = "Select and copy the export manually."; }
   });
   downloadButton.addEventListener("click", () => { download(output.value, currentFormat); status.textContent = "Export downloaded."; });
+  recipeSave.addEventListener("click", () => {
+    const settings = options();
+    delete settings.conflictResolutions;
+    downloadRecipe(createRecipe("keyword-import", settings, { sourceType: mode.value }), "devawesome-keyword-import.recipe.json");
+    status.textContent = "Recipe downloaded without input data or row-specific conflict decisions.";
+  });
+  recipeLoad.addEventListener("change", async () => {
+    try {
+      const recipe = await readRecipeFile(recipeLoad.files?.[0], "keyword-import");
+      const settings = recipe.settings;
+      mode.value = settings.mode ?? mode.value;
+      header.checked = settings.hasHeader ?? header.checked;
+      caseMode.value = settings.caseMode ?? caseMode.value;
+      ignoreCase.checked = settings.ignoreCase ?? ignoreCase.checked;
+      stripNoise.checked = settings.stripNoise ?? stripNoise.checked;
+      whitespace.checked = settings.whitespace ?? whitespace.checked;
+      conflictStrategy.value = settings.duplicateStrategy ?? conflictStrategy.value;
+      // A recipe restores reusable rules, never decisions tied to pasted rows.
+      conflictResolutions = {};
+      rebuildMapping();
+      keywordColumn.value = String(settings.keywordColumn ?? keywordColumn.value);
+      for (const field of retained.querySelectorAll("input")) field.checked = (settings.retainedColumns || []).includes(Number(field.value));
+      run();
+      status.textContent = "Recipe loaded. Pasted input was left unchanged.";
+    } catch (error) { status.textContent = `Recipe not loaded: ${error.message}`; }
+    recipeLoad.value = "";
+  });
   rebuildAndRun();
 }

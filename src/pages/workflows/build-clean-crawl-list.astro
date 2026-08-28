@@ -13,16 +13,16 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Build a clean crawl list",
-  step: ["Extract URLs", "Choose normalization rules", "Review hosts and exceptions", "Export the crawl list"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Extract URLs", "Choose normalization rules", "Define host and protocol scope", "Review exclusions", "Export targets and rejection reasons"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
-<BaseLayout title="Build a Clean Crawl List" description="Normalize a mixed URL list, inspect invalid entries, and export a stable crawl-ready file locally." canonicalPath="/workflows/build-clean-crawl-list" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
+<BaseLayout title="Build a Clean Crawl List" description="Extract URLs, set host and protocol scope, inspect every exclusion, and export crawl targets plus rejection reasons." canonicalPath="/workflows/build-clean-crawl-list" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
   <header class="workflow-page-header">
     <a href="/workflows">← All workflows</a>
     <h1>Build a clean crawl list</h1>
-    <p>Normalize copied URLs, expose invalid entries, and export one stable list before a crawler touches it.</p>
-    <WorkflowProgress steps={["Extract URLs", "Choose rules", "Review exceptions", "Export the list"]} />
+    <p>Extract copied URLs, define exactly what belongs in scope, and export both crawl targets and documented exclusions.</p>
+    <WorkflowProgress steps={["Extract URLs", "Choose rules", "Define scope", "Review exclusions", "Export files"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="Crawl list workbench">
@@ -30,7 +30,7 @@ const howTo = {
     <CrawlListWorkbench />
   </section>
 
-  <section class="workflow-scenario-list" aria-labelledby="crawl-scenarios-title"><h2 id="crawl-scenarios-title">Use this workflow when…</h2><ul><li>A crawl export contains the same page in several URL forms.</li><li>You copied URLs from a spreadsheet, sitemap, Markdown file, or issue.</li><li>You need to separate invalid text before a crawl or import.</li></ul></section>
+  <section class="workflow-scenario-list" aria-labelledby="crawl-scenarios-title"><h2 id="crawl-scenarios-title">Use this workflow when…</h2><ul><li>A crawl export contains the same page in several URL forms.</li><li>You copied URLs from a spreadsheet, sitemap, sitemap index, Markdown file, or issue.</li><li>You need to restrict a crawl by host, subdomain, protocol, path pattern, or resource type.</li><li>You need an export that explains why each rejected URL was excluded.</li></ul></section>
 
   <section class="workflow-explanation" aria-labelledby="crawl-changes-title">
     <div class="workflow-section-heading"><h2 id="crawl-changes-title">What changes, exactly?</h2><p>Every normalization choice is visible. The workflow cannot decide whether two parameter variants contain different content.</p></div>
@@ -56,6 +56,8 @@ https://example.com/about</pre></div>
       <div role="row"><span role="cell">Tracking parameter</span><code role="cell">?utm_source=email</code><code role="cell">Remove in tracking mode</code></div>
       <div role="row"><span role="cell">Fragment</span><code role="cell">/guide#setup</code><code role="cell">Remove for an HTTP crawl target</code></div>
       <div role="row"><span role="cell">Bare domain</span><code role="cell">example.com</code><code role="cell">Add HTTPS only when intended</code></div>
+      <div role="row"><span role="cell">Sitemap index</span><code role="cell">sitemapindex → child sitemap</code><code role="cell">Treat as discovery input, not a page target</code></div>
+      <div role="row"><span role="cell">Subdomain boundary</span><code role="cell">shop.example.com</code><code role="cell">Include only when scope allows it</code></div>
     </div>
   </section>
 

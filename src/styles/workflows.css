@@ -126,6 +126,82 @@
   box-shadow: none;
 }
 
+.hero-flagship-preview {
+  overflow: hidden;
+  border: 1px solid #bfc7d9;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 22px 50px rgba(47, 53, 85, 0.1);
+}
+
+.hero-flagship-preview > a {
+  display: grid;
+  grid-template-columns: 2.3rem 1fr 1.2rem;
+  align-items: start;
+  gap: 1rem;
+  min-height: 10.5rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--toolbox-line);
+  color: var(--toolbox-text);
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.hero-flagship-preview > a:hover {
+  background: var(--toolbox-soft);
+  color: var(--toolbox-accent);
+}
+
+.hero-flagship-number {
+  color: var(--toolbox-accent);
+  font-family: var(--toolbox-mono);
+  font-size: 0.74rem;
+}
+
+.hero-flagship-preview strong {
+  font-size: 1.12rem;
+  letter-spacing: -0.025em;
+}
+
+.hero-flagship-preview p {
+  margin: 0.7rem 0 0;
+  color: var(--toolbox-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.hero-recipe-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background: #eef0ff;
+  color: #444d62;
+  font-size: 0.75rem;
+}
+
+.secondary-workflows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 2rem;
+  border-block: 1px solid #cbd1df;
+}
+
+.secondary-workflows a {
+  display: grid;
+  grid-template-columns: 1fr 1.2rem;
+  gap: 0.75rem;
+  min-height: 8rem;
+  padding: 1.4rem;
+  color: var(--toolbox-text);
+  text-decoration: none;
+}
+
+.secondary-workflows a:first-child { border-right: 1px solid #cbd1df; }
+.secondary-workflows strong { font-size: 1rem; }
+.secondary-workflows span { color: var(--toolbox-muted); font-size: 0.84rem; line-height: 1.55; }
+.secondary-workflows .arrow-icon { grid-column: 2; grid-row: 1 / span 2; }
+
 .workflow-progress {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -906,6 +982,47 @@
   box-shadow: 0 16px 40px rgba(50, 56, 92, 0.07);
 }
 
+.index-evidence-input,
+.indexability-workbench > .recipe-controls {
+  grid-column: 1 / -1;
+}
+
+.index-evidence-input {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--toolbox-line);
+  background: #f8f9fd;
+}
+
+.index-evidence-input h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.8rem); letter-spacing: -0.035em; }
+.index-evidence-input p { margin: 0.45rem 0 0; color: var(--toolbox-muted); line-height: 1.55; }
+.index-evidence-meta { display: grid; grid-template-columns: 1fr 14rem; gap: 0.8rem; }
+.index-evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+.index-evidence-meta label,
+.index-evidence-grid label,
+.scope-builder label,
+.mcp-compare-mode,
+.mcp-file-import { display: grid; gap: 0.4rem; color: #323947; font-size: 0.76rem; font-weight: 680; }
+.index-evidence-meta input,
+.index-evidence-meta select,
+.index-evidence-grid textarea,
+.scope-builder input,
+.scope-builder select,
+.scope-builder textarea,
+.mcp-compare-mode select,
+.mcp-file-import input { width: 100%; box-sizing: border-box; border: 1px solid #c8cfdd; border-radius: 6px; background: #fff; color: var(--toolbox-text); font: inherit; }
+.index-evidence-meta input,
+.index-evidence-meta select,
+.scope-builder input,
+.scope-builder select,
+.mcp-compare-mode select { min-height: 2.8rem; padding: 0.55rem 0.7rem; }
+.index-evidence-grid textarea,
+.scope-builder textarea { resize: vertical; padding: 0.7rem; font-family: var(--toolbox-mono); font-size: 0.76rem; line-height: 1.5; }
+.index-extract-actions { display: flex; align-items: center; gap: 1rem; }
+.index-extract-actions button { min-height: 2.65rem; padding: 0.55rem 0.85rem; border: 1px solid var(--toolbox-accent); border-radius: 6px; background: var(--toolbox-accent); color: #fff; font: inherit; font-weight: 680; cursor: pointer; }
+.index-extract-actions p { font-size: 0.76rem; }
+
 .indexability-fields,
 .indexability-result {
   padding: clamp(1.5rem, 3vw, 3rem);
@@ -1586,10 +1703,75 @@
   align-items: center;
 }
 
+.mapping-grid-keyword { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
 .mapping-grid-mcp {
   grid-template-columns: 1fr 1fr;
   margin-bottom: 1rem;
 }
+
+.scope-builder {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--toolbox-line);
+}
+
+.conflict-review {
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 1px solid #e4b5a8;
+  border-radius: 8px;
+  background: #fff8f5;
+}
+
+.conflict-review > div:first-child { display: grid; gap: 0.25rem; padding: 0.9rem 1rem; border-bottom: 1px solid #efd1c8; }
+.conflict-review > div:first-child span { color: var(--toolbox-muted); font-size: 0.78rem; line-height: 1.45; }
+.conflict-row { display: grid; grid-template-columns: 1fr minmax(12rem, 0.35fr); gap: 1rem; align-items: center; padding: 0.9rem 1rem; border-bottom: 1px solid #efd1c8; }
+.conflict-row:last-child { border-bottom: 0; }
+.conflict-row > div { display: grid; gap: 0.3rem; min-width: 0; }
+.conflict-row span { color: var(--toolbox-muted); font-family: var(--toolbox-mono); font-size: 0.72rem; line-height: 1.5; overflow-wrap: anywhere; }
+.conflict-row select { min-height: 2.6rem; padding: 0.5rem 0.65rem; border: 1px solid #d4a496; border-radius: 6px; background: #fff; color: var(--toolbox-text); }
+
+.recipe-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1.35rem, 2.5vw, 2rem);
+  border-top: 1px solid var(--toolbox-line);
+  background: #eef0ff;
+}
+
+.recipe-controls > div:first-child { display: grid; gap: 0.2rem; }
+.recipe-controls > div:first-child span { color: #545e73; font-size: 0.76rem; }
+.recipe-controls > div:last-child { display: flex; gap: 0.5rem; }
+.recipe-controls button,
+.recipe-load { display: inline-flex; min-height: 2.5rem; align-items: center; justify-content: center; padding: 0.5rem 0.75rem; border: 1px solid #b9c1d6; border-radius: 6px; background: #fff; color: var(--toolbox-text); font: inherit; font-size: 0.76rem; font-weight: 680; cursor: pointer; }
+.recipe-load input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.recipe-controls button:hover,
+.recipe-load:hover { border-color: var(--toolbox-accent); color: var(--toolbox-accent); }
+
+.worked-fixture {
+  display: grid;
+  grid-template-columns: minmax(20rem, 0.82fr) minmax(24rem, 1.18fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: clamp(3.5rem, 6vw, 6rem) clamp(2rem, 6vw, 6rem);
+  background: #f7f8ff;
+}
+
+.worked-fixture h2 { max-width: 15ch; margin: 0.9rem 0 0; color: var(--toolbox-text); font-size: clamp(2rem, 3.2vw, 3.35rem); letter-spacing: -0.05em; line-height: 1.05; }
+.worked-fixture p { color: var(--toolbox-muted); line-height: 1.65; }
+.worked-fixture dl { margin: 0; border-top: 1px solid var(--toolbox-line); }
+.worked-fixture dl div { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--toolbox-line); }
+.worked-fixture dt { color: var(--toolbox-muted); font-size: 0.75rem; font-weight: 680; }
+.worked-fixture dd { margin: 0; color: var(--toolbox-text); font-size: 0.86rem; line-height: 1.5; }
+.fixture-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.fixture-actions a { padding: 0.65rem 0.75rem; border: 1px solid var(--toolbox-line); border-radius: 6px; background: #fff; color: var(--toolbox-accent); font-size: 0.78rem; font-weight: 680; text-decoration: none; }
+.fixture-actions a:hover { border-color: var(--toolbox-accent); }
+.fixture-reference { margin-bottom: 0; font-size: 0.78rem; }
 
 .retained-columns {
   display: flex;
@@ -1934,6 +2116,9 @@
   .review-summary {
     grid-template-columns: repeat(4, auto);
   }
+
+  .index-evidence-grid,
+  .scope-builder { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 620px) {
@@ -1967,6 +2152,18 @@
   .review-summary {
     grid-template-columns: 1fr;
   }
+
+  .secondary-workflows,
+  .worked-fixture,
+  .index-evidence-meta,
+  .index-evidence-grid,
+  .scope-builder,
+  .conflict-row { grid-template-columns: 1fr; }
+
+  .secondary-workflows a:first-child { border-right: 0; border-bottom: 1px solid #cbd1df; }
+  .hero-recipe-note,
+  .recipe-controls,
+  .recipe-controls > div:last-child { align-items: stretch; flex-direction: column; }
 
   .review-summary {
     display: grid;

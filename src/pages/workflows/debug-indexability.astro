@@ -2,6 +2,7 @@
 import ArrowIcon from "../../components/ArrowIcon.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
+import RecipeControls from "../../components/RecipeControls.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const breadcrumbs = [
@@ -21,8 +22,21 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
   </header>
 
   <section class="workflow-tool-surface" aria-label="Indexability workbench">
-    <div class="workflow-local-note workflow-local-note-actions"><div><strong>Manual input.</strong><span>This page does not fetch a URL or query Google Search Console.</span></div><div class="example-actions" aria-label="Indexability examples"><button type="button" data-index-example="noindex">200 + noindex</button><button type="button" data-index-example="canonical">Canonical elsewhere</button><button type="button" data-index-example="robots">Robots conflict</button></div></div>
+    <div class="workflow-local-note workflow-local-note-actions"><div><strong>Local evidence parser.</strong><span>Paste response evidence or set each signal manually. No URL is fetched.</span></div><div class="example-actions" aria-label="Indexability examples"><button type="button" data-index-example="noindex">200 + noindex</button><button type="button" data-index-example="canonical">Canonical elsewhere</button><button type="button" data-index-example="robots">Robots conflict</button></div></div>
     <div class="indexability-workbench" data-indexability-workflow data-state="eligible">
+      <section class="index-evidence-input" aria-labelledby="index-evidence-title">
+        <div><h2 id="index-evidence-title">Paste the evidence you already collected</h2><p>Copy a final header block, the rendered HTML head, and the relevant robots.txt. The parser fills the signal controls below.</p></div>
+        <div class="index-evidence-meta">
+          <label><span>Tested URL</span><input type="url" placeholder="https://example.com/page" data-index-url /></label>
+          <label><span>Crawler</span><select data-index-agent><option>Googlebot</option><option>Bingbot</option><option>GPTBot</option><option>ClaudeBot</option><option>PerplexityBot</option></select></label>
+        </div>
+        <div class="index-evidence-grid">
+          <label><span>Final HTTP response headers</span><textarea rows="7" spellcheck="false" placeholder="HTTP/2 200&#10;content-type: text/html&#10;x-robots-tag: noindex" data-index-headers></textarea></label>
+          <label><span>Rendered HTML head</span><textarea rows="7" spellcheck="false" placeholder='<link rel="canonical" href="https://example.com/page">&#10;<meta name="robots" content="index,follow">' data-index-html></textarea></label>
+          <label><span>robots.txt</span><textarea rows="7" spellcheck="false" placeholder="User-agent: *&#10;Disallow: /private/" data-index-robots-text></textarea></label>
+        </div>
+        <div class="index-extract-actions"><button type="button" data-index-extract>Extract signals</button><p data-index-extract-status aria-live="polite">Nothing is sent or saved.</p></div>
+      </section>
       <div class="indexability-fields">
         <div><h2>Signals you observed</h2><p>Use the final response and rendered directives, not assumptions from a template.</p></div>
         <label><span>HTTP response</span><select data-index-status><option value="200">200 OK</option><option value="redirect">3xx redirect</option><option value="404">404 / 410</option><option value="error">Other 4xx / 5xx</option></select></label>
@@ -39,6 +53,7 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
         <div class="indexability-actions"><button type="button" data-index-copy>Copy diagnosis</button><button type="button" data-index-download>Download JSON report</button></div>
         <p class="indexability-status" data-index-report-status aria-live="polite">Diagnosis updates as signals change.</p>
       </div>
+      <RecipeControls label="Indexability recipe" />
     </div>
   </section>
 

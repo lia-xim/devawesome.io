@@ -6,13 +6,15 @@ Public source repository for the current devawesome.io website.
 
 DevAwesome is a browser-local workbench for developers and SEO teams. The owner explicitly approved indexable publication on 28 August 2026. A visitor can either open one focused mini-tool or follow a complete workflow that turns a messy input or a group of technical signals into a reviewable result without signing up or uploading the data.
 
-The current workbench includes nine focused tools plus four guided workflows for keyword imports, crawl lists, indexability diagnosis, and MCP messages. The release also keeps an original programming-language quiz, four reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
+The current workbench includes nine focused tools plus four guided workflows. Keyword imports expose conflicting duplicate data instead of silently choosing a row. Crawl lists support host, subdomain, protocol, pattern, sitemap-type, and resource boundaries while retaining exclusion reasons. The indexability workflow extracts signals from pasted evidence. MCP validation applies revision-specific checks and expected-versus-actual comparison. Every deep workflow can export and reload a configuration-only recipe without storing the pasted source data.
+
+The release also keeps an original programming-language quiz, four reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
 Matthias Ramahi is the operator and editor. All four field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
 
 ## Standalone purpose
 
-The tools solve one transformation. The workflows connect related steps, show what changed, name the limits, and offer an optional next handoff only when it fits the job. Reproducible tests and engineering notes explain how selected tools are checked and where their claims stop. The portfolio records DevAwesome as an accepted Contextter support domain with a standalone purpose. Common ownership is disclosed and never used as independent corroboration or as a reason for automatic product coverage.
+The tools solve one transformation. The workflows connect related steps, show what changed, preserve conflicts and exclusions for review, and offer an optional next handoff only when it fits the job. Portable recipes make the decisions repeatable without saving the underlying input. Reproducible tests and worked fixtures explain how selected tools are checked and where their claims stop. The portfolio records DevAwesome as an accepted Contextter support domain with a standalone purpose. Common ownership is disclosed and never used as independent corroboration or as a reason for automatic product coverage.
 
 ## Hard boundary
 

@@ -5,3 +5,34 @@
 .case-grid{display:grid;grid-template-columns:1fr 1fr;margin-top:2rem;border:1px solid var(--line)}.case-grid article{min-height:19rem;padding:2rem;border-right:1px solid var(--line)}.case-grid article:last-child{border-right:0}.case-grid h2{font-size:clamp(2rem,3vw,3.2rem)}.case-grid dl{margin:3rem 0 0}.case-grid dl div{display:flex;justify-content:space-between;padding:.75rem 0;border-top:1px solid var(--line)}.case-grid dt{color:var(--muted)}.case-grid dd{margin:0;color:var(--signal);font-family:var(--mono);font-size:.78rem}
 @media(max-width:900px){.field-test-grid,.test-verdict,.test-layout{grid-template-columns:1fr}.field-test-card{border-right:0;border-bottom:1px solid var(--line)}.test-verdict>div,.test-rail{position:static;border-right:0;border-bottom:1px solid var(--line)}.metric-grid{grid-template-columns:1fr 1fr}.metric-grid div:nth-child(2){border-right:0}.metric-grid div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
 @media(max-width:560px){.field-test-card,.test-verdict>div,.test-verdict>p,.test-rail,.test-body{padding-inline:1.2rem}.field-test-card h2{margin-top:3rem}.field-test-card dl,.metric-grid,.case-grid{grid-template-columns:1fr}.metric-grid div,.case-grid article{min-height:auto;border-right:0;border-bottom:1px solid var(--line)}.metric-grid div:last-child,.case-grid article:last-child{border-bottom:0}.metric-grid div:nth-child(3){border-bottom:1px solid var(--line)}}
+.fixture-link-list {
+  display: grid;
+  gap: 0;
+  margin: 1.2rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--toolbox-line);
+  list-style: none;
+}
+
+.fixture-link-list li {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--toolbox-line);
+}
+
+.fixture-link-list a {
+  padding: 0.85rem;
+  border-right: 1px solid var(--toolbox-line);
+  color: var(--toolbox-accent);
+  font-size: 0.82rem;
+  font-weight: 680;
+  text-decoration: none;
+}
+
+.fixture-link-list a:last-child { border-right: 0; }
+
+@media (max-width: 620px) {
+  .fixture-link-list li { grid-template-columns: 1fr; }
+  .fixture-link-list a { border-right: 0; border-bottom: 1px solid var(--toolbox-line); }
+  .fixture-link-list a:last-child { border-bottom: 0; }
+}

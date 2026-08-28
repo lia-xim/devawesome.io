@@ -13,16 +13,16 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Prepare a keyword import",
-  step: ["Paste the source", "Map the keyword column", "Review what changed", "Choose the export format"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Paste the source", "Map the columns", "Resolve duplicate conflicts", "Choose the export format", "Save the recipe"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
-<BaseLayout title="Prepare a Keyword Import" description="Clean a copied keyword list or CSV export, review the changes, and export lines, CSV, or JSON locally." canonicalPath="/workflows/prepare-keyword-import" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
+<BaseLayout title="Prepare a Keyword Import" description="Map keyword data, expose conflicting duplicate rows, choose a resolution, and export a reviewed file locally." canonicalPath="/workflows/prepare-keyword-import" schemaMainEntity={howTo} breadcrumbs={breadcrumbs}>
   <header class="workflow-page-header">
     <a href="/workflows">← All workflows</a>
     <h1>Prepare a keyword import</h1>
-    <p>Turn a copied list, CSV export, or spreadsheet column into a clean file you can review and reuse.</p>
-    <WorkflowProgress steps={["Paste the source", "Map columns", "Review changes", "Choose the export"]} />
+    <p>Map a copied list or CSV export, resolve conflicting duplicate rows, and save a reusable import recipe.</p>
+    <WorkflowProgress steps={["Paste the source", "Map columns", "Resolve conflicts", "Export and save recipe"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="Keyword import workbench">
@@ -35,7 +35,8 @@ const howTo = {
     <ul>
       <li>You copied keywords from a spreadsheet or notes file and need one clean list.</li>
       <li>A CSV export contains repeated entries, blank cells, bullets, or numbering.</li>
-      <li>You need lines, comma-separated values, or JSON for another tool.</li>
+      <li>Repeated keywords carry different volume, intent, language, or other source values.</li>
+      <li>You need lines, comma-separated values, CSV, or JSON for another tool.</li>
     </ul>
   </section>
 
@@ -69,7 +70,8 @@ site audit</pre></div>
       <div role="row"><span role="cell">Quoted comma</span><code role="cell">"running shoes, women"</code><code role="cell">running shoes, women</code></div>
       <div role="row"><span role="cell">Slash in a keyword</span><code role="cell">running / jogging shoes</code><code role="cell">Keep in Lines mode</code></div>
       <div role="row"><span role="cell">Numbered list</span><code role="cell">2) trail running shoes</code><code role="cell">trail running shoes</code></div>
-      <div role="row"><span role="cell">Capitalized duplicate</span><code role="cell">SEO Audit / seo audit</code><code role="cell">Keep the first spelling</code></div>
+      <div role="row"><span role="cell">Capitalized duplicate</span><code role="cell">SEO Audit / seo audit</code><code role="cell">Group after case normalization</code></div>
+      <div role="row"><span role="cell">Conflicting source data</span><code role="cell">seo audit · 900 / SEO Audit · 1,100</code><code role="cell">Block export until resolved</code></div>
     </div>
   </section>
 

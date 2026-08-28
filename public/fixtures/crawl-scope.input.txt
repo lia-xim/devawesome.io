@@ -1,0 +1,7 @@
+https://example.com/docs/start?utm_source=fixture#intro
+https://example.com/docs/start
+https://www.example.com/docs/subpage
+http://example.com/docs/legacy
+https://example.com/private/login
+https://example.com/docs/report.pdf
+not a url

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "devawesome-workbench-recipe",
+  "tool": "indexability",
+  "toolVersion": "1.0.0",
+  "sourceType": "pasted-response-evidence",
+  "settings": {
+    "userAgent": "Googlebot",
+    "defaultSignals": {
+      "status": "200",
+      "canonical": "missing",
+      "meta": "index",
+      "header": "index",
+      "robots": "allowed"
+    }
+  },
+  "privacy": "Configuration only. No pasted input or generated output is stored in this file."
+}

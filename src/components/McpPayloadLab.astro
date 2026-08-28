@@ -1,3 +1,7 @@
+---
+import RecipeControls from "./RecipeControls.astro";
+---
+
 <div class="deep-workbench mcp-payload-lab" data-mcp-payload-lab>
   <div class="workbench-bar deep-workbench-bar">
     <div><strong>MCP payload lab</strong><span>Classify, validate, correct, compare, save fixture</span></div>
@@ -9,6 +13,8 @@
     <div class="mapping-grid mapping-grid-mcp">
       <label><span>Copied from</span><select data-mcp-lab-source><option>MCP Inspector</option><option>Client SDK log</option><option>Server log</option><option>Documentation example</option><option>Hand-written fixture</option></select></label>
       <label><span>Message type</span><select data-mcp-lab-type><option value="auto">Detect automatically</option><option value="request">JSON-RPC request</option><option value="tools-call-request">tools/call request</option><option value="response">JSON-RPC response</option><option value="tools-list-response">tools/list response</option><option value="tool-definition">Tool definition</option></select></label>
+      <label><span>Protocol revision</span><select data-mcp-lab-version><option value="2026-07-28" selected>2026-07-28 · current stateless core</option><option value="2025-11-25">2025-11-25 · session-based</option><option value="2025-06-18">2025-06-18 · legacy compatibility</option></select></label>
+      <label class="mcp-file-import"><span>Import Inspector or log file</span><input type="file" accept="application/json,.json,.jsonl,.txt" data-mcp-lab-file /></label>
     </div>
     <label class="source-input"><span>Primary message</span><textarea rows="14" maxlength="1000000" spellcheck="false" data-mcp-lab-input>{`{
   "id": 7,
@@ -35,9 +41,11 @@
   </section>
 
   <section class="deep-workbench-step" aria-labelledby="mcp-pair-title">
-    <div class="step-heading"><span>4</span><div><h2 id="mcp-pair-title">Compare a request and response</h2><p>Paste the related message to check direction and matching IDs. Leave it empty when you only have one message.</p></div></div>
-    <label class="source-input"><span>Related request or response</span><textarea rows="10" maxlength="1000000" spellcheck="false" data-mcp-lab-related placeholder='{"jsonrpc":"2.0","id":7,"result":{"content":[]}}'></textarea></label>
+    <div class="step-heading"><span>4</span><div><h2 id="mcp-pair-title">Compare the related message or expected output</h2><p>Check request and response IDs, or compare an expected JSON shape with the actual message.</p></div></div>
+    <label class="mcp-compare-mode"><span>Comparison</span><select data-mcp-compare-mode><option value="pair">Request → response pair</option><option value="expected">Expected JSON → actual JSON</option></select></label>
+    <label class="source-input"><span data-mcp-related-label>Related response</span><textarea rows="10" maxlength="1000000" spellcheck="false" data-mcp-lab-related placeholder='{"jsonrpc":"2.0","id":7,"result":{"content":[]}}'></textarea></label>
     <ul class="pair-checks" data-mcp-pair-checks><li>Paste a related message to compare the pair.</li></ul>
     <p data-mcp-lab-status aria-live="polite">Ready</p>
   </section>
+  <RecipeControls label="MCP validation recipe" />
 </div>

@@ -1,3 +1,7 @@
+---
+import RecipeControls from "./RecipeControls.astro";
+---
+
 <div class="deep-workbench" data-crawl-list-workbench>
   <div class="workbench-bar deep-workbench-bar">
     <div><strong>Crawl list workbench</strong><span>Extract, normalize, group, review, export</span></div>
@@ -30,6 +34,14 @@ not a url,0,unknown</textarea></label>
       <label class="switch-row"><input type="checkbox" checked data-crawl-fragment /><span>Remove fragments</span></label>
       <label class="switch-row"><input type="checkbox" checked data-crawl-trailing /><span>Remove trailing path slashes</span></label>
     </div>
+    <div class="scope-builder">
+      <label><span>Host scope</span><select data-crawl-scope-mode><option value="all">All hosts</option><option value="exact">Exact host only</option><option value="subdomains">Host and subdomains</option></select></label>
+      <label><span>Scope host</span><input type="text" inputmode="url" placeholder="example.com" data-crawl-scope-host /></label>
+      <label><span>Protocol</span><select data-crawl-protocol><option value="all">HTTP and HTTPS</option><option value="https">HTTPS only</option><option value="http">HTTP only</option></select></label>
+      <label><span>Include patterns</span><textarea rows="3" placeholder="/docs/*&#10;/guides/*" data-crawl-include></textarea></label>
+      <label><span>Exclude patterns</span><textarea rows="3" placeholder="/admin/*&#10;*.pdf" data-crawl-exclude></textarea></label>
+      <label class="switch-row"><input type="checkbox" data-crawl-include-sitemaps /><span>Include child sitemap files as crawl targets</span></label>
+    </div>
   </section>
 
   <section class="deep-workbench-step" aria-labelledby="crawl-review-title">
@@ -39,6 +51,7 @@ not a url,0,unknown</textarea></label>
       <div class="preview-table-wrap"><table><caption>URLs by host</caption><thead><tr><th scope="col">Host</th><th scope="col">URLs</th></tr></thead><tbody data-crawl-hosts></tbody></table></div>
       <div class="exception-panels">
         <details open><summary data-crawl-suspicious-summary>Suspicious variants</summary><ul data-crawl-suspicious></ul></details>
+        <details open><summary data-crawl-excluded-summary>Excluded by scope</summary><ul data-crawl-excluded></ul></details>
         <details><summary data-crawl-invalid-summary>Invalid entries</summary><ul data-crawl-invalid></ul></details>
       </div>
     </div>
@@ -48,10 +61,11 @@ not a url,0,unknown</textarea></label>
     <div class="step-heading"><span>4</span><div><h2 id="crawl-export-title">Export the crawl input</h2><p>Lines are best for a simple queue. CSV and JSON retain the review fields.</p></div></div>
     <div class="export-controls">
       <fieldset class="format-picker"><legend>Output</legend><div><label><input type="radio" name="crawl-format" value="lines" checked data-crawl-format /><span>Lines</span></label><label><input type="radio" name="crawl-format" value="csv" data-crawl-format /><span>CSV</span></label><label><input type="radio" name="crawl-format" value="json" data-crawl-format /><span>JSON</span></label></div></fieldset>
-      <div class="export-actions"><button type="button" data-crawl-copy>Copy</button><button class="toolbox-button toolbox-button-small" type="button" data-crawl-download>Download</button></div>
+      <div class="export-actions"><button type="button" data-crawl-copy>Copy</button><button type="button" data-crawl-download-excluded>Download exclusions</button><button class="toolbox-button toolbox-button-small" type="button" data-crawl-download>Download</button></div>
     </div>
     <label class="export-output"><span>Export preview</span><textarea rows="12" readonly spellcheck="false" data-crawl-output></textarea></label>
     <p class="format-note">This output has not been crawled. Status, canonical, robots, and content still need a live request.</p>
     <p data-crawl-status aria-live="polite">Ready</p>
   </section>
+  <RecipeControls label="Crawl-list recipe" />
 </div>

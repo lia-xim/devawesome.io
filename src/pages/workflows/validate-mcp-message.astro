@@ -13,7 +13,7 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Validate an MCP message",
-  step: ["Identify the message", "Read structural findings", "Inspect the corrected fixture", "Compare a request and response"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Choose the protocol revision", "Identify the message", "Read structural findings", "Compare related or expected output"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
@@ -21,8 +21,8 @@ const howTo = {
   <header class="workflow-page-header">
     <a href="/workflows">← All workflows</a>
     <h1>Validate an MCP message</h1>
-    <p>Start with one copied message. Identify its role, fix the core JSON-RPC or tool-definition shape, and write down what still needs an SDK test.</p>
-    <WorkflowProgress steps={["Identify the message", "Read findings", "Inspect correction", "Compare the pair"]} />
+    <p>Choose the protocol revision, load or paste one message, inspect the corrected structure, and compare a related response or expected JSON shape.</p>
+    <WorkflowProgress steps={["Choose the version", "Read findings", "Inspect correction", "Compare output"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="MCP message workbench">
@@ -35,12 +35,14 @@ const howTo = {
   <section class="workflow-explanation" aria-labelledby="mcp-message-title">
     <div class="workflow-section-heading"><h2 id="mcp-message-title">Identify the message before fixing it</h2><p>A request, response, tools/list result, and single tool definition have different required fields.</p></div>
     <div class="message-type-rail">
-      <div><span>Request</span><code>jsonrpc + method + id?</code><p>Check the method and whether a response is expected.</p></div>
+      <div><span>Request</span><code>jsonrpc + method + id</code><p>Check the method, request ID, and revision-specific metadata.</p></div>
       <div><span>Response</span><code>jsonrpc + id + result/error</code><p>A response cannot contain both result and error.</p></div>
       <div><span>Tool definition</span><code>name + inputSchema</code><p>The schema describes the arguments accepted by that tool.</p></div>
     </div>
-    <p class="workflow-boundary">A structurally valid message can still fail because of protocol-version differences, transport framing, authorization, server state, invalid arguments, or tool execution. Run the corrected message through the exact client and server versions you use.</p>
+    <p class="workflow-boundary">The 2026-07-28 revision uses a stateless core and requires version and client-capability metadata on every request. The older revisions use different lifecycle rules. A structurally valid message can still fail because of transport, authorization, invalid arguments, or tool execution. Run the corrected message through the exact client and server versions you use.</p>
   </section>
+
+  <section class="worked-fixture section-rule"><div><span class="section-label">Worked fixture</span><h2>Expected shape and actual response stay separate.</h2><p>The synthetic fixture expects a successful JSON-RPC response with one text content block. The actual response adds the text value. Expected-shape comparison accepts the extra field while still requiring every declared path and value.</p></div><div><dl><div><dt>Protocol revision</dt><dd>2026-07-28</dd></div><div><dt>Comparison</dt><dd>Expected JSON is treated as the required subset of the actual response.</dd></div><div><dt>Boundary</dt><dd>No transport, authorization, SDK, or server execution is tested.</dd></div></dl><div class="fixture-actions"><a href="/fixtures/mcp-expected.json" download>Download expected JSON</a><a href="/fixtures/mcp-actual.json" download>Download actual JSON</a><a href="/fixtures/mcp-payload.recipe.json" download>Download recipe</a></div><p class="fixture-reference">Version rules follow the official <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/index">MCP 2026-07-28 base protocol</a>.</p></div></section>
 
   <section class="edge-case-section" aria-labelledby="mcp-edge-title">
     <div class="workflow-section-heading"><h2 id="mcp-edge-title">Check these failure boundaries</h2><p>The local validator deliberately stops before transport and execution.</p></div>
