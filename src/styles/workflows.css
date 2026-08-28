@@ -135,13 +135,17 @@
   list-style: none;
 }
 
+.workflow-progress-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .workflow-progress li {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.7rem;
   min-width: 0;
-  color: #7b8392;
+  color: #626b7b;
 }
 
 .workflow-progress li:not(:last-child)::after {

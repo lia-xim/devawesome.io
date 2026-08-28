@@ -10,11 +10,12 @@ interface Props {
 }
 
 const { title, description, href, cta, disclosure } = Astro.props;
+const headingId = `workflow-handoff-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
 ---
 
-<section class="workflow-handoff" aria-labelledby="workflow-handoff-title">
+<section class="workflow-handoff" aria-labelledby={headingId}>
   <div>
-    <h2 id="workflow-handoff-title">Where the result can go</h2>
+    <h2 id={headingId}>Where the result can go</h2>
     <p>Download the result first. It stays useful without another product.</p>
   </div>
   <div class="handoff-options">

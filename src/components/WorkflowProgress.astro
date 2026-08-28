@@ -6,7 +6,7 @@ interface Props {
 const { steps } = Astro.props;
 ---
 
-<ol class="workflow-progress" aria-label="Workflow steps">
+<ol class:list={["workflow-progress", `workflow-progress-${steps.length}`]} aria-label="Workflow steps">
   {steps.map((step, index) => (
     <li class={index === 0 ? "is-active" : undefined}>
       <span>{index + 1}</span>
