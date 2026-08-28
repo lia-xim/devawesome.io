@@ -1,0 +1,104 @@
+---
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import WorkflowLink from "../../components/WorkflowLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const toolSchema = {
+  "@type": "WebApplication",
+  name: "DevAwesome URL List Normalizer",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript and the browser URL API.",
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout
+  title="URL List Normalizer"
+  description="Validate, normalize, and deduplicate HTTP and HTTPS URL lists locally in your browser before a crawl or import."
+  canonicalPath="/tools/url-list-normalizer"
+  schemaMainEntity={toolSchema}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/tools">← All tools</a>
+      <h1>URL list normalizer</h1>
+    </div>
+    <p>Turn pasted URLs into a clean crawl list. Invalid entries, fragments, and duplicates are reported instead of hidden.</p>
+  </header>
+
+  <section class="tool-surface">
+    <div class="tool-privacy-note">
+      <span><strong>No crawling and no uploads.</strong> The browser parses the text without requesting any URL.</span>
+      <span>HTTP and HTTPS only</span>
+    </div>
+    <div class="list-workbench" data-url-normalizer>
+      <div class="workbench-bar">
+        <strong>URL list normalizer</strong>
+        <div>
+          <button type="button" data-url-clear>Clear</button>
+          <button type="button" data-url-copy disabled>Copy</button>
+          <button type="button" data-url-download disabled>Download</button>
+        </div>
+      </div>
+      <div class="list-panes">
+        <label>
+          <span>Paste URLs</span>
+          <textarea rows="14" maxlength="1000000" spellcheck="false" data-url-input>https://Example.com/page/#section
+example.com/page/
+https://example.com/page?utm_source=test
+not a url</textarea>
+        </label>
+        <label>
+          <span>Normalized crawl list</span>
+          <textarea rows="14" readonly spellcheck="false" data-url-output></textarea>
+        </label>
+      </div>
+      <div class="list-options">
+        <label><input type="checkbox" checked data-url-strip-query /> Remove query strings</label>
+        <label><input type="checkbox" checked data-url-strip-trailing /> Remove trailing slashes from paths</label>
+        <p data-url-status aria-live="polite">Ready</p>
+        <button class="toolbox-button toolbox-button-small" type="button" data-url-normalize>Normalize URLs</button>
+      </div>
+      <details class="invalid-list" data-url-invalid-wrap hidden>
+        <summary data-url-invalid-summary>Invalid entries</summary>
+        <ul data-url-invalid></ul>
+      </details>
+    </div>
+  </section>
+
+  <ToolPageContent
+    steps={[
+      "Paste one URL per line. Bare domains such as example.com are accepted and receive https://.",
+      "Choose whether query strings and trailing path slashes should be removed, then normalize the list.",
+      "Review invalid entries and copy or download the unique result before using it as a crawl input.",
+    ]}
+    handles={[
+      "HTTP and HTTPS URLs, including bare domains",
+      "Lowercase hostnames, default ports, fragments, and repeated URLs",
+      "Optional removal of query strings and trailing path slashes",
+      "International domain names through the browser's URL parser",
+    ]}
+    limits={[
+      "It does not request, crawl, redirect-check, or verify that a URL exists.",
+      "Removing a query string can merge URLs that serve different content.",
+      "It does not decide which URL should be canonical for a website.",
+    ]}
+    sources={[
+      { label: "WHATWG URL Standard", href: "https://url.spec.whatwg.org/", note: "The parsing and serialization model used by modern browsers." },
+    ]}
+    related={[
+      { label: "Keyword list cleaner", href: "/tools/keyword-list-cleaner", note: "Clean the queries associated with a URL set." },
+      { label: "Simple test case builder", href: "/tools/developer-tool-test-plan", note: "Declare expected redirects, canonicals, or status codes." },
+    ]}
+  />
+
+  <WorkflowLink
+    title="Need to check what a live page returns?"
+    description="AnalyseSpider checks one public URL and shows the crawl result. The normalizer itself never requests the URLs you paste."
+    href="https://analysespider.com/"
+    cta="Check a URL with AnalyseSpider"
+  />
+
+  <script is:inline src="/url-list-normalizer.js" defer></script>
+</BaseLayout>

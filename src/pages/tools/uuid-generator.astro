@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
 
 const toolSchema = {
   "@type": "WebApplication",
@@ -12,7 +13,6 @@ const toolSchema = {
 ---
 
 <BaseLayout
-  surface="toolbox"
   title="UUID Generator"
   description="Generate cryptographically random UUID v4 values locally in your browser."
   canonicalPath="/tools/uuid-generator"
@@ -57,16 +57,31 @@ const toolSchema = {
     </div>
   </section>
 
-  <section class="tool-detail">
-    <div class="tool-detail-heading">
-      <h2>What it creates</h2>
-      <p>Version 4 UUIDs use random data. They are useful identifiers, not passwords, access tokens, or proof of when something was created.</p>
-    </div>
-    <div class="tool-detail-links">
-      <a href="/tools/json-formatter"><span>Format JSON</span><span aria-hidden="true">→</span></a>
-      <a href="/tools/evidence-receipt"><span>Create a SHA-256 hash</span><span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+  <ToolPageContent
+    steps={[
+      "Enter how many identifiers you need, from 1 to 100.",
+      "Generate the UUID v4 values with the browser's cryptographic random source.",
+      "Copy the list or download it as a plain-text file.",
+    ]}
+    handles={[
+      "One to 100 random UUID version 4 values per run",
+      "Lowercase canonical string representation",
+      "Copy and plain-text download",
+    ]}
+    limits={[
+      "A UUID is an identifier, not a password, secret, or access token.",
+      "Version 4 UUIDs do not encode a creation time or sortable order.",
+      "Uniqueness is probabilistic; the tool does not maintain a registry of earlier values.",
+    ]}
+    sources={[
+      { label: "RFC 9562: Universally Unique IDentifiers", href: "https://www.rfc-editor.org/info/rfc9562/", note: "Current IETF specification for UUID formats and versions." },
+      { label: "Web Cryptography API Level 2", href: "https://w3c.github.io/webcrypto/#Crypto-method-randomUUID", note: "Defines the browser randomUUID method used here." },
+    ]}
+    related={[
+      { label: "JSON formatter", href: "/tools/json-formatter", note: "Place generated IDs into a valid payload." },
+      { label: "SHA-256 hash", href: "/tools/evidence-receipt", note: "Digest stable text or test fixtures." },
+    ]}
+  />
 
   <script is:inline src="/uuid-generator.js" defer></script>
 </BaseLayout>

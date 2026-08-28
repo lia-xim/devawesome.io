@@ -1,9 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import WorkflowLink from "../../components/WorkflowLink.astro";
 
 const toolSchema = {
   "@type": "WebApplication",
-  name: "Developer Tool Test Plan Builder",
+  name: "Simple Test Case Builder",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any",
   browserRequirements: "Requires JavaScript for local plan generation and export.",
@@ -12,78 +14,92 @@ const toolSchema = {
 ---
 
 <BaseLayout
-  surface="toolbox"
-  title="Developer Test Plan Builder"
-  description="Create and export a clear JSON test plan for a developer tool, API, or workflow."
+  title="Simple Test Case Builder"
+  description="Turn one action, expected result, and edge case into a short Markdown test case locally in your browser."
   canonicalPath="/tools/developer-tool-test-plan"
   schemaMainEntity={toolSchema}
 >
   <header class="tool-page-header">
     <div>
       <a class="tool-page-back" href="/tools">← All tools</a>
-      <h1>Test plan builder</h1>
+      <h1>Simple test case builder</h1>
     </div>
-    <p>Turn a tool claim into a plan you can run, check, and share. The result is a portable JSON file.</p>
+    <p>Describe one action and the result you expect. Get a short Markdown test case you can paste into an issue or QA note.</p>
   </header>
 
   <section class="tool-surface">
     <div class="tool-privacy-note">
       <span><strong>No uploads or storage.</strong> Your entries stay in this browser tab.</span>
-      <a href="/schemas/developer-tool-test-plan.v0.1.json">Plan schema</a>
+      <span>Plain Markdown output</span>
     </div>
     <div class="plan-builder toolbox-plan-builder" data-plan-builder>
       <form class="plan-form" data-plan-form>
         <div class="form-heading">
           <h2>Plan the test</h2>
-          <p>Use exact versions and observable results. Do not paste secrets, personal data, or private fixtures.</p>
+          <p>Keep it to one behavior. A short test you can run is more useful than a complete-looking form.</p>
         </div>
 
         <div class="form-grid">
-          <label><span>Question <b>Required</b></span><textarea name="question" required rows="3" placeholder="Does the tool create the expected output?"></textarea></label>
-          <label><span>Tool and version <b>Required</b></span><input name="tool" required placeholder="Tool 1.2.3" /></label>
-          <label><span>Environment <b>Required</b></span><textarea name="environment" required rows="3" placeholder="Node version, operating system, plan, or hardware"></textarea></label>
-          <label><span>Input or fixture <b>Required</b></span><textarea name="fixture" required rows="3" placeholder="Repository, request, prompt, or sample data"></textarea></label>
-          <label><span>Expected result <b>Required</b></span><textarea name="expected" required rows="3" placeholder="The exact behavior that counts as a pass"></textarea></label>
-          <label><span>Failure case <b>Required</b></span><textarea name="negative" required rows="3" placeholder="One condition that should fail"></textarea></label>
-          <label><span>Command or steps <b>Required</b></span><textarea name="command" required rows="3" placeholder="The command or numbered procedure"></textarea></label>
-          <label><span>Evidence to keep <b>Required</b></span><textarea name="evidence" required rows="3" placeholder="Exit status, JSON, screenshot, or generated file"></textarea></label>
-          <label><span>Known limits <b>Required</b></span><textarea name="limits" required rows="3" placeholder="What this test cannot prove"></textarea></label>
-          <label><span>Run again when</span><textarea name="rerun" rows="3" placeholder="A version, API, or fixture changes"></textarea></label>
+          <label><span>What are you testing? <b>Required</b></span><input name="subject" required maxlength="140" placeholder="Canonical redirect for /old-page" /></label>
+          <label><span>Action or input <b>Required</b></span><textarea name="action" required rows="4" placeholder="Request /old-page without following redirects"></textarea></label>
+          <label><span>Expected result <b>Required</b></span><textarea name="expected" required rows="4" placeholder="Returns 301 and preserves the path"></textarea></label>
+          <label><span>Important edge case</span><textarea name="edge" rows="4" placeholder="Query strings remain intact"></textarea></label>
         </div>
 
         <div class="plan-actions">
-          <button class="toolbox-button" type="submit">Generate JSON plan</button>
+          <button class="toolbox-button" type="submit">Build test case</button>
           <button class="tool-action-secondary" type="reset">Clear</button>
         </div>
       </form>
 
       <aside class="plan-output" aria-labelledby="plan-output-title">
         <div class="output-heading">
-          <h2 id="plan-output-title">JSON plan</h2>
-          <p data-plan-status aria-live="polite">Complete the required fields.</p>
+          <h2 id="plan-output-title">Test case</h2>
+          <p data-plan-status aria-live="polite">Complete the three required fields.</p>
         </div>
         <pre><code tabindex="0" data-plan-output>&#123;
-  "status": "waiting_for_input"
-&#125;</code></pre>
+Write the subject, action, and expected result.</code></pre>
         <div class="plan-actions">
-          <button class="tool-action-secondary" type="button" data-copy disabled>Copy JSON</button>
-          <button class="tool-action-secondary" type="button" data-download disabled>Download .json</button>
+          <button class="tool-action-secondary" type="button" data-copy disabled>Copy Markdown</button>
+          <button class="tool-action-secondary" type="button" data-download disabled>Download .md</button>
         </div>
       </aside>
     </div>
     <noscript><p class="noscript-note">This tool needs JavaScript to create and export the JSON file.</p></noscript>
   </section>
 
-  <section class="tool-detail">
-    <div class="tool-detail-heading">
-      <h2>A plan is not proof.</h2>
-      <p>Run both cases, keep the raw output, and state what the result cannot establish.</p>
-    </div>
-    <div class="tool-detail-links">
-      <a href="/guides/reproducible-developer-tool-tests"><span>Read the practical guide</span><span aria-hidden="true">→</span></a>
-      <a href="/methodology"><span>See the full method</span><span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+  <ToolPageContent
+    steps={[
+      "Name one behavior, route, API call, or tool action.",
+      "Write the action and the exact observable result that counts as a pass.",
+      "Add one edge case if it matters, then copy the Markdown into your issue or QA notes.",
+    ]}
+    handles={[
+      "One compact happy-path test case",
+      "An optional edge or failure condition",
+      "Markdown output for issues, pull requests, and QA notes",
+    ]}
+    limits={[
+      "It does not run the test or decide whether a result passed.",
+      "It does not capture versions, environments, fixtures, or evidence for you.",
+      "Use the longer reproducibility guide when a result will be published as evidence.",
+    ]}
+    sources={[
+      { label: "DevAwesome reproducible testing guide", href: "/guides/reproducible-developer-tool-tests", note: "The fuller method for tests that need published evidence." },
+      { label: "DevAwesome methodology", href: "/methodology", note: "Editorial and review boundaries for public field tests." },
+    ]}
+    related={[
+      { label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Prepare a clean set of technical SEO test targets." },
+      { label: "JSON formatter", href: "/tools/json-formatter", note: "Inspect an API or structured-data result." },
+    ]}
+  />
+
+  <WorkflowLink
+    title="Testing a complete website?"
+    description="Contextter Site Audit crawls a project and keeps technical issues in an ongoing SEO workflow."
+    href="https://contextter.com/features/site-audit"
+    cta="Run a full crawl in Contextter"
+  />
 
   <script is:inline src="/test-plan.js" defer></script>
 </BaseLayout>

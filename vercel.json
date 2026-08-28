@@ -37,6 +37,11 @@
     },
     {
       "permanent": true,
+      "destination": "/guides",
+      "source": "/guides/"
+    },
+    {
+      "permanent": true,
       "destination": "/guides/reproducible-developer-tool-tests",
       "source": "/guides/reproducible-developer-tool-tests/"
     },
@@ -49,6 +54,16 @@
       "permanent": true,
       "destination": "/tools",
       "source": "/tools/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/keyword-list-cleaner",
+      "source": "/tools/keyword-list-cleaner/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/url-list-normalizer",
+      "source": "/tools/url-list-normalizer/"
     },
     {
       "permanent": true,

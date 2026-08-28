@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  cta: string;
+}
+
+const { title, description, href, cta } = Astro.props;
+---
+
+<aside class="workflow-link" aria-label={`Next workflow step: ${title}`}>
+  <div>
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
+  <a href={href}>{cta}<span aria-hidden="true">↗</span></a>
+  <p class="ownership-disclosure">DevAwesome, AnalyseSpider, AI-Fanout, and Contextter are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation.</p>
+</aside>

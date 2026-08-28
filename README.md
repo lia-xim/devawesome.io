@@ -4,9 +4,9 @@ Public source repository for the current devawesome.io website.
 
 ## Current state
 
-DevAwesome is a small browser-local developer toolbox held from indexing until its documented reviewer and identity gates are cleared. The primary visitor job is simple: open a useful tool and complete an everyday developer task without signing up or uploading the input.
+DevAwesome is a categorized browser-local mini-tool library for developers and SEO teams. It remains held from indexing until its documented reviewer and identity gates are cleared. The primary visitor job is simple: open one focused tool, transform an input, and leave with a usable result without signing up or uploading the data.
 
-The current toolbox includes a JSON formatter and validator, UUID v4 generator, SHA-256 text hash generator, and developer test-plan builder. The protected release also keeps an original programming-language quiz, three reproducible field tests, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
+The current toolbox includes a keyword list cleaner, URL list normalizer, JSON formatter and validator, UUID v4 generator, SHA-256 text hash generator, and simple test-case builder. The protected release also keeps an original programming-language quiz, three reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
 Matthias Ramahi is the operator and editor. All three field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
 

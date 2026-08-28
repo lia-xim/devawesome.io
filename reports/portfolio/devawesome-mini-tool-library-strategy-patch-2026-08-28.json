@@ -1,0 +1,134 @@
+{
+  "identityDisclosure": "Present DevAwesome as a newly authored 2026 mini-tool library under new ownership. State that no former subscriber list, consent, authorship, archive, analytics, endorsements, sponsorship relationships, audience, or brand identity was acquired unless separately documented. Treat every historical audience claim as unverified.",
+  "standalonePurpose": "A categorized library of simple browser-local mini tools for developer and SEO data jobs. Each maintained tool solves one small task, works without signup or uploads, and has its own useful landing page with instructions, limits, primary references, and related next steps.",
+  "preferredStrategy": "Grow toolbox-first in maintained batches: keep useful general developer utilities, add differentiated SEO data-preparation tools, and give every live tool one clear user job and a complete landing page. Guides and reproducible field tests remain a secondary evidence layer. Contextter, AnalyseSpider, AI-Fanout, and future related properties may be linked only at a real workflow transition with visible common-ownership disclosure; no portfolio footer or artificial reciprocity.",
+  "alternativeStrategies": [
+    "Maintain a smaller evergreen set if usage does not justify expansion",
+    "Add a low-cadence guide and field-test archive around the strongest tools after independent review exists",
+    "Park or sell if the tools cannot be maintained accurately and no independent developer or SEO audience emerges"
+  ],
+  "siteArchetype": "browser_local_mini_tool_library",
+  "sourceRoles": [
+    "calculator_interactive_tool",
+    "procedure_how_to",
+    "firsthand_review_field_test",
+    "transparent_comparison"
+  ],
+  "productAssets": [
+    "Browser-local Keyword List Cleaner",
+    "Browser-local URL List Normalizer",
+    "Browser-local JSON Formatter and Validator",
+    "Browser-local UUID v4 Generator",
+    "Browser-local SHA-256 Hash Generator with optional JSON receipt",
+    "Browser-local Simple Test Case Builder with Markdown export",
+    "Original Programming Language Quiz",
+    "Guide hub plus reproducible test repositories and fixtures"
+  ],
+  "informationArchitecture": [
+    {
+      "path": "/",
+      "role": "mini-tool entry",
+      "job": "Understand the offer and open one useful developer or SEO tool immediately"
+    },
+    {
+      "path": "/tools",
+      "role": "categorized tool directory",
+      "job": "Browse all maintained browser-local mini tools by user job"
+    },
+    {
+      "path": "/tools/keyword-list-cleaner",
+      "role": "SEO data utility",
+      "job": "Clean and deduplicate keyword lists before import, clustering, or tracking"
+    },
+    {
+      "path": "/tools/url-list-normalizer",
+      "role": "SEO and crawler input utility",
+      "job": "Validate and normalize URL lists before a crawl or import"
+    },
+    {
+      "path": "/tools/json-formatter",
+      "role": "developer and API data utility",
+      "job": "Format, validate, or minify JSON without uploading it"
+    },
+    {
+      "path": "/tools/uuid-generator",
+      "role": "developer utility",
+      "job": "Generate and copy one or more UUID v4 values"
+    },
+    {
+      "path": "/tools/evidence-receipt",
+      "role": "developer integrity utility",
+      "job": "Create a SHA-256 digest and optional portable receipt for normalized text"
+    },
+    {
+      "path": "/tools/developer-tool-test-plan",
+      "role": "testing utility",
+      "job": "Create a compact Markdown test case from one action and expected result"
+    },
+    {
+      "path": "/guides",
+      "role": "guide directory",
+      "job": "Choose the method or evidence collection needed after a tool result"
+    },
+    {
+      "path": "/guess-the-programming-language/",
+      "role": "secondary evergreen interactive tool",
+      "job": "Practice identifying programming languages from syntax clues"
+    },
+    {
+      "path": "/field-tests",
+      "role": "secondary firsthand evidence library",
+      "job": "Inspect executable evidence behind selected tool claims"
+    },
+    {
+      "path": "/new-ownership",
+      "role": "identity and consent disclosure",
+      "job": "Understand the separation from the former newsletter and audience"
+    }
+  ],
+  "portfolioRelationships": [
+    {
+      "projectId": "contextter",
+      "relationship": "Accepted Foerderdomain and independent mini-tool library",
+      "rule": "DevAwesome must remain useful without Contextter or sibling-domain links. Keyword preparation may continue to Contextter Keyword Database, a complete site test to Contextter Site Audit, a live single-URL check to AnalyseSpider, and AI-search query inspection to AI-Fanout only where that next step helps the current reader and common ownership is visible. No portfolio footer, blanket homepage reciprocity, or independent-recommendation language."
+    }
+  ],
+  "risks": [
+    "Former-brand and audience confusion",
+    "A large tool inventory can become thin, stale, duplicated, or unmaintainable",
+    "Workflow links can look like an artificial portfolio network if they are not contextual and disclosed",
+    "Browser APIs and SEO import expectations change and require utility retesting",
+    "Former-operator or mark clearance remains unresolved",
+    "No qualifying independent technical reviewer is documented"
+  ],
+  "openQuestions": [
+    "Is the former operator or mark still active?",
+    "Who can serve as a qualifying independent technical reviewer?",
+    "Which shipped tools demonstrate repeat use and justify the next maintained batch?",
+    "Which additional mini tools have distinct search intent, a small honest implementation, and an accountable maintenance owner?"
+  ],
+  "operatingModel": {
+    "owner": "Matthias Ramahi",
+    "burden": "medium for the current maintained set; high if expansion toward 50 tools outpaces testing, sources, and landing-page maintenance",
+    "cadence": "Release small categorized batches only after each tool, landing page, primary references, limits, mobile flow, and browser-local privacy behavior pass QA",
+    "annualCost": null,
+    "stopCondition": "Keep the site noindex until former-operator or mark rights and an independent technical reviewer are documented. Stop adding tools when existing utilities are stale, overlapping, untested, or lack a distinct user job. Park or reduce the site to the maintained evergreen set if recurring use does not justify the operating burden."
+  },
+  "roadmap": {
+    "days30": [
+      "Hold the six shipped tools stable and collect privacy-approved usage evidence only after a separate analytics decision",
+      "Complete former-operator and mark due diligence",
+      "Obtain a qualifying independent technical reviewer or retain the noindex hold"
+    ],
+    "days60": [
+      "Improve the strongest utilities from observed failure cases and real user feedback",
+      "Choose the next small SEO or developer-tool batch from distinct user jobs rather than keyword fan-out",
+      "Keep guides, quiz, methodology, and field tests as secondary paths"
+    ],
+    "days90": [
+      "Review direct use, return use, maintenance burden, source freshness, and workflow continuation",
+      "Choose maintained six-tool library, a justified expanded batch, or a reduced evergreen set",
+      "Consider indexing only through a separate explicit gate after rights, reviewer, legal, QA, and live verification all pass"
+    ]
+  }
+}

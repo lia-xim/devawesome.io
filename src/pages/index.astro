@@ -1,32 +1,31 @@
 ---
 import ArrowIcon from "../components/ArrowIcon.astro";
-import JsonFormatter from "../components/JsonFormatter.astro";
+import KeywordListCleaner from "../components/KeywordListCleaner.astro";
 import ToolDirectory from "../components/ToolDirectory.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  surface="toolbox"
-  title="DevAwesome Developer Tools"
-  description="Small browser-local developer tools for formatting JSON, generating UUIDs, creating SHA-256 hashes, and planning tests."
+  title="Simple Browser Tools for Developers and SEO Teams"
+  description="Clean keyword lists, normalize URLs, format JSON, generate UUIDs, create SHA-256 hashes, and build test cases locally in your browser."
   canonicalPath="/"
 >
   <section class="toolbox-hero" aria-labelledby="home-title">
     <div class="toolbox-hero-copy">
-      <h1 id="home-title">Small developer tools.<br /> Right in your browser.</h1>
-      <p>Format JSON, generate IDs, create hashes, and plan tests. No signup. No uploads.</p>
+      <h1 id="home-title">Simple tools for developers and SEO teams.</h1>
+      <p>Clean keyword lists, normalize URLs, format JSON, generate IDs, create hashes, and build test cases. No signup. No uploads.</p>
       <div class="toolbox-actions">
         <a class="toolbox-button" href="#tools">Browse tools <ArrowIcon /></a>
-        <a class="toolbox-button toolbox-button-secondary" href="/tools/json-formatter">Open JSON formatter <ArrowIcon /></a>
+        <a class="toolbox-button toolbox-button-secondary" href="/tools/keyword-list-cleaner">Clean a keyword list <ArrowIcon /></a>
       </div>
     </div>
     <div class="hero-tool-preview">
-      <JsonFormatter compact />
+      <KeywordListCleaner compact />
     </div>
   </section>
 
   <section class="toolbox-section tool-picker" id="tools" aria-labelledby="tools-title">
-    <h2 id="tools-title">Pick a tool</h2>
+    <h2 id="tools-title">Pick one small job</h2>
     <ToolDirectory />
   </section>
 
@@ -38,13 +37,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <section class="toolbox-section simple-explainer" aria-labelledby="explain-title">
     <div>
-      <h2 id="explain-title">Useful first. Explained second.</h2>
-      <p>Open a tool and get the result. If you want the technical details, the method and test notes are there too.</p>
+      <h2 id="explain-title">Use the tool first. Check the details when they matter.</h2>
+      <p>Every tool page explains the input, the exact transformation, its limits, and the primary specification behind it.</p>
     </div>
     <div class="simple-links">
       <a href="/guides/reproducible-developer-tool-tests">
-        <strong>How we test tools</strong>
-        <span>Read the guide</span>
+        <strong>Reproducible tool testing</strong>
+        <span>Read the practical guide</span>
         <ArrowIcon />
       </a>
       <a href="/guess-the-programming-language/">
@@ -55,5 +54,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
   </section>
 
-  <script is:inline src="/json-formatter.js" defer></script>
+  <section class="workflow-section" aria-labelledby="workflow-title">
+    <div class="workflow-section-heading">
+      <h2 id="workflow-title">The next step depends on the job.</h2>
+      <p>DevAwesome prepares the input locally. These related tools continue only when you need a live crawl, an AI-search trace, or an ongoing SEO workspace.</p>
+    </div>
+    <div class="workflow-directory">
+      <a href="https://contextter.com/features/keyword-database"><strong>Organize and track a keyword list</strong><span>Contextter Keyword Database</span><ArrowIcon /></a>
+      <a href="https://analysespider.com/"><strong>Check one public URL live</strong><span>AnalyseSpider</span><ArrowIcon /></a>
+      <a href="https://ai-fanout.com/"><strong>Inspect AI search queries and sources</strong><span>AI-Fanout</span><ArrowIcon /></a>
+    </div>
+    <p class="ownership-disclosure">DevAwesome, AnalyseSpider, AI-Fanout, and Contextter are operated by Matthias Ramahi. These links connect related workflow steps and are not independent recommendations.</p>
+  </section>
+
+  <script is:inline src="/keyword-list-cleaner.js" defer></script>
 </BaseLayout>

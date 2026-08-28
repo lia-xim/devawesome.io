@@ -1,0 +1,73 @@
+---
+import KeywordListCleaner from "../../components/KeywordListCleaner.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import WorkflowLink from "../../components/WorkflowLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const toolSchema = {
+  "@type": "WebApplication",
+  name: "DevAwesome Keyword List Cleaner",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript.",
+  isAccessibleForFree: true,
+};
+---
+
+<BaseLayout
+  title="Keyword List Cleaner"
+  description="Clean, trim, and deduplicate keyword lists locally in your browser. Paste lines, CSV, or TSV and export one keyword per line."
+  canonicalPath="/tools/keyword-list-cleaner"
+  schemaMainEntity={toolSchema}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/tools">← All tools</a>
+      <h1>Keyword list cleaner</h1>
+    </div>
+    <p>Paste keywords from a spreadsheet or export. Get one trimmed, deduplicated keyword per line without uploading the list.</p>
+  </header>
+
+  <section class="tool-surface">
+    <div class="tool-privacy-note">
+      <span><strong>No uploads.</strong> The list is processed only in this browser tab.</span>
+      <span>Lines, CSV, and TSV accepted</span>
+    </div>
+    <KeywordListCleaner />
+  </section>
+
+  <ToolPageContent
+    steps={[
+      "Paste a list from a spreadsheet, CSV export, or plain-text file.",
+      "Choose whether differently capitalized entries should count as duplicates, then clean the list.",
+      "Review the count and copy or download the one-keyword-per-line result.",
+    ]}
+    handles={[
+      "Blank lines and surrounding whitespace",
+      "Repeated spaces inside a keyword",
+      "Duplicate entries while preserving the first spelling and order",
+      "Comma- and tab-separated cells, including quoted CSV cells",
+    ]}
+    limits={[
+      "It does not measure search volume, intent, difficulty, or rankings.",
+      "Every non-empty CSV or TSV cell is treated as a keyword; table columns are not preserved.",
+      "It does not upload, save, or import the result into another product.",
+    ]}
+    sources={[
+      { label: "RFC 4180: Common Format and MIME Type for CSV Files", href: "https://www.rfc-editor.org/info/rfc4180/", note: "Reference for quoted and comma-separated CSV fields." },
+    ]}
+    related={[
+      { label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Prepare the crawl targets behind a keyword set." },
+      { label: "JSON formatter", href: "/tools/json-formatter", note: "Inspect structured export or API data." },
+    ]}
+  />
+
+  <WorkflowLink
+    title="Ready to organize or track the list?"
+    description="Use Contextter's Keyword Database for clustering, prioritization, and tracking after the local cleanup step."
+    href="https://contextter.com/features/keyword-database"
+    cta="Continue in Contextter"
+  />
+
+  <script is:inline src="/keyword-list-cleaner.js" defer></script>
+</BaseLayout>

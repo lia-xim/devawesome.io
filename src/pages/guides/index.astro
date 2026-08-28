@@ -1,0 +1,55 @@
+---
+import ArrowIcon from "../../components/ArrowIcon.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const guideList = {
+  "@type": "ItemList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "How to run a reproducible developer tool test", url: "https://devawesome.io/guides/reproducible-developer-tool-tests" },
+    { "@type": "ListItem", position: 2, name: "DevAwesome methodology", url: "https://devawesome.io/methodology" },
+    { "@type": "ListItem", position: 3, name: "Published field tests", url: "https://devawesome.io/field-tests" },
+  ],
+};
+---
+
+<BaseLayout
+  title="Developer and SEO Tool Guides"
+  description="Practical DevAwesome guides for reproducible tool tests, technical methods, and the evidence behind browser-local mini tools."
+  canonicalPath="/guides"
+  schemaType="CollectionPage"
+  schemaMainEntity={guideList}
+>
+  <header class="tool-page-header">
+    <div>
+      <a class="tool-page-back" href="/">← Home</a>
+      <h1>Guides</h1>
+    </div>
+    <p>Short methods for the jobs that need more explanation than a tool interface can provide.</p>
+  </header>
+
+  <section class="guide-directory" aria-labelledby="guide-directory-title">
+    <h2 id="guide-directory-title">Start with a real task</h2>
+    <div>
+      <a href="/guides/reproducible-developer-tool-tests">
+        <strong>Run a reproducible developer tool test</strong>
+        <span>Define the claim, environment, failure case, evidence, and review boundary.</span>
+        <ArrowIcon />
+      </a>
+      <a href="/methodology">
+        <strong>Read the publication method</strong>
+        <span>See how DevAwesome separates observation, interpretation, review, and maintenance.</span>
+        <ArrowIcon />
+      </a>
+      <a href="/field-tests">
+        <strong>Inspect the field tests</strong>
+        <span>Open the executable fixtures, saved results, and stated limits.</span>
+        <ArrowIcon />
+      </a>
+    </div>
+  </section>
+
+  <section class="tool-copy-band">
+    <div><h2>Tools answer the immediate question.</h2><p>Use a tool when the transformation is mechanical and local.</p></div>
+    <div><h2>Guides explain the decision.</h2><p>Use a guide when setup, evidence, limitations, or maintenance can change the conclusion.</p></div>
+  </section>
+</BaseLayout>

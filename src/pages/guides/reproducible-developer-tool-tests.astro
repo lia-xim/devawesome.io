@@ -30,7 +30,7 @@ const breadcrumbs = [
     <div>
       <p>Start with one question that can fail: “Does this exact version produce this observable result in this environment?” Then capture the setup, the happy path, one meaningful negative case, the raw result, and the limits of the verdict.</p>
       <div class="action-row">
-        <a class="action action-signal" href="/tools/developer-tool-test-plan">Build a test plan <span class="action-arrow" aria-hidden="true">→</span></a>
+        <a class="action action-signal" href="/tools/developer-tool-test-plan">Build a test case <span class="action-arrow" aria-hidden="true">→</span></a>
         <a class="action action-dark" href="/field-tests">Inspect real examples <span class="action-arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
@@ -74,6 +74,6 @@ const breadcrumbs = [
 
   <section class="editorial-section">
     <div class="editorial-side"><span class="section-label">Review boundary</span><h2>Useful does not mean independent.</h2><p>Matthias Ramahi wrote and edited this guide. It has not been independently technically reviewed.</p></div>
-    <div class="editorial-main"><h2>Take the method into your own fixture.</h2><p>The browser-local builder turns these six stages into a structured JSON plan. It does not run the test or validate a conclusion; it makes missing assumptions visible before the work starts.</p><div class="action-row"><a class="action action-signal" href="/tools/developer-tool-test-plan">Open the plan builder <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
+    <div class="editorial-main"><h2>Start with one small test case.</h2><p>The browser-local builder turns an action, an expected result, and an optional edge case into compact Markdown. It does not run the test or validate a conclusion. Use the full method above when a result needs published evidence.</p><div class="action-row"><a class="action action-signal" href="/tools/developer-tool-test-plan">Open the test case builder <span class="action-arrow" aria-hidden="true">→</span></a></div></div>
   </section>
 </BaseLayout>

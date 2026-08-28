@@ -1,17 +1,48 @@
 ---
 import ArrowIcon from "./ArrowIcon.astro";
-import { tools } from "../data/tools";
+import { toolCategories, tools } from "../data/tools";
+
+interface Props {
+  grouped?: boolean;
+}
+
+const { grouped = true } = Astro.props;
 ---
 
-<div class="tool-directory">
-  {tools.map((tool) => (
-    <a class="tool-row" href={tool.path}>
-      <span class:list={["tool-glyph", tool.glyph === "list" && "tool-glyph-list"]} aria-hidden="true">
-        {tool.glyph === "list" ? <><i></i><i></i><i></i></> : tool.glyph}
-      </span>
-      <strong>{tool.name}</strong>
-      <span>{tool.description}</span>
-      <ArrowIcon />
-    </a>
-  ))}
-</div>
+{grouped ? (
+  <div class="tool-groups" id="categories">
+    {toolCategories.map((category) => (
+      <section class="tool-group" aria-labelledby={`category-${category.id}`}>
+        <div class="tool-group-heading">
+          <h3 id={`category-${category.id}`}>{category.name}</h3>
+          <p>{category.description}</p>
+        </div>
+        <div class="tool-directory">
+          {tools.filter((tool) => tool.category === category.id).map((tool) => (
+            <a class="tool-row" href={tool.path}>
+              <span class:list={["tool-glyph", tool.glyph === "list" && "tool-glyph-list"]} aria-hidden="true">
+                {tool.glyph === "list" ? <><i></i><i></i><i></i></> : tool.glyph}
+              </span>
+              <strong>{tool.name}</strong>
+              <span>{tool.description}</span>
+              <ArrowIcon />
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+) : (
+  <div class="tool-directory">
+    {tools.map((tool) => (
+      <a class="tool-row" href={tool.path}>
+        <span class:list={["tool-glyph", tool.glyph === "list" && "tool-glyph-list"]} aria-hidden="true">
+          {tool.glyph === "list" ? <><i></i><i></i><i></i></> : tool.glyph}
+        </span>
+        <strong>{tool.name}</strong>
+        <span>{tool.description}</span>
+        <ArrowIcon />
+      </a>
+    ))}
+  </div>
+)}

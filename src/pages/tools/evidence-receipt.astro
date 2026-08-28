@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
 
 const toolSchema = {
   "@type": "WebApplication",
@@ -12,7 +13,6 @@ const toolSchema = {
 ---
 
 <BaseLayout
-  surface="toolbox"
   title="SHA-256 Hash Generator"
   description="Create a SHA-256 hash from text locally in your browser without uploading it."
   canonicalPath="/tools/evidence-receipt"
@@ -35,10 +35,6 @@ const toolSchema = {
       <form class="hash-input" data-receipt-form>
         <h2>Text to hash</h2>
         <p>Line endings are normalized to LF before hashing.</p>
-        <label class="tool-field">
-          <span>Optional label</span>
-          <input name="label" value="text-hash" maxlength="120" />
-        </label>
         <label class="tool-field">
           <span>Text</span>
           <textarea name="evidence" required rows="12" maxlength="1000000" placeholder="Paste text here"></textarea>
@@ -71,16 +67,32 @@ const toolSchema = {
     <noscript><p class="noscript-note">This tool requires JavaScript and Web Crypto. No fallback sends your text to a server.</p></noscript>
   </section>
 
-  <section class="tool-detail">
-    <div class="tool-detail-heading">
-      <h2>What the hash proves</h2>
-      <p>A matching hash shows that normalized text has not changed. It does not prove who wrote it, who owns it, or when it was created.</p>
-    </div>
-    <div class="tool-detail-links">
-      <a href="/field-tests/evidence-receipt-contract"><span>See the executable test</span><span aria-hidden="true">→</span></a>
-      <a href="/tools/json-formatter"><span>Format JSON</span><span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+  <ToolPageContent
+    steps={[
+      "Paste the exact text you want to fingerprint.",
+      "Create the SHA-256 digest. Windows and classic Mac line endings are normalized to LF first.",
+      "Copy the 64-character hexadecimal hash. Open the JSON receipt only if you need the byte count and normalization note.",
+    ]}
+    handles={[
+      "UTF-8 text up to 1,000,000 characters",
+      "SHA-256 through the browser's Web Crypto implementation",
+      "CRLF and CR line-ending normalization before hashing",
+      "A portable JSON receipt as an optional secondary output",
+    ]}
+    limits={[
+      "A matching hash supports a content-equivalence check; it does not prove authorship, ownership, or creation time.",
+      "The tool hashes text, not uploaded files.",
+      "Text hashed elsewhere must use the same UTF-8 encoding and line-ending normalization to match.",
+    ]}
+    sources={[
+      { label: "NIST FIPS 180-4: Secure Hash Standard", href: "https://csrc.nist.gov/pubs/fips/180-4/upd1/final", note: "Specification for the SHA-2 family, including SHA-256." },
+      { label: "Web Cryptography API Level 2", href: "https://w3c.github.io/webcrypto/#SubtleCrypto-method-digest", note: "Defines the browser digest operation used here." },
+    ]}
+    related={[
+      { label: "Executable SHA-256 field test", href: "/field-tests/evidence-receipt-contract", note: "Inspect the known vectors and implementation comparison." },
+      { label: "JSON formatter", href: "/tools/json-formatter", note: "Format the optional receipt or another payload." },
+    ]}
+  />
 
   <script is:inline type="module" src="/evidence-receipt.js"></script>
 </BaseLayout>

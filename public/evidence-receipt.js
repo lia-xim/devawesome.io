@@ -16,15 +16,13 @@ function setStatus(message) {
 
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const data = new FormData(form);
-  const label = String(data.get("label") || "untitled-evidence").trim();
-  const text = String(data.get("evidence") || "");
+  const text = String(new FormData(form).get("evidence") || "");
   try {
     const result = await sha256Evidence(text);
     currentReceipt = {
       schema: "https://devawesome.io/schemas/evidence-receipt.v0.1.json",
       version: "0.1",
-      label,
+      label: "text-hash",
       algorithm: "SHA-256",
       normalization: "CRLF and CR line endings converted to LF; UTF-8 encoding",
       bytes: result.bytes,

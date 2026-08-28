@@ -1,0 +1,70 @@
+---
+interface LinkItem {
+  label: string;
+  href: string;
+  note?: string;
+}
+
+interface Props {
+  steps: string[];
+  handles: string[];
+  limits: string[];
+  sources: LinkItem[];
+  related?: LinkItem[];
+}
+
+const { steps, handles, limits, sources, related = [] } = Astro.props;
+---
+
+<section class="tool-copy-section" aria-labelledby="how-to-use-title">
+  <div class="tool-copy-heading">
+    <h2 id="how-to-use-title">How to use it</h2>
+    <p>Start with the smallest input that represents the job. Check the result before you copy or export it.</p>
+  </div>
+  <ol class="tool-step-list">
+    {steps.map((step, index) => (
+      <li><span>{String(index + 1).padStart(2, "0")}</span><p>{step}</p></li>
+    ))}
+  </ol>
+</section>
+
+<section class="tool-copy-band" aria-label="Capabilities and limits">
+  <div>
+    <h2>What it handles</h2>
+    <ul>{handles.map((item) => <li>{item}</li>)}</ul>
+  </div>
+  <div>
+    <h2>What it does not do</h2>
+    <ul>{limits.map((item) => <li>{item}</li>)}</ul>
+  </div>
+</section>
+
+<section class="tool-reference-section" aria-labelledby="references-title">
+  <div>
+    <h2 id="references-title">References</h2>
+    <p>The implementation and explanations are tied to the primary specifications below.</p>
+  </div>
+  <div class="tool-reference-links">
+    {sources.map((source) => (
+      <a href={source.href}>
+        <strong>{source.label}</strong>
+        {source.note && <span>{source.note}</span>}
+        <b aria-hidden="true">↗</b>
+      </a>
+    ))}
+  </div>
+</section>
+
+{related.length > 0 && (
+  <section class="related-tools" aria-labelledby="related-tools-title">
+    <div>
+      <h2 id="related-tools-title">Related tools</h2>
+      <p>Continue with another small, specific job.</p>
+    </div>
+    <div class="related-tool-links">
+      {related.map((item) => (
+        <a href={item.href}><strong>{item.label}</strong>{item.note && <span>{item.note}</span>}<b aria-hidden="true">→</b></a>
+      ))}
+    </div>
+  </section>
+)}

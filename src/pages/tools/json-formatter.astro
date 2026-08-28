@@ -1,5 +1,6 @@
 ---
 import JsonFormatter from "../../components/JsonFormatter.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const toolSchema = {
@@ -13,9 +14,8 @@ const toolSchema = {
 ---
 
 <BaseLayout
-  surface="toolbox"
   title="JSON Formatter"
-  description="Format, validate, and minify JSON locally in your browser without uploading it."
+  description="Format, validate, and minify JSON, API payloads, and SEO export data locally in your browser without uploading it."
   canonicalPath="/tools/json-formatter"
   schemaMainEntity={toolSchema}
 >
@@ -24,7 +24,7 @@ const toolSchema = {
       <a class="tool-page-back" href="/tools">← All tools</a>
       <h1>JSON formatter</h1>
     </div>
-    <p>Paste JSON, spot syntax errors, and copy a formatted or minified result. Everything stays in this browser tab.</p>
+    <p>Paste JSON from an API, SEO export, or MCP payload. Spot syntax errors and copy a readable or minified result.</p>
   </header>
 
   <section class="tool-surface">
@@ -35,16 +35,32 @@ const toolSchema = {
     <JsonFormatter />
   </section>
 
-  <section class="tool-detail">
-    <div class="tool-detail-heading">
-      <h2>What it does</h2>
-      <p>Uses the browser's built-in JSON parser. Formatting uses two spaces. Minify removes optional whitespace without changing the data.</p>
-    </div>
-    <div class="tool-detail-links">
-      <a href="/tools/uuid-generator"><span>Generate UUIDs</span><span aria-hidden="true">→</span></a>
-      <a href="/tools/evidence-receipt"><span>Create a SHA-256 hash</span><span aria-hidden="true">→</span></a>
-    </div>
-  </section>
+  <ToolPageContent
+    steps={[
+      "Paste a complete JSON value into the input pane.",
+      "Choose Format JSON for a two-space layout or Minify for a compact representation.",
+      "Read any syntax error, check the output, and copy the result.",
+    ]}
+    handles={[
+      "JSON objects, arrays, strings, numbers, booleans, and null",
+      "Readable two-space formatting",
+      "Whitespace removal through parsing and serialization",
+      "API payloads, SEO export fragments, and JSON-RPC envelopes",
+    ]}
+    limits={[
+      "It checks JSON syntax, not a product-specific schema or business rule.",
+      "Formatting cannot restore comments because JSON does not include comments.",
+      "The page accepts up to 1,000,000 characters and does not upload the input.",
+    ]}
+    sources={[
+      { label: "RFC 8259: The JavaScript Object Notation Data Interchange Format", href: "https://www.rfc-editor.org/rfc/rfc8259.html", note: "Defines JSON grammar and interoperability rules." },
+      { label: "ECMAScript JSON object specification", href: "https://tc39.es/ecma262/multipage/structured-data.html", note: "Defines the browser's JSON.parse and JSON.stringify behavior." },
+    ]}
+    related={[
+      { label: "Keyword list cleaner", href: "/tools/keyword-list-cleaner", note: "Prepare a flat list before import." },
+      { label: "SHA-256 hash", href: "/tools/evidence-receipt", note: "Create a digest after the final text is stable." },
+    ]}
+  />
 
   <script is:inline src="/json-formatter.js" defer></script>
 </BaseLayout>

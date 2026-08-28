@@ -9,69 +9,62 @@ if (root) {
 
   if (!form || !output || !status || !copy || !download) throw new Error("Test-plan builder controls are incomplete.");
 
-  let currentJson = "";
+  let currentPlan = "";
   const value = (data, key) => String(data.get(key) ?? "").trim();
-  const buildPlan = (data) => ({
-    schema: "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json",
-    generatedAt: new Date().toISOString(),
-    question: value(data, "question"),
-    subject: {
-      toolAndVersion: value(data, "tool"),
-      environment: value(data, "environment"),
-    },
-    fixture: value(data, "fixture"),
-    cases: [
-      { kind: "expected", expectedBehavior: value(data, "expected") },
-      { kind: "negative", expectedBehavior: value(data, "negative") },
-    ],
-    procedure: value(data, "command"),
-    evidenceToCapture: value(data, "evidence"),
-    knownLimits: value(data, "limits"),
-    rerunTrigger: value(data, "rerun") || null,
-    editorial: {
-      independentReviewRequiredForPublication: true,
-      secretsAndPersonalDataExcluded: true,
-    },
-  });
+  const buildPlan = (data) => {
+    const subject = value(data, "subject");
+    const action = value(data, "action");
+    const expected = value(data, "expected");
+    const edge = value(data, "edge");
+    return [
+      `## ${subject}`,
+      "",
+      `- [ ] Action: ${action}`,
+      `- [ ] Expected: ${expected}`,
+      ...(edge ? [`- [ ] Edge case: ${edge}`] : []),
+      "",
+      "Result: Not run",
+    ].join("\n");
+  };
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    currentJson = JSON.stringify(buildPlan(new FormData(form)), null, 2);
-    output.textContent = currentJson;
+    currentPlan = buildPlan(new FormData(form));
+    output.textContent = currentPlan;
     copy.disabled = false;
     download.disabled = false;
-    status.textContent = "Plan generated locally. Review it before you run or publish the test.";
+    status.textContent = "Test case built locally. Run it and replace the result line with what you observed.";
     output.focus();
   });
 
   form.addEventListener("reset", () => {
-    currentJson = "";
-    output.textContent = '{\n  "status": "waiting_for_declaration"\n}';
+    currentPlan = "";
+    output.textContent = "Write the subject, action, and expected result.";
     copy.disabled = true;
     download.disabled = true;
     status.textContent = "Plan cleared. No entries were stored.";
   });
 
   copy.addEventListener("click", async () => {
-    if (!currentJson) return;
+    if (!currentPlan) return;
     try {
-      await navigator.clipboard.writeText(currentJson);
-      status.textContent = "JSON copied to the clipboard.";
+      await navigator.clipboard.writeText(currentPlan);
+      status.textContent = "Markdown copied to the clipboard.";
     } catch {
-      status.textContent = "Clipboard access was unavailable. Select and copy the JSON output manually.";
+      status.textContent = "Clipboard access was unavailable. Select and copy the test case manually.";
     }
   });
 
   download.addEventListener("click", () => {
-    if (!currentJson) return;
-    const blob = new Blob([currentJson + "\n"], { type: "application/json" });
+    if (!currentPlan) return;
+    const blob = new Blob([currentPlan + "\n"], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = "developer-tool-test-plan.json";
+    anchor.download = "test-case.md";
     anchor.click();
     URL.revokeObjectURL(url);
-    status.textContent = "JSON download created locally.";
+    status.textContent = "Markdown file created locally.";
   });
 }

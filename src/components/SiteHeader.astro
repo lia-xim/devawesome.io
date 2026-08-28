@@ -4,13 +4,14 @@ import { site } from "../data/site";
 const currentPath = Astro.url.pathname;
 const links = [
   { href: "/tools", label: "Tools" },
-  { href: "/guides/reproducible-developer-tool-tests", label: "Guide" },
-  { href: "/guess-the-programming-language/", label: "Quiz" },
+  { href: "/tools#categories", label: "Categories" },
+  { href: "/guides", label: "Guides" },
   { href: "/new-ownership", label: "About" },
 ];
 
 const isCurrent = (href: string) => {
-  const normalized = href.replace(/\/$/, "");
+  if (href.includes("#")) return false;
+  const normalized = href.split("#")[0].replace(/\/$/, "");
   const current = currentPath.replace(/\/$/, "");
   return current === normalized || (normalized !== "" && current.startsWith(normalized + "/"));
 };

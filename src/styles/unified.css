@@ -1,0 +1,559 @@
+.toolbox-page {
+  color-scheme: light;
+}
+
+.toolbox-page main {
+  background: var(--toolbox-bg);
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+}
+
+.content-page-header,
+.toolbox-page .page-hero {
+  display: grid;
+  grid-template-columns: minmax(24rem, 0.88fr) minmax(23rem, 1.12fr);
+  align-items: end;
+  gap: clamp(3rem, 8vw, 8rem);
+  min-height: 28rem;
+  padding: clamp(4rem, 7vw, 7rem) clamp(2rem, 4vw, 4.2rem) 3.5rem;
+  border-bottom: 1px solid var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.content-page-header h1,
+.toolbox-page .page-title,
+.toolbox-page .legacy-title {
+  max-width: 13ch;
+  margin: 0;
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(3.4rem, 5.5vw, 5.8rem);
+  font-weight: 720;
+  letter-spacing: -0.058em;
+  line-height: 1.03;
+  text-transform: none;
+}
+
+.content-page-header > p,
+.toolbox-page .page-hero-copy > p {
+  max-width: 44rem;
+  margin: 0;
+  color: var(--toolbox-muted);
+  font-size: clamp(1.02rem, 1.35vw, 1.22rem);
+  line-height: 1.7;
+}
+
+.toolbox-page .page-index,
+.toolbox-page .page-hero .eyebrow {
+  display: none;
+}
+
+.toolbox-page .page-hero-copy {
+  display: contents;
+}
+
+.toolbox-page .section-label,
+.toolbox-page .eyebrow,
+.toolbox-page .panel-label {
+  display: block;
+  color: #697381;
+  font-family: var(--toolbox-sans);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.toolbox-page .section-label::before,
+.toolbox-page .eyebrow::before {
+  content: none;
+}
+
+.toolbox-page .action {
+  min-height: 3.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--toolbox-line);
+  border-radius: 5px;
+  background: var(--toolbox-bg);
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: 0.84rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.toolbox-page .action:hover:not(:disabled) {
+  border-color: #aab2bd;
+  background: var(--toolbox-soft);
+  color: var(--toolbox-text);
+}
+
+.toolbox-page .action-signal {
+  border-color: var(--toolbox-accent);
+  background: var(--toolbox-accent);
+}
+
+.toolbox-page .action-dark {
+  border-color: var(--toolbox-text);
+  background: var(--toolbox-text);
+  color: #fff;
+}
+
+.toolbox-page .action-dark:hover:not(:disabled) {
+  background: #252c36;
+  color: #fff;
+}
+
+.toolbox-page .proof-section,
+.toolbox-page .guide-lede,
+.toolbox-page .source-panel {
+  padding: clamp(3.5rem, 6vw, 6rem) clamp(2rem, 4vw, 4.2rem);
+  border-bottom: 1px solid var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .proof-section h2,
+.toolbox-page .guide-lede h2,
+.toolbox-page .source-panel h2,
+.toolbox-page .editorial-side h2,
+.toolbox-page .editorial-main h2 {
+  margin: 1rem 0 0;
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(2.1rem, 4vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+  text-transform: none;
+}
+
+.toolbox-page .proof-section p,
+.toolbox-page .guide-lede p,
+.toolbox-page .source-panel p,
+.toolbox-page .editorial-side p,
+.toolbox-page .editorial-main p {
+  color: var(--toolbox-muted);
+  line-height: 1.75;
+}
+
+.toolbox-page .editorial-section {
+  display: grid;
+  grid-template-columns: minmax(19rem, 0.65fr) minmax(24rem, 1.35fr);
+  border-bottom: 1px solid var(--toolbox-line);
+  background: var(--toolbox-soft);
+}
+
+.toolbox-page .editorial-side,
+.toolbox-page .editorial-main {
+  padding: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4.2rem);
+}
+
+.toolbox-page .editorial-side {
+  border-right: 1px solid var(--toolbox-line);
+}
+
+.toolbox-page .proof-list li,
+.toolbox-page .assertion-list li,
+.toolbox-page .limit-list li {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .proof-list strong {
+  color: var(--toolbox-text);
+  text-transform: none;
+}
+
+.toolbox-page .proof-list span,
+.toolbox-page .limit-list li,
+.toolbox-page .assertion-list li {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .legal-document {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.42fr) minmax(0, 1.58fr);
+  border-bottom: 1px solid var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .legal-toc {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding: clamp(2rem, 4vw, 4rem);
+  border-right: 1px solid var(--toolbox-line);
+}
+
+.toolbox-page .legal-toc p,
+.toolbox-page .legal-content p,
+.toolbox-page .legal-content address {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .legal-content {
+  padding: clamp(2.5rem, 6vw, 6rem);
+}
+
+.toolbox-page .legal-content section + section,
+.toolbox-page .legal-note {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .legal-content h2 {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(1.65rem, 2.8vw, 2.8rem);
+  letter-spacing: -0.04em;
+  text-transform: none;
+}
+
+.toolbox-page .legal-content a,
+.toolbox-page .guide-steps a,
+.toolbox-page .source-panel a {
+  color: #185fa9;
+}
+
+.toolbox-page .legal-note,
+.toolbox-page .guide-check {
+  border-color: var(--toolbox-accent);
+  background: #f4f9e6;
+}
+
+.toolbox-page .field-test-grid {
+  border-color: var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .field-test-card {
+  min-height: 31rem;
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .test-card-top,
+.toolbox-page .field-test-card > p,
+.toolbox-page .field-test-card dt {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .test-card-top strong {
+  color: #387600;
+}
+
+.toolbox-page .field-test-card h2 {
+  margin-top: 4rem;
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(2rem, 3.4vw, 3.6rem);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.toolbox-page .field-test-card dl,
+.toolbox-page .field-test-card > a {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .field-test-card dd {
+  color: var(--toolbox-text);
+}
+
+.toolbox-page .field-test-card > a {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: 0.9rem;
+  font-weight: 650;
+  text-transform: none;
+}
+
+.toolbox-page .lab-flow,
+.toolbox-page .standard-grid,
+.toolbox-page .metric-grid,
+.toolbox-page .case-grid {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .lab-flow article,
+.toolbox-page .standard-grid article,
+.toolbox-page .metric-grid div,
+.toolbox-page .case-grid article {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .lab-flow small,
+.toolbox-page .standard-grid small,
+.toolbox-page .metric-grid strong,
+.toolbox-page .case-grid dd {
+  color: #387600;
+}
+
+.toolbox-page .lab-flow h3,
+.toolbox-page .standard-grid h3,
+.toolbox-page .method-detail-list h2,
+.toolbox-page .boundary-list h2,
+.toolbox-page .test-body h2,
+.toolbox-page .case-grid h2 {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.toolbox-page .lab-flow p,
+.toolbox-page .standard-grid p,
+.toolbox-page .method-detail-list p,
+.toolbox-page .boundary-list p,
+.toolbox-page .test-body p {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .method-detail-list li,
+.toolbox-page .boundary-list article {
+  border-color: var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .method-detail-list small,
+.toolbox-page .boundary-list small {
+  color: #697381;
+  text-transform: none;
+}
+
+.toolbox-page .guide-lede,
+.toolbox-page .guide-steps li,
+.toolbox-page .source-panel {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .guide-steps h2,
+.toolbox-page .source-panel h2 {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.toolbox-page .guide-steps p,
+.toolbox-page .source-panel p {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .guide-check strong {
+  color: var(--toolbox-text);
+  text-transform: none;
+}
+
+.toolbox-page .source-panel li,
+.toolbox-page .source-panel a {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .source-panel a {
+  font-family: var(--toolbox-sans);
+  text-transform: none;
+}
+
+.toolbox-page .quiz-shell {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.48fr) minmax(0, 1.15fr) minmax(19rem, 0.72fr);
+  border-color: var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .quiz-meta,
+.toolbox-page .quiz-choice-pane,
+.toolbox-page .quiz-choice-head,
+.toolbox-page .quiz-feedback,
+.toolbox-page .quiz-answers button {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .quiz-title {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.toolbox-page .quiz-meta p,
+.toolbox-page .quiz-progress span,
+.toolbox-page .quiz-feedback p,
+.toolbox-page .quiz-choice-head {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .quiz-progress strong,
+.toolbox-page .quiz-score {
+  color: #387600;
+  text-transform: none;
+}
+
+.toolbox-page .quiz-code-pane {
+  background: #10151d;
+  color: #edf2f7;
+}
+
+.toolbox-page .quiz-code-head {
+  border-color: #39414c;
+}
+
+.toolbox-page .quiz-answers button {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: clamp(1.15rem, 1.8vw, 1.8rem);
+  text-transform: none;
+}
+
+.toolbox-page .quiz-answers button:hover:not(:disabled) {
+  background: var(--toolbox-soft);
+  color: var(--toolbox-text);
+}
+
+.toolbox-page .quiz-answers button[data-state="correct"] {
+  background: var(--toolbox-accent);
+  color: var(--toolbox-text);
+}
+
+.toolbox-page .test-verdict,
+.toolbox-page .test-layout {
+  border-color: var(--toolbox-line);
+  background: var(--toolbox-bg);
+}
+
+.toolbox-page .test-verdict > div,
+.toolbox-page .test-rail {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .test-verdict strong,
+.toolbox-page .test-rail dd,
+.toolbox-page .assertion-list strong {
+  color: #387600;
+}
+
+.toolbox-page .test-verdict > p,
+.toolbox-page .test-rail dt {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .command-block,
+.toolbox-page .plan-output pre {
+  border-color: #39414c;
+  background: #10151d;
+  color: #d8ff6a;
+}
+
+.toolbox-page .legacy-page,
+.toolbox-page .legacy-layout,
+.toolbox-page .legacy-main {
+  background: var(--toolbox-bg);
+  color: var(--toolbox-text);
+}
+
+.toolbox-page .legacy-layout,
+.toolbox-page .legacy-note-grid,
+.toolbox-page .legacy-note-grid article {
+  border-color: var(--toolbox-line);
+}
+
+.toolbox-page .provenance-rail {
+  border-color: #39414c;
+  background: #10151d;
+  color: #fff;
+}
+
+.toolbox-page .provenance-rail h2,
+.toolbox-page .provenance-list::before {
+  color: var(--toolbox-accent);
+}
+
+.toolbox-page .provenance-list::before,
+.toolbox-page .provenance-list li::before {
+  background: var(--toolbox-accent);
+}
+
+.toolbox-page .legacy-main p,
+.toolbox-page .legacy-note-grid p,
+.toolbox-page .legacy-note-grid small {
+  color: var(--toolbox-muted);
+}
+
+.toolbox-page .legacy-main h2,
+.toolbox-page .legacy-note-grid h2 {
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  text-transform: none;
+}
+
+.toolbox-page .legacy-notice {
+  border-color: #c03b31;
+  background: #fff3f1;
+}
+
+.toolbox-page .legacy-notice strong {
+  color: #a52f27;
+  font-family: var(--toolbox-sans);
+  text-transform: none;
+}
+
+.toolbox-page .source-link {
+  border-radius: 5px;
+  background: var(--toolbox-text);
+  color: #fff;
+  font-family: var(--toolbox-sans);
+  text-transform: none;
+}
+
+@media (max-width: 900px) {
+  .content-page-header,
+  .toolbox-page .page-hero,
+  .toolbox-page .editorial-section,
+  .toolbox-page .quiz-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .content-page-header,
+  .toolbox-page .page-hero {
+    min-height: auto;
+    gap: 1.5rem;
+  }
+
+  .toolbox-page .editorial-side {
+    border-right: 0;
+    border-bottom: 1px solid var(--toolbox-line);
+  }
+
+  .toolbox-page .quiz-choice-pane {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 650px) {
+  .content-page-header,
+  .toolbox-page .page-hero {
+    padding: 3.5rem 1.25rem 2.8rem;
+  }
+
+  .content-page-header h1,
+  .toolbox-page .page-title,
+  .toolbox-page .legacy-title {
+    font-size: clamp(2.8rem, 13vw, 4rem);
+  }
+
+  .toolbox-page .legal-document {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbox-page .legal-toc {
+    position: static;
+    border-right: 0;
+    border-bottom: 1px solid var(--toolbox-line);
+  }
+}

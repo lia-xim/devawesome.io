@@ -1,9 +1,9 @@
 const { mkdir } = require("node:fs/promises");
 const { join } = require("node:path");
-const { chromium } = require("playwright");
+const { chromium } = require(process.env.DEVAWESOME_PLAYWRIGHT_MODULE || "playwright");
 
 const origin = process.env.DEVAWESOME_QA_ORIGIN || "http://127.0.0.1:4321";
-const screenshots = join(process.cwd(), "reports", "qa");
+const screenshots = process.env.DEVAWESOME_QA_SCREENSHOTS || join(process.cwd(), "reports", "qa");
 const failures = [];
 const consoleErrors = [];
 
@@ -42,20 +42,19 @@ async function runDesktop(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/");
 
-  await page.getByRole("heading", { level: 1, name: /Small developer tools/ }).waitFor();
-  check((await page.locator(".tool-row").count()) === 4, "home must show exactly four real tool rows");
+  await page.getByRole("heading", { level: 1, name: /Simple tools for developers and SEO teams/ }).waitFor();
+  check((await page.locator(".tool-row").count()) === 6, "home must show exactly six real tool rows");
   check(await page.getByRole("link", { name: /Browse tools/ }).first().isVisible(), "primary Browse tools CTA must be visible");
-  check(await page.locator(".hero-tool-preview").isVisible(), "desktop must show the working JSON preview");
+  check(await page.locator(".hero-tool-preview").isVisible(), "desktop must show the working keyword cleaner preview");
 
   const initialRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  const heroInput = page.locator(".hero-tool-preview [data-json-input]");
-  const heroOutput = page.locator(".hero-tool-preview [data-json-output]");
-  await heroInput.fill('{"ok":true,"items":[1,2]}');
-  check((await heroOutput.inputValue()).includes('"ok": true'), "hero JSON preview must format valid JSON");
-  await heroInput.fill('{"broken":');
-  check((await page.locator(".hero-tool-preview [data-json-status]").getAttribute("data-state")) === "error", "hero JSON preview must explain invalid JSON");
+  const heroInput = page.locator(".hero-tool-preview [data-keyword-input]");
+  const heroOutput = page.locator(".hero-tool-preview [data-keyword-output]");
+  await heroInput.fill("seo audit\nSEO Audit\nkeyword tracking");
+  await page.locator(".hero-tool-preview [data-keyword-clean]").click();
+  check((await heroOutput.inputValue()) === "seo audit\nkeyword tracking", "hero keyword preview must trim and deduplicate the list");
   const postInteractionRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  check(postInteractionRequestCount === initialRequestCount, "home JSON interaction must not create a request");
+  check(postInteractionRequestCount === initialRequestCount, "home keyword interaction must not create a request");
 
   const desktopStyles = await page.evaluate(() => {
     const body = getComputedStyle(document.body);
@@ -106,7 +105,7 @@ async function runMobile(browser) {
   await page.locator(".mobile-nav summary").click();
   check(await page.locator(".mobile-nav nav").isVisible(), "mobile navigation must open");
   await page.locator(".mobile-nav summary").click();
-  check((await page.locator(".tool-row").count()) === 4, "mobile must show all four tools");
+  check((await page.locator(".tool-row").count()) === 6, "mobile must show all six tools");
 
   const mobileStyles = await page.evaluate(() => {
     const hero = getComputedStyle(document.querySelector(".toolbox-hero-copy h1"));
@@ -130,9 +129,26 @@ async function runTools(browser) {
   const page = await context.newPage();
   await attachGuards(page);
 
+  await page.goto(origin + "/tools/keyword-list-cleaner", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/tools/keyword-list-cleaner");
+  let before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-keyword-input]").fill("seo audit\nSEO Audit\nkeyword tracking");
+  await page.locator("[data-keyword-clean]").click();
+  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking", "keyword cleaner must normalize and deduplicate the list");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword cleaner must not create a request");
+
+  await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/tools/url-list-normalizer");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-url-input]").fill("Example.com/page/#top\nhttps://example.com/page/\nnot a url");
+  await page.locator("[data-url-normalize]").click();
+  check((await page.locator("[data-url-output]").inputValue()) === "https://example.com/page", "URL normalizer must strip fragments, trailing slashes, and duplicates");
+  check((await page.locator("[data-url-status]").textContent()).includes("1 invalid"), "URL normalizer must report invalid entries");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "URL normalizer must not create a request");
+
   await page.goto(origin + "/tools/json-formatter", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/json-formatter");
-  let before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   await page.locator("[data-json-input]").fill('{"z":2,"a":1}');
   await page.locator("[data-json-minify]").click();
   check((await page.locator("[data-json-output]").inputValue()) === '{"z":2,"a":1}', "JSON minify must preserve parsed data");
@@ -160,20 +176,15 @@ async function runTools(browser) {
   await verifyStructure(page, "/tools/developer-tool-test-plan");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   const values = {
-    question: "Does the tool return a stable result?",
-    tool: "Sample Tool 1.0.0",
-    environment: "Node 24 on Windows 11",
-    fixture: "Local sample fixture",
-    expected: "Exit code 0",
-    negative: "Invalid input returns an error",
-    command: "node sample.mjs",
-    evidence: "Exit code and output JSON",
-    limits: "One local environment only",
+    subject: "Canonical redirect for /old-page",
+    action: "Request /old-page without following redirects",
+    expected: "Returns 301 and preserves the path",
+    edge: "Query strings remain intact",
   };
   for (const [name, value] of Object.entries(values)) await page.locator(`[name="${name}"]`).fill(value);
-  await page.getByRole("button", { name: "Generate JSON plan" }).click();
-  const plan = JSON.parse(await page.locator("[data-plan-output]").textContent());
-  check(plan.subject.toolAndVersion === values.tool && plan.cases.length === 2, "test plan must create the declared JSON structure");
+  await page.getByRole("button", { name: "Build test case" }).click();
+  const plan = await page.locator("[data-plan-output]").textContent();
+  check(plan.includes(values.subject) && plan.includes(values.edge) && plan.includes("Result: Not run"), "test-case builder must create the declared Markdown structure");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "test-plan tool must not create a request");
 
   await context.close();
@@ -220,7 +231,7 @@ async function captureConceptViewports(browser) {
       ],
       consoleErrors: 0,
       externalRequests: 0,
-      checkedTools: 4,
+      checkedTools: 6,
     }, null, 2));
   } finally {
     await browser.close();

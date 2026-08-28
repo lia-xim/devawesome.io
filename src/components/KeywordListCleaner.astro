@@ -1,0 +1,34 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const sample = "technical seo audit\nkeyword clustering\nTechnical SEO Audit\n  search intent  \nkeyword clustering";
+---
+
+<div class:list={["list-workbench", compact && "list-workbench-compact"]} data-keyword-cleaner>
+  <div class="workbench-bar">
+    <strong>Keyword list cleaner</strong>
+    <div>
+      <button type="button" data-keyword-clear>Clear</button>
+      <button type="button" data-keyword-copy disabled>Copy</button>
+      {!compact && <button type="button" data-keyword-download disabled>Download</button>}
+    </div>
+  </div>
+  <div class="list-panes">
+    <label>
+      <span>Paste keywords</span>
+      <textarea rows={compact ? 8 : 14} maxlength="1000000" spellcheck="false" data-keyword-input>{sample}</textarea>
+    </label>
+    <label>
+      <span>Clean list</span>
+      <textarea rows={compact ? 8 : 14} readonly spellcheck="false" data-keyword-output></textarea>
+    </label>
+  </div>
+  <div class="list-options">
+    <label><input type="checkbox" checked data-keyword-ignore-case /> Ignore capitalization when removing duplicates</label>
+    <p data-keyword-status aria-live="polite">Ready</p>
+    <button class="toolbox-button toolbox-button-small" type="button" data-keyword-clean>Clean keywords</button>
+  </div>
+</div>
