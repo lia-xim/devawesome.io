@@ -170,6 +170,19 @@ for (const [route, { html }] of built) {
     if (!ok) failures.push(route + " has broken internal link " + match[1]);
   }
 }
+
+const searchablePaths = new Set(canonicalRoutes.filter(({ searchEligible }) => searchEligible).map(({ path }) => path.replace(/\/$/, "") || "/"));
+const inboundLinks = new Map([...searchablePaths].map((path) => [path, new Set()]));
+for (const [source, { html }] of built) {
+  if (!searchablePaths.has(source)) continue;
+  for (const match of html.matchAll(internalHref)) {
+    const target = match[1].split(/[?#]/)[0].replace(/\/$/, "") || "/";
+    if (target !== source && searchablePaths.has(target)) inboundLinks.get(target).add(source);
+  }
+}
+for (const [path, sources] of inboundLinks) {
+  if (path !== "/" && sources.size === 0) failures.push(path + " must have an internal link from another search-eligible page");
+}
 const forbidden = [/80,?000/i, /80k/i, /our subscribers/i, /weekly newsletter is back/i];
 for (const [route, { html }] of built) for (const claim of forbidden) if (claim.test(html)) failures.push(route + " contains forbidden historical claim");
 
