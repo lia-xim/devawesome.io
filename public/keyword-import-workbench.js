@@ -1,6 +1,7 @@
 import { formatKeywordImport, prepareKeywordImport } from "./workbench-core.js";
-import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRecipe, downloadRecipe, preflightRecipe, presentRecipePreflight, readRecipeFile } from "./workbench-recipes.js";
 import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
+import { mappingForColumn, profileTabularInput } from "./workbench-tabular.js";
 
 const examples = {
   spreadsheet: {
@@ -226,13 +227,20 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
   recipeSave.addEventListener("click", () => {
     const settings = options();
     delete settings.conflictResolutions;
-    downloadRecipe(createRecipe("keyword-import", settings, { sourceType: mode.value }), "devawesome-keyword-import.recipe.json");
+    const profile = profileTabularInput(input.value, { mode: mode.value, hasHeader: header.checked });
+    const columnMappings = [];
+    if (profile.profiles[settings.keywordColumn]) columnMappings.push(mappingForColumn("keywordColumn", "Keyword column", profile.profiles[settings.keywordColumn]));
+    for (const index of settings.retainedColumns) if (profile.profiles[index]) columnMappings.push(mappingForColumn("retainedColumns", `Retained column: ${profile.profiles[index].name}`, profile.profiles[index], true));
+    downloadRecipe(createRecipe("keyword-import", settings, { sourceType: mode.value, workflowVersion: "2.0.0", compatibleWorkflowVersions: ["2.x"], columnMappings }), "devawesome-keyword-import.recipe.json");
     status.textContent = "Recipe downloaded without input data or row-specific conflict decisions.";
   });
   recipeLoad.addEventListener("change", async () => {
     try {
       const recipe = await readRecipeFile(recipeLoad.files?.[0], "keyword-import");
-      const settings = recipe.settings;
+      const profile = profileTabularInput(input.value, { mode: recipe.settings.mode ?? mode.value, hasHeader: recipe.settings.hasHeader ?? header.checked });
+      const preflight = preflightRecipe(recipe, { workflowVersion: "2.0.0", profiles: profile.profiles });
+      if (!(await presentRecipePreflight(root, preflight))) { recipeLoad.value = ""; status.textContent = "Recipe not applied."; return; }
+      const settings = preflight.resolvedSettings;
       mode.value = settings.mode ?? mode.value;
       header.checked = settings.hasHeader ?? header.checked;
       caseMode.value = settings.caseMode ?? caseMode.value;
@@ -256,7 +264,7 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
       delete manifestSettings.conflictResolutions;
       const manifest = await createRunManifest({
         workflow: "keyword-import",
-        workflowVersion: "1.1.0",
+        workflowVersion: "2.0.0",
         sourceType: currentSourceType,
         settings: manifestSettings,
         input: input.value,

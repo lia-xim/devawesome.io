@@ -46,8 +46,18 @@ not a url,0,unknown</textarea></label>
     </div>
   </section>
 
+  <section class="deep-workbench-step" aria-labelledby="crawl-robots-title">
+    <div class="step-heading"><span>3</span><div><h2 id="crawl-robots-title">Apply robots.txt to the complete list</h2><p>Paste the rules for the selected host and choose the crawler. Every page URL is evaluated locally; the winning rule stays in the export.</p></div></div>
+    <div class="robots-plan-grid">
+      <label class="source-input"><span>robots.txt</span><textarea rows="9" spellcheck="false" placeholder="User-agent: *&#10;Disallow: /private/&#10;Allow: /private/public/" data-crawl-robots></textarea></label>
+      <div class="source-settings"><label><span>Crawler</span><select data-crawl-agent><option>Googlebot</option><option>Bingbot</option><option>GPTBot</option><option>ClaudeBot</option><option>PerplexityBot</option><option value="custom">Custom user-agent</option></select></label><label data-crawl-custom-wrap hidden><span>Custom user-agent</span><input type="text" placeholder="YourCrawler" data-crawl-custom-agent /></label><p>One robots.txt belongs to one host. URLs outside the chosen scope remain separately classified.</p></div>
+    </div>
+    <div class="review-summary" data-crawl-plan-summary></div>
+    <details class="plan-review" open><summary>Review blocked and uncertain URLs</summary><ul data-crawl-plan-review></ul></details>
+  </section>
+
   <section class="deep-workbench-step" aria-labelledby="crawl-review-title">
-    <div class="step-heading"><span>3</span><div><h2 id="crawl-review-title">Review hosts and exceptions</h2><p>Invalid entries and suspicious variants stay visible instead of disappearing silently.</p></div></div>
+    <div class="step-heading"><span>4</span><div><h2 id="crawl-review-title">Review hosts and exceptions</h2><p>Invalid entries and suspicious variants stay visible instead of disappearing silently.</p></div></div>
     <div class="review-summary" data-crawl-review-summary></div>
     <div class="review-grid crawl-review-grid">
       <div class="preview-table-wrap"><table><caption>URLs by host</caption><thead><tr><th scope="col">Host</th><th scope="col">URLs</th></tr></thead><tbody data-crawl-hosts></tbody></table></div>
@@ -60,13 +70,13 @@ not a url,0,unknown</textarea></label>
   </section>
 
   <section class="deep-workbench-step" aria-labelledby="crawl-export-title">
-    <div class="step-heading"><span>4</span><div><h2 id="crawl-export-title">Export the crawl input</h2><p>Lines are best for a simple queue. CSV and JSON retain the review fields.</p></div></div>
+    <div class="step-heading"><span>5</span><div><h2 id="crawl-export-title">Export the crawl input and plan</h2><p>The crawl list contains targets. The crawl-plan report retains allowed, blocked, excluded, invalid, resource, and review groups.</p></div></div>
     <div class="export-controls">
       <fieldset class="format-picker"><legend>Output</legend><div><label><input type="radio" name="crawl-format" value="lines" checked data-crawl-format /><span>Lines</span></label><label><input type="radio" name="crawl-format" value="csv" data-crawl-format /><span>CSV</span></label><label><input type="radio" name="crawl-format" value="json" data-crawl-format /><span>JSON</span></label></div></fieldset>
-      <div class="export-actions"><button type="button" data-crawl-copy>Copy</button><button type="button" data-crawl-download-excluded>Download exclusions</button><button class="toolbox-button toolbox-button-small" type="button" data-crawl-download>Download</button></div>
+      <div class="export-actions"><button type="button" data-crawl-copy>Copy list</button><button type="button" data-crawl-download-excluded>Download exclusions</button><button type="button" data-crawl-download-plan>Download crawl plan</button><button class="toolbox-button toolbox-button-small" type="button" data-crawl-download>Download list</button></div>
     </div>
     <label class="export-output"><span>Export preview</span><textarea rows="12" readonly spellcheck="false" data-crawl-output></textarea></label>
-    <p class="format-note">This output has not been crawled. Status, canonical, robots, and content still need a live request.</p>
+    <p class="format-note">robots.txt is evaluated against pasted rules. No URL is fetched, so status, canonical, rendered directives, and current server rules still need a live request.</p>
     <p data-crawl-status aria-live="polite">Ready</p>
   </section>
   <RecipeControls label="Crawl-list recipe" />

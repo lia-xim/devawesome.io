@@ -1,0 +1,13 @@
+<div class="batch-workbench" data-indexability-batch>
+  <div class="batch-heading"><div><span>Batch mode</span><h2>Classify a crawler export</h2><p>Load a CSV or TSV, map the evidence columns, and group every URL without claiming that it is indexed.</p></div><label class="source-file-load"><span>Local crawler export</span><input type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain" data-batch-file /><small>Read only in this browser tab</small></label></div>
+  <label class="source-input"><span>Tabular input</span><textarea rows="8" spellcheck="false" data-batch-input>URL,Status Code,Canonical,Meta Robots,X-Robots-Tag,Robots Status,Content Type
+https://example.com/,200,https://example.com/,index,,Allowed,text/html
+https://example.com/private,200,https://example.com/private,noindex,,Blocked,text/html
+https://example.com/old,301,https://example.com/new,,,Allowed,text/html</textarea></label>
+  <div class="batch-settings"><label><span>Delimiter</span><select data-batch-delimiter><option value="auto">Detect</option><option value="comma">Comma</option><option value="tab">Tab</option></select></label><label class="switch-row"><input type="checkbox" checked data-batch-header /><span>First row is a header</span></label></div>
+  <div class="batch-mapping" data-batch-mapping></div>
+  <div class="batch-actions"><button class="toolbox-button toolbox-button-small" type="button" data-batch-run>Classify URLs</button><button type="button" data-batch-download>Download CSV</button><button type="button" data-batch-json>Download JSON</button><p data-batch-status aria-live="polite">Map the URL and status columns, then classify the rows.</p></div>
+  <div class="review-summary" data-batch-summary></div>
+  <div class="preview-table-wrap"><table><caption>Indexability groups from supplied evidence</caption><thead><tr><th scope="col">URL</th><th scope="col">Group</th><th scope="col">Reason</th></tr></thead><tbody data-batch-rows></tbody></table></div>
+  <p class="format-note">“Technically eligible” means only that the supplied columns did not contain a technical exclusion. It is not proof of Google indexing, canonical selection, ranking, or traffic.</p>
+</div>

@@ -1,0 +1,10 @@
+{
+  "pairedMessages": 1,
+  "unansweredRequests": 1,
+  "orphanResponses": 1,
+  "errorResponses": 1,
+  "negotiatedProtocolVersion": "2026-07-28",
+  "clientCapabilities": ["sampling"],
+  "serverCapabilities": ["resources", "tools"],
+  "boundary": "Expected summary for the downloadable synthetic JSONL fixture; no client or server was contacted."
+}

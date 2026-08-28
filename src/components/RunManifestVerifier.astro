@@ -1,0 +1,17 @@
+<div class="manifest-verifier" data-run-manifest-verifier>
+  <div class="manifest-verifier-inputs">
+    <div><span>1</span><label><strong>Run manifest</strong><input type="file" accept="application/json,.json" data-verify-manifest /></label></div>
+    <div><span>2</span><label><strong>Original input file</strong><input type="file" data-verify-input /></label></div>
+    <div><span>3</span><label><strong>Generated output file</strong><input type="file" data-verify-output /></label></div>
+  </div>
+  <div class="manifest-verifier-action">
+    <button class="toolbox-button" type="button" data-verify-run disabled>Verify this run</button>
+    <p data-verify-status aria-live="polite">Choose all three files. They stay in this browser tab.</p>
+  </div>
+  <section class="manifest-verifier-result" data-verify-result hidden aria-live="polite">
+    <span>Verification result</span>
+    <h2 data-verify-verdict>—</h2>
+    <p data-verify-context></p>
+    <ul data-verify-checks></ul>
+  </section>
+</div>

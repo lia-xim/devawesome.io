@@ -4,6 +4,7 @@ import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import RecipeControls from "../../components/RecipeControls.astro";
 import RunManifestControls from "../../components/RunManifestControls.astro";
+import IndexabilityBatchWorkbench from "../../components/IndexabilityBatchWorkbench.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const breadcrumbs = [
@@ -59,6 +60,13 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
     </div>
   </section>
 
+  <section class="workflow-tool-surface workflow-tool-surface-secondary" aria-label="Batch indexability classifier">
+    <div class="workflow-local-note"><strong>Many URLs, one evidence model.</strong><span>Map a crawler export once, then preserve every technical group and its reason.</span></div>
+    <IndexabilityBatchWorkbench />
+  </section>
+
+  <section class="worked-fixture section-rule"><div><span class="section-label">Batch fixture</span><h2>Four URLs, four different technical groups.</h2><p>The synthetic crawler export includes one technically eligible page, one noindex page, one robots/noindex conflict, and one canonical pointing elsewhere.</p></div><div><div class="fixture-actions"><a href="/fixtures/indexability-batch.input.csv" download>Download crawler input</a><a href="/fixtures/indexability-batch.expected.csv" download>Download expected groups</a></div><p class="fixture-reference">The expected file records only the supplied technical evidence. It does not claim that any URL is indexed.</p></div></section>
+
   <section class="workflow-scenario-list" aria-labelledby="index-scenarios-title"><h2 id="index-scenarios-title">Use this workflow when…</h2><ul><li>A page is missing from search and you need to separate eligibility from ranking.</li><li>Canonical, robots.txt, and noindex signals appear to contradict one another.</li><li>You need a concise diagnosis before opening a crawler or Search Console.</li></ul></section>
 
   <section class="workflow-explanation" aria-labelledby="index-order-title">
@@ -87,4 +95,5 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
 
   <section class="workflow-related" aria-labelledby="index-related-title"><div><h2 id="index-related-title">Related guide and tools</h2><p>Use the guide for the full decision order and a focused tool for one signal.</p></div><div><a href="/guides/debug-indexability-signals"><strong>Indexability signals guide</strong><span>Understand the full chain, common conflicts, and proof boundary.</span><ArrowIcon /></a><a href="/tools/robots-txt-tester"><strong>Robots.txt tester</strong><span>See which pasted rule wins for one crawler and path.</span><ArrowIcon /></a><a href="/workflows/build-clean-crawl-list"><strong>Build a clean crawl list</strong><span>Prepare a larger URL set before testing.</span><ArrowIcon /></a></div></section>
   <script is:inline type="module" src="/indexability-workflow.js"></script>
+  <script is:inline type="module" src="/indexability-batch.js"></script>
 </BaseLayout>

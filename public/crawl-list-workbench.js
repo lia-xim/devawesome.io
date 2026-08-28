@@ -1,6 +1,8 @@
 import { extractUrlRows, formatCrawlList, prepareCrawlList } from "./workbench-core.js";
-import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRecipe, downloadRecipe, preflightRecipe, presentRecipePreflight, readRecipeFile } from "./workbench-recipes.js";
 import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
+import { mappingForColumn, profileTabularInput } from "./workbench-tabular.js";
+import { buildCrawlPlan, formatCrawlPlan } from "./crawl-plan-core.js";
 
 const examples = {
   sitemap: { mode: "sitemap", header: false, input: `<?xml version="1.0" encoding="UTF-8"?>
@@ -60,6 +62,13 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   const copy = root.querySelector("[data-crawl-copy]");
   const downloadButton = root.querySelector("[data-crawl-download]");
   const downloadExcluded = root.querySelector("[data-crawl-download-excluded]");
+  const downloadPlan = root.querySelector("[data-crawl-download-plan]");
+  const robots = root.querySelector("[data-crawl-robots]");
+  const agent = root.querySelector("[data-crawl-agent]");
+  const customAgent = root.querySelector("[data-crawl-custom-agent]");
+  const customAgentWrap = root.querySelector("[data-crawl-custom-wrap]");
+  const planSummary = root.querySelector("[data-crawl-plan-summary]");
+  const planReview = root.querySelector("[data-crawl-plan-review]");
   const recipeSave = root.querySelector("[data-recipe-save]");
   const recipeLoad = root.querySelector("[data-recipe-load]");
   const manifestSave = root.querySelector("[data-run-manifest-save]");
@@ -69,6 +78,8 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   let currentFormat = "lines";
   let knownHeaders = [];
   let currentSourceType = "pasted-table";
+  let currentPlan;
+  const selectedAgent = () => agent.value === "custom" ? (customAgent.value.trim() || "CustomCrawler") : agent.value;
 
   const settings = () => ({
     mode: mode.value,
@@ -102,6 +113,7 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
 
   function run() {
     currentResult = prepareCrawlList(input.value, settings());
+    currentPlan = buildCrawlPlan(currentResult, { robots: robots.value, userAgent: selectedAgent() });
     currentFormat = formats.find((field) => field.checked)?.value || "lines";
     output.value = formatCrawlList(currentResult, currentFormat);
     sourceSummary.textContent = `${currentResult.inputRows} source row${currentResult.inputRows === 1 ? "" : "s"} · ${currentResult.sourceType} input · ${currentResult.headers.length} column${currentResult.headers.length === 1 ? "" : "s"}`;
@@ -122,6 +134,10 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
     invalidSummary.textContent = `${currentResult.invalid.length} invalid ${currentResult.invalid.length === 1 ? "entry" : "entries"}`;
     invalidList.replaceChildren(...(currentResult.invalid.length ? currentResult.invalid.map((entry) => makeListItem(entry.entry, entry.reason)) : [makeListItem("No invalid entries") ]));
     const typeSummary = currentResult.resourceTypes.map((entry) => `${entry.count} ${entry.type}`).join(", ");
+    const planLabels = { allowed: "allowed", blocked: "blocked", "outside-scope": "outside host scope", "excluded-pattern": "excluded by pattern", invalid: "invalid", resource: "resources", review: "manual review" };
+    planSummary.replaceChildren(...Object.entries(currentPlan.counts).flatMap(([key, count]) => { const strong = document.createElement("strong"); strong.textContent = String(count); const span = document.createElement("span"); span.textContent = planLabels[key]; return [strong, span]; }));
+    const attention = currentPlan.rows.filter((entry) => !["allowed"].includes(entry.category));
+    planReview.replaceChildren(...(attention.length ? attention.slice(0, 100).map((entry) => makeListItem(entry.url, `${entry.label}; ${entry.reason}; ${entry.winningRule}`)) : [makeListItem("No blocked or uncertain URLs") ]));
     status.textContent = `${currentResult.entries.length} URLs ready for ${currentFormat.toUpperCase()} export${typeSummary ? ` · ${typeSummary}` : ""}.`;
     copy.disabled = !output.value;
     downloadButton.disabled = !output.value;
@@ -133,6 +149,9 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   header.addEventListener("change", rebuildAndRun);
   for (const field of [urlColumn, query, addHttps, fragment, trailing, scopeMode, protocolMode, includeSitemapFiles, ...formats]) field.addEventListener("change", run);
   for (const field of [scopeHost, includePatterns, excludePatterns]) field.addEventListener("input", run);
+  robots.addEventListener("input", run);
+  agent.addEventListener("change", () => { customAgentWrap.hidden = agent.value !== "custom"; run(); });
+  customAgent.addEventListener("input", run);
   for (const button of root.querySelectorAll("[data-crawl-example]")) button.addEventListener("click", () => {
     const example = examples[button.dataset.crawlExample];
     input.value = example.input;
@@ -185,14 +204,27 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
     URL.revokeObjectURL(url);
     status.textContent = "Exclusion report downloaded.";
   });
+  downloadPlan.addEventListener("click", () => {
+    const content = formatCrawlPlan(currentPlan, "csv");
+    const url = URL.createObjectURL(new Blob([`${content}\n`], { type: "text/csv" }));
+    const link = document.createElement("a"); link.href = url; link.download = "crawl-plan.csv"; link.click(); URL.revokeObjectURL(url);
+    status.textContent = "Crawl plan downloaded with robots.txt decisions and winning rules.";
+  });
   recipeSave.addEventListener("click", () => {
-    downloadRecipe(createRecipe("crawl-list", settings(), { sourceType: mode.value }), "devawesome-crawl-list.recipe.json");
+    const saved = settings();
+    const profile = profileTabularInput(input.value, { mode: mode.value === "table" ? "auto" : mode.value, hasHeader: header.checked });
+    const columnMappings = profile.profiles[saved.urlColumn] ? [mappingForColumn("urlColumn", "URL column", profile.profiles[saved.urlColumn])] : [];
+    downloadRecipe(createRecipe("crawl-list", saved, { sourceType: mode.value, workflowVersion: "2.0.0", compatibleWorkflowVersions: ["2.x"], columnMappings }), "devawesome-crawl-list.recipe.json");
     status.textContent = "Recipe downloaded without input data.";
   });
   recipeLoad.addEventListener("change", async () => {
     try {
       const recipe = await readRecipeFile(recipeLoad.files?.[0], "crawl-list");
-      const saved = recipe.settings;
+      const recipeMode = recipe.settings.mode === "table" ? "auto" : (recipe.settings.mode ?? mode.value);
+      const profile = profileTabularInput(input.value, { mode: recipeMode, hasHeader: recipe.settings.hasHeader ?? header.checked });
+      const preflight = preflightRecipe(recipe, { workflowVersion: "2.0.0", profiles: profile.profiles });
+      if (!(await presentRecipePreflight(root, preflight))) { recipeLoad.value = ""; status.textContent = "Recipe not applied."; return; }
+      const saved = preflight.resolvedSettings;
       mode.value = saved.mode ?? mode.value;
       header.checked = saved.hasHeader ?? header.checked;
       query.value = saved.queryMode ?? query.value;
@@ -216,7 +248,7 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
     try {
       const manifest = await createRunManifest({
         workflow: "crawl-list",
-        workflowVersion: "1.1.0",
+        workflowVersion: "2.0.0",
         sourceType: currentSourceType,
         settings: settings(),
         input: input.value,

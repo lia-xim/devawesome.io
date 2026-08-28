@@ -1,0 +1,4 @@
+https://example.com/public
+https://example.com/private/report
+https://example.com/file.pdf
+not-a-url

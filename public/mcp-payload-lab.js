@@ -1,5 +1,5 @@
 import { analyzeMcpMessage, compareMcpExpectedActual, compareMcpPair } from "./workbench-core.js";
-import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRecipe, downloadRecipe, preflightRecipe, presentRecipePreflight, readRecipeFile } from "./workbench-recipes.js";
 import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
@@ -118,16 +118,18 @@ for (const root of document.querySelectorAll("[data-mcp-payload-lab]")) {
     fileInput.value = "";
   });
   recipeSave.addEventListener("click", () => {
-    downloadRecipe(createRecipe("mcp-payload", { source: source.value, declaredType: type.value, protocolVersion: version.value, comparisonMode: compareMode.value }, { sourceType: source.value }), "devawesome-mcp-payload.recipe.json");
+    downloadRecipe(createRecipe("mcp-payload", { source: source.value, declaredType: type.value, protocolVersion: version.value, comparisonMode: compareMode.value }, { sourceType: source.value, workflowVersion: "2.0.0", compatibleWorkflowVersions: ["2.x"] }), "devawesome-mcp-payload.recipe.json");
     status.textContent = "Recipe downloaded without payload or log content.";
   });
   recipeLoad.addEventListener("change", async () => {
     try {
       const recipe = await readRecipeFile(recipeLoad.files?.[0], "mcp-payload");
-      source.value = recipe.settings.source ?? source.value;
-      type.value = recipe.settings.declaredType ?? type.value;
-      version.value = recipe.settings.protocolVersion ?? version.value;
-      compareMode.value = recipe.settings.comparisonMode ?? compareMode.value;
+      const preflight = preflightRecipe(recipe, { workflowVersion: "2.0.0" });
+      if (!(await presentRecipePreflight(root, preflight))) { recipeLoad.value = ""; status.textContent = "Recipe not applied."; return; }
+      source.value = preflight.resolvedSettings.source ?? source.value;
+      type.value = preflight.resolvedSettings.declaredType ?? type.value;
+      version.value = preflight.resolvedSettings.protocolVersion ?? version.value;
+      compareMode.value = preflight.resolvedSettings.comparisonMode ?? compareMode.value;
       run();
       status.textContent = "Recipe loaded. Payloads were left unchanged.";
     } catch (error) { status.textContent = `Recipe not loaded: ${error.message}`; }
@@ -138,7 +140,7 @@ for (const root of document.querySelectorAll("[data-mcp-payload-lab]")) {
       const outputReport = { detectedType: result.type, protocolVersion: result.protocolVersion, valid: result.valid, issues: result.issues, corrected: result.corrected, comparison };
       const manifest = await createRunManifest({
         workflow: "mcp-payload-validation",
-        workflowVersion: "1.1.0",
+        workflowVersion: "2.0.0",
         sourceType: source.value,
         settings: { declaredType: type.value, protocolVersion: version.value, comparisonMode: compareMode.value },
         input: JSON.stringify({ primary: input.value, related: related.value }),

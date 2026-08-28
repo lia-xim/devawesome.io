@@ -30,6 +30,8 @@ const howTo = {
     <KeywordImportWorkbench />
   </section>
 
+  <section class="worked-fixture section-rule"><div><span class="section-label">Keyword fixture</span><h2>Duplicate data stays visible. Moved columns are detected.</h2><p>The input fixture contains conflicting metadata for repeated keywords. The schema-aware recipe was saved with keyword, volume, and intent in a different order; loading it against a reordered export opens a preflight before anything changes.</p></div><div><div class="fixture-actions"><a href="/fixtures/keyword-import-conflicts.input.csv" download>Download raw CSV</a><a href="/fixtures/keyword-import-conflicts.expected.csv" download>Download expected result</a><a href="/fixtures/keyword-import-schema-aware.recipe.json" download>Download schema-aware recipe</a></div><p class="fixture-reference">The workbench contract records conflict resolution and moved-column behavior as separate regression cases.</p></div></section>
+
   <section class="workflow-scenario-list" aria-labelledby="keyword-scenarios-title">
     <h2 id="keyword-scenarios-title">Use this workflow when…</h2>
     <ul>

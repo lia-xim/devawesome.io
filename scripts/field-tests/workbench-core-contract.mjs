@@ -16,7 +16,12 @@ import {
   resolveRobotsPath,
   testRobots,
 } from "../../public/workbench-core.js";
-import { createRunManifest, stableJson } from "../../public/workbench-run-manifests.js";
+import { createRunManifest, stableJson, verifyRunManifest } from "../../public/workbench-run-manifests.js";
+import { buildCrawlPlan } from "../../public/crawl-plan-core.js";
+import { analyzeIndexabilityBatch } from "../../public/indexability-batch-core.js";
+import { analyzeMcpSession } from "../../public/mcp-session-core.js";
+import { createRecipe, preflightRecipe } from "../../public/workbench-recipes.js";
+import { mappingForColumn, profileTabularInput } from "../../public/workbench-tabular.js";
 
 const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const resultPath = join(root, "reports", "field-tests", "workbench-core-contract-2026-08-28.json");
@@ -94,6 +99,28 @@ runCase("robots-longest-match", "Does the robots evaluator select the longest ap
   return { path, group: result.group, winningRule: result.rule, allowed: result.allowed };
 });
 
+runCase("crawl-plan-groups", "Does the crawl plan preserve the winning robots rule and every non-target group?", () => {
+  const prepared = prepareCrawlList("https://example.com/public\nhttps://example.com/private/report\nhttps://example.com/file.pdf\nnot-a-url", { mode: "lines" });
+  const plan = buildCrawlPlan(prepared, { robots: "User-agent: *\nDisallow: /private/", userAgent: "Googlebot" });
+  assert.equal(plan.counts.allowed, 1);
+  assert.equal(plan.counts.blocked, 1);
+  assert.equal(plan.counts.resource, 1);
+  assert.equal(plan.counts.invalid, 1);
+  assert.equal(plan.rows.find((row) => row.category === "blocked").winningRule, "Disallow: /private/");
+  return { counts: plan.counts, winningRule: plan.rows.find((row) => row.category === "blocked").winningRule };
+});
+
+runCase("recipe-column-preflight", "Does a recipe identify a moved column by name instead of silently reusing its old position?", () => {
+  const source = profileTabularInput("keyword,volume,intent\nseo audit,100,info", { mode: ",", hasHeader: true });
+  const recipe = createRecipe("keyword-import", { keywordColumn: 0 }, { columnMappings: [mappingForColumn("keywordColumn", "Keyword column", source.profiles[0])], workflowVersion: "2.0.0", compatibleWorkflowVersions: ["2.x"] });
+  const reordered = profileTabularInput("volume,keyword,intent\n100,seo audit,info", { mode: ",", hasHeader: true });
+  const preflight = preflightRecipe(recipe, { workflowVersion: "2.0.0", profiles: reordered.profiles });
+  assert.equal(preflight.canApply, true);
+  assert.equal(preflight.resolvedSettings.keywordColumn, 1);
+  assert.ok(preflight.messages.some((message) => message.text.includes("moved from column 1 to 2")));
+  return { canApply: preflight.canApply, resolvedKeywordColumn: preflight.resolvedSettings.keywordColumn, messages: preflight.messages.length };
+});
+
 runCase("indexability-noindex", "Does the debugger treat a 200 response with noindex as technically blocked?", () => {
   const result = diagnoseIndexability({ status: "200", canonical: "self", meta: "noindex", header: "index", robots: "allowed" });
   assert.equal(result.state, "blocked");
@@ -106,6 +133,16 @@ runCase("indexability-evidence-extraction", "Does pasted response evidence produ
   assert.deepEqual(extracted.signals, indexExpected);
   assert.ok(extracted.evidence.length >= 4);
   return { signals: extracted.signals, evidenceItems: extracted.evidence.length, warnings: extracted.warnings };
+});
+
+runCase("batch-indexability", "Does a crawler export separate technical eligibility from noindex, robots, canonical, and conflicting signals?", () => {
+  const input = "URL,Status,Canonical,Meta,X-Robots,Robots,Content Type\nhttps://example.com/,200,https://example.com/,index,,Allowed,text/html\nhttps://example.com/a,200,https://example.com/a,noindex,,Allowed,text/html\nhttps://example.com/b,200,https://example.com/b,noindex,,Blocked,text/html\nhttps://example.com/c,200,https://example.com/other,index,,Allowed,text/html";
+  const report = analyzeIndexabilityBatch(input, { delimiter: ",", hasHeader: true, mapping: { url: 0, status: 1, canonical: 2, metaRobots: 3, xRobotsTag: 4, robotsStatus: 5, contentType: 6 } });
+  assert.equal(report.counts["technically-eligible"], 1);
+  assert.equal(report.counts.noindex, 1);
+  assert.equal(report.counts["conflicting-signals"], 1);
+  assert.equal(report.counts["canonical-elsewhere"], 1);
+  return { counts: report.counts, boundary: report.boundary };
 });
 
 runCase("mcp-correction", "Does the MCP lab identify and repair core tools/call structure?", () => {
@@ -123,9 +160,26 @@ runCase("mcp-correction", "Does the MCP lab identify and repair core tools/call 
   return { detectedType: result.type, protocolVersion: result.protocolVersion, errors: result.issues.filter((entry) => entry.level === "error").length, correctedArgumentsType: typeof result.corrected.params.arguments, mismatchedPairDetected: !pair.valid, expectedShapeMatched: expectedActual.valid };
 });
 
+runCase("mcp-session-pairing", "Does the MCP session analyzer pair messages and expose unanswered and orphaned IDs?", () => {
+  const input = [
+    { jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2026-07-28", capabilities: { sampling: {} } } },
+    { jsonrpc: "2.0", id: 1, result: { protocolVersion: "2026-07-28", capabilities: { tools: {} } } },
+    { jsonrpc: "2.0", id: 2, method: "tools/list", params: {} },
+    { jsonrpc: "2.0", id: 9, error: { code: -32601, message: "Unknown request" } },
+  ].map((value) => JSON.stringify(value)).join("\n");
+  const report = analyzeMcpSession(input, { protocolVersion: "2026-07-28" });
+  assert.equal(report.summary.pairs, 1);
+  assert.equal(report.summary.unansweredRequests, 1);
+  assert.equal(report.summary.orphanResponses, 1);
+  assert.equal(report.summary.errors, 1);
+  assert.deepEqual(report.capabilities.server, ["tools"]);
+  return { summary: report.summary, versions: report.negotiatedVersions, capabilities: report.capabilities };
+});
+
 try {
   const manifest = await createRunManifest({
     workflow: "keyword-import",
+    workflowVersion: "2.0.0",
     sourceType: "fixture",
     settings: { mode: ",", hasHeader: true },
     input: "private keyword,10",
@@ -139,6 +193,10 @@ try {
   assert.equal(manifest.receipts.output.sha256, "4b2589a030d1c1733ebfb4bce2a89c40283e264c707762cd1b0c3e74478f8b1e");
   assert.equal(stableJson({ z: 1, a: { y: 2, b: 3 } }), '{"a":{"b":3,"y":2},"z":1}');
   assert.ok(!serialized.includes("private keyword"));
+  const match = await verifyRunManifest(manifest, { input: "private keyword,10", output: "private keyword" });
+  const changed = await verifyRunManifest(manifest, { input: "private keyword,10", output: "changed output" });
+  assert.equal(match.status, "MATCH");
+  assert.equal(changed.status, "OUTPUT CHANGED");
   cases.push({ id: "run-manifest-privacy", question: "Does a run manifest bind input, settings, and output without embedding source or export contents?", status: "passed", observed: { inputBytes: manifest.receipts.input.bytes, outputBytes: manifest.receipts.output.bytes, hashes: 3, rawContentsIncluded: false } });
 } catch (error) {
   cases.push({ id: "run-manifest-privacy", question: "Does a run manifest bind input, settings, and output without embedding source or export contents?", status: "failed", observed: { error: error.message } });

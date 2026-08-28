@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://devawesome.io/schemas/workbench-recipe.v2.json",
+  "title": "DevAwesome Workbench Recipe",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "tool", "recipeVersion", "workflowVersion", "compatibleWorkflowVersions", "columnMappings", "settings", "privacy"],
+  "properties": {
+    "$schema": { "const": "https://devawesome.io/schemas/workbench-recipe.v2.json" },
+    "schemaVersion": { "const": 2 },
+    "kind": { "const": "devawesome-workbench-recipe" },
+    "tool": { "type": "string", "minLength": 1 },
+    "recipeVersion": { "type": "string" },
+    "workflowVersion": { "type": "string" },
+    "compatibleWorkflowVersions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "columnMappings": { "type": "array", "items": { "$ref": "#/$defs/mapping" } },
+    "settings": { "type": "object" },
+    "privacy": { "type": "string" }
+  },
+  "$defs": {
+    "mapping": {
+      "type": "object",
+      "required": ["setting", "role", "name", "normalizedName", "originalIndex", "expectedType"],
+      "properties": {
+        "setting": { "type": "string" },
+        "role": { "type": "string" },
+        "name": { "type": "string" },
+        "normalizedName": { "type": "string" },
+        "originalIndex": { "type": "integer", "minimum": 0 },
+        "expectedType": { "enum": ["empty", "integer", "number", "boolean", "url", "text"] },
+        "multiple": { "type": "boolean" }
+      }
+    }
+  }
+}

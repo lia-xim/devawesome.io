@@ -1,0 +1,5 @@
+URL,Status Code,Canonical,Meta Robots,X-Robots-Tag,Robots Status,Content Type
+https://example.com/,200,https://example.com/,index,,Allowed,text/html
+https://example.com/noindex,200,https://example.com/noindex,noindex,,Allowed,text/html
+https://example.com/conflict,200,https://example.com/conflict,noindex,,Blocked,text/html
+https://example.com/duplicate,200,https://example.com/original,index,,Allowed,text/html

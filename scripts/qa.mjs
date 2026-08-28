@@ -46,9 +46,11 @@ const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const planSchema = JSON.parse(await readFile(join(dist, "schemas", "developer-tool-test-plan.v0.1.json"), "utf8"));
 const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-receipt.v0.1.json"), "utf8"));
 const runManifestSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-run-manifest.v1.json"), "utf8"));
+const recipeSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-recipe.v2.json"), "utf8"));
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
 if (runManifestSchema.$id !== "https://devawesome.io/schemas/workbench-run-manifest.v1.json" || runManifestSchema.properties?.kind?.const !== "devawesome-workbench-run-manifest") failures.push("workbench run-manifest JSON Schema must build as the declared privacy-bounded contract");
+if (recipeSchema.$id !== "https://devawesome.io/schemas/workbench-recipe.v2.json" || recipeSchema.properties?.schemaVersion?.const !== 2) failures.push("workbench recipe v2 JSON Schema must build as the schema-aware recipe contract");
 const headers = Object.fromEntries((vercel.headers?.[0]?.headers ?? []).map(({ key, value }) => [key.toLowerCase(), value]));
 if (rights.launchState !== "production_indexable") failures.push("rights manifest must record production_indexable");
 if (!rights.unknowns.includes("independent technical reviewer") || !rights.unknowns.includes("brand or mark clearance")) failures.push("open reviewer and identity gates must stay explicit");
@@ -84,6 +86,7 @@ if (!built.get("/tools/uuid-generator").html.includes('"@type":"WebApplication"'
 if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"')) failures.push("test-plan tool needs WebApplication schema");
 if (!built.get("/tools/evidence-receipt").html.includes('"@type":"WebApplication"')) failures.push("hash tool needs WebApplication schema");
 for (const route of ["/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator"]) if (!built.get(route).html.includes('"@type":"WebApplication"')) failures.push(route + " needs WebApplication schema");
+if (!built.get("/tools/run-manifest-verifier").html.includes('"@type":"WebApplication"')) failures.push("run-manifest verifier needs WebApplication schema");
 if (!built.get("/tools/evidence-receipt").html.includes('href="/schemas/evidence-receipt.v0.1.json"')) failures.push("receipt tool must expose its versioned JSON Schema");
 if (built.get("/404").html.includes("application/ld+json")) failures.push("404 must not emit page schema");
 
@@ -98,7 +101,7 @@ for (const name of js) {
 }
 const home = built.get("/").html;
 for (const copy of ["Turn raw SEO exports into inputs you can review and reuse.", "Prepare a keyword import", "Build a clean crawl list", "A result is useful when you know what changed."]) if (!home.includes(copy)) failures.push("home lacks workflow-first copy: " + copy);
-for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
+for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan", "/tools/run-manifest-verifier"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const path of ["/workflows/prepare-keyword-import", "/workflows/build-clean-crawl-list", "/workflows/debug-indexability", "/workflows/validate-mcp-message"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const route of canonicalRoutes.map(({ path }) => path.replace(/\/$/, "") || "/")) if (!built.get(route).html.includes('class="toolbox-page"')) failures.push(route + " must use the unified toolbox surface");
 const revealPath = join(root, "public/reveal.js");
@@ -140,11 +143,16 @@ const utilityBudgets = {
   // Shared only by the four deep workflow routes. The budget covers the
   // conflict, scope, evidence-extraction, and versioned MCP contracts.
   "workbench-core.js": 34000,
-  "keyword-import-workbench.js": 16000,
-  "crawl-list-workbench.js": 14000,
+  "keyword-import-workbench.js": 18000,
+  "crawl-list-workbench.js": 18000,
   "mcp-payload-lab.js": 12000,
+  "crawl-plan-core.js": 8000,
+  "indexability-batch-core.js": 8000,
+  "indexability-batch.js": 8000,
+  "mcp-session-core.js": 8000,
+  "mcp-session-analyzer.js": 8000,
 };
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", "workbench-run-manifests.js", ...Object.keys(utilityBudgets)]) {
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", "workbench-run-manifests.js", "workbench-tabular.js", "run-manifest-verifier.js", ...Object.keys(utilityBudgets)]) {
   const source = await readFile(join(root, "public", asset), "utf8");
   const budget = utilityBudgets[asset] ?? 8000;
   if ((await stat(join(root, "public", asset))).size > budget) failures.push(`${asset} exceeds its ${budget} byte utility budget`);

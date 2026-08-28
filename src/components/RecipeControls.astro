@@ -15,4 +15,13 @@ const { label = "Recipe" } = Astro.props;
     <button type="button" data-recipe-save>Download recipe</button>
     <label class="recipe-load">Load recipe<input type="file" accept="application/json,.json" data-recipe-load /></label>
   </div>
+  <dialog class="recipe-preflight" data-recipe-preflight>
+    <div>
+      <span>Recipe preflight</span>
+      <h3>Review the saved mappings</h3>
+      <p data-recipe-preflight-summary></p>
+      <ul data-recipe-preflight-list></ul>
+      <div><button type="button" data-recipe-preflight-cancel>Cancel</button><button type="button" data-recipe-preflight-apply>Apply recipe</button></div>
+    </div>
+  </dialog>
 </div>

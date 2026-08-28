@@ -1,0 +1,18 @@
+{
+  "$schema": "https://devawesome.io/schemas/workbench-recipe.v2.json",
+  "schemaVersion": 2,
+  "kind": "devawesome-workbench-recipe",
+  "tool": "keyword-import",
+  "recipeVersion": "2.0.0",
+  "workflowVersion": "2.0.0",
+  "compatibleWorkflowVersions": ["2.x"],
+  "createdAt": "2026-08-28T20:00:00.000Z",
+  "sourceType": ",",
+  "columnMappings": [
+    { "setting": "keywordColumn", "role": "Keyword column", "name": "keyword", "normalizedName": "keyword", "originalIndex": 0, "expectedType": "text" },
+    { "setting": "retainedColumns", "role": "Retained column: volume", "name": "volume", "normalizedName": "volume", "originalIndex": 1, "expectedType": "integer", "multiple": true },
+    { "setting": "retainedColumns", "role": "Retained column: intent", "name": "intent", "normalizedName": "intent", "originalIndex": 2, "expectedType": "text", "multiple": true }
+  ],
+  "settings": { "mode": ",", "hasHeader": true, "keywordColumn": 0, "retainedColumns": [1, 2], "caseMode": "preserve", "ignoreCase": true, "stripNoise": true, "whitespace": true, "duplicateStrategy": "manual" },
+  "privacy": "Configuration and column identities only. Pasted input and generated output are not stored in this file."
+}

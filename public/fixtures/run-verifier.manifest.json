@@ -1,0 +1,18 @@
+{
+  "$schema": "https://devawesome.io/schemas/workbench-run-manifest.v1.json",
+  "schemaVersion": 1,
+  "kind": "devawesome-workbench-run-manifest",
+  "workflow": "keyword-import",
+  "workflowVersion": "2.0.0",
+  "createdAt": "2026-08-28T20:48:50.807Z",
+  "sourceType": "fixture",
+  "settings": { "hasHeader": true, "keywordColumn": 0, "mode": ",", "retainedColumns": [1] },
+  "receipts": {
+    "input": { "algorithm": "SHA-256", "bytes": 29, "sha256": "088ebd86686e94a9385b0d8871c731efe804c989b5966ddb671872da7de678b7" },
+    "output": { "algorithm": "SHA-256", "bytes": 29, "sha256": "088ebd86686e94a9385b0d8871c731efe804c989b5966ddb671872da7de678b7", "format": "csv" },
+    "settings": { "algorithm": "SHA-256", "bytes": 69, "sha256": "d33be98af7aeec4e24aee303171d705195114e9b6c160bf898aaa7384556e827" }
+  },
+  "summary": { "rows": 1 },
+  "limits": ["Fixture only."],
+  "privacy": "Contains settings, counts, limits, and SHA-256 receipts. Pasted input and generated output are not included."
+}

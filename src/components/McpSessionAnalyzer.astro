@@ -1,0 +1,17 @@
+---
+const sampleSession = [
+  { jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2026-07-28", capabilities: { sampling: {} } } },
+  { jsonrpc: "2.0", id: 1, result: { protocolVersion: "2026-07-28", capabilities: { tools: {}, resources: {} } } },
+  { jsonrpc: "2.0", id: 2, method: "tools/list", params: {} },
+  { jsonrpc: "2.0", id: 99, error: { code: -32601, message: "Unknown request" } },
+].map((value) => JSON.stringify(value)).join("\n");
+---
+<div class="batch-workbench" data-mcp-session>
+  <div class="batch-heading"><div><span>Session mode</span><h2>Analyze a complete MCP session</h2><p>Load JSONL or a JSON array. Requests and responses are paired by ID; gaps remain visible.</p></div><label class="source-file-load"><span>Inspector or log export</span><input type="file" accept=".json,.jsonl,.txt,application/json,text/plain" data-session-file /><small>Remove secrets before loading a log</small></label></div>
+  <div class="batch-settings"><label><span>Expected protocol version</span><select data-session-version><option value="auto">Read from session</option><option value="2026-07-28">2026-07-28</option><option value="2025-11-25">2025-11-25</option><option value="2025-06-18">2025-06-18</option></select></label></div>
+  <label class="source-input"><span>JSONL or JSON array</span><textarea rows="11" spellcheck="false" data-session-input>{sampleSession}</textarea></label>
+  <div class="batch-actions"><button class="toolbox-button toolbox-button-small" type="button" data-session-run>Analyze session</button><button type="button" data-session-download>Download report</button><p data-session-status aria-live="polite">Ready to pair the supplied messages.</p></div>
+  <div class="review-summary" data-session-summary></div>
+  <div class="session-grid"><section><span>Negotiation</span><dl data-session-negotiation></dl></section><section><span>Unanswered or orphaned</span><ul data-session-gaps></ul></section><section><span>Errors</span><ul data-session-errors></ul></section></div>
+  <p class="format-note">The analyzer reads supplied messages only. It does not replay transport, authentication, cancellation, timeouts, or tool execution.</p>
+</div>

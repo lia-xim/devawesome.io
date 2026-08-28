@@ -1,5 +1,5 @@
 import { diagnoseIndexability, extractIndexabilitySignals } from "./workbench-core.js";
-import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRecipe, downloadRecipe, preflightRecipe, presentRecipePreflight, readRecipeFile } from "./workbench-recipes.js";
 import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
@@ -96,14 +96,16 @@ for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
     if (statusText) statusText.textContent = "JSON diagnosis downloaded.";
   });
   recipeSave?.addEventListener("click", () => {
-    downloadRecipe(createRecipe("indexability", { userAgent: userAgent.value, defaultSignals: signals() }, { sourceType: "pasted-response-evidence" }), "devawesome-indexability.recipe.json");
+    downloadRecipe(createRecipe("indexability", { userAgent: userAgent.value, defaultSignals: signals() }, { sourceType: "pasted-response-evidence", workflowVersion: "2.0.0", compatibleWorkflowVersions: ["2.x"] }), "devawesome-indexability.recipe.json");
     statusText.textContent = "Recipe downloaded without pasted headers, HTML, robots.txt, or URL.";
   });
   recipeLoad?.addEventListener("change", async () => {
     try {
       const recipe = await readRecipeFile(recipeLoad.files?.[0], "indexability");
-      userAgent.value = recipe.settings.userAgent ?? userAgent.value;
-      for (const [key, value] of Object.entries(recipe.settings.defaultSignals || {})) if (fields[key]) fields[key].value = value;
+      const preflight = preflightRecipe(recipe, { workflowVersion: "2.0.0" });
+      if (!(await presentRecipePreflight(root, preflight))) { recipeLoad.value = ""; statusText.textContent = "Recipe not applied."; return; }
+      userAgent.value = preflight.resolvedSettings.userAgent ?? userAgent.value;
+      for (const [key, value] of Object.entries(preflight.resolvedSettings.defaultSignals || {})) if (fields[key]) fields[key].value = value;
       extraction = { evidence: [], warnings: [] };
       update();
       statusText.textContent = "Recipe loaded. Pasted evidence was left unchanged.";
@@ -115,7 +117,7 @@ for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
       const inputEvidence = JSON.stringify({ url: pageUrl.value, userAgent: userAgent.value, headers: headerInput.value, html: htmlInput.value, robots: robotsInput.value });
       const manifest = await createRunManifest({
         workflow: "indexability-debugger",
-        workflowVersion: "1.1.0",
+        workflowVersion: "2.0.0",
         sourceType: extraction.evidence.length ? "pasted-response-evidence" : "manual-signals",
         settings: { userAgent: userAgent.value, signals: signals() },
         input: inputEvidence,

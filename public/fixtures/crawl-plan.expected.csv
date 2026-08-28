@@ -1,0 +1,5 @@
+url,result,reason,user_agent,winning_rule
+https://example.com/public,Crawl allowed,Matched user-agent group: *,Googlebot,No matching rule
+https://example.com/private/report,Blocked by robots.txt,Matched user-agent group: *,Googlebot,Disallow: /private/
+https://example.com/file.pdf,Resource instead of HTML page,Classified as document,Googlebot,Not evaluated
+not-a-url,Invalid URL,Missing a valid HTTP or HTTPS URL,Googlebot,Not evaluated

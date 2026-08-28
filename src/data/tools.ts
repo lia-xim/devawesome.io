@@ -98,4 +98,12 @@ export const tools: ReadonlyArray<{
     glyph: "list",
     category: "developer-utilities",
   },
+  {
+    path: "/tools/run-manifest-verifier",
+    name: "Run manifest verifier",
+    description: "Verify saved input, output, and settings receipts from a workbench run.",
+    glyph: "OK",
+    category: "developer-utilities",
+    featured: true,
+  },
 ];

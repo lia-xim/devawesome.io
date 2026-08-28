@@ -4,6 +4,7 @@ import McpPayloadLab from "../../components/McpPayloadLab.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import McpSessionAnalyzer from "../../components/McpSessionAnalyzer.astro";
 
 const breadcrumbs = [
   { name: "Home", path: "/" },
@@ -29,6 +30,13 @@ const howTo = {
     <div class="workflow-local-note"><strong>Remove secrets first.</strong><span>Validation stays in this browser tab and does not contact an MCP server.</span></div>
     <McpPayloadLab />
   </section>
+
+  <section class="workflow-tool-surface workflow-tool-surface-secondary" aria-label="MCP session analyzer">
+    <div class="workflow-local-note"><strong>Session-level evidence.</strong><span>Pair every supplied request and response without contacting the client or server.</span></div>
+    <McpSessionAnalyzer />
+  </section>
+
+  <section class="worked-fixture section-rule"><div><span class="section-label">Session fixture</span><h2>One pair, one unanswered request, one orphan error.</h2><p>The JSONL file makes the pairing rules visible without requiring an MCP server, secret, or network request.</p></div><div><div class="fixture-actions"><a href="/fixtures/mcp-session.input.jsonl" download>Download JSONL session</a><a href="/fixtures/mcp-session.expected.json" download>Download expected summary</a></div><p class="fixture-reference">The expected result is tied to the local session analyzer contract, not a complete normative MCP conformance suite.</p></div></section>
 
   <section class="workflow-scenario-list" aria-labelledby="mcp-scenarios-title"><h2 id="mcp-scenarios-title">Use this workflow when…</h2><ul><li>MCP Inspector shows a message but the failure is not obvious.</li><li>An SDK test or debug log contains a tools/list or tools/call payload.</li><li>You need to separate JSON-RPC envelope errors from runtime, transport, auth, or tool errors.</li></ul></section>
 
@@ -59,4 +67,5 @@ const howTo = {
 
   <section class="workflow-related" aria-labelledby="mcp-related-title"><div><h2 id="mcp-related-title">Related tools and guide</h2><p>Fix syntax first, then preserve the expected behavior as a test.</p></div><div><a href="/tools/json-formatter"><strong>JSON formatter</strong><span>Find and repair JSON syntax errors.</span><ArrowIcon /></a><a href="/tools/developer-tool-test-plan"><strong>Simple test case builder</strong><span>Record one expected MCP response or failure.</span><ArrowIcon /></a><a href="/guides/reproducible-developer-tool-tests"><strong>Reproducible tool tests</strong><span>Publish a bounded result with versions and failure cases.</span><ArrowIcon /></a></div></section>
   <script is:inline type="module" src="/mcp-payload-lab.js"></script>
+  <script is:inline type="module" src="/mcp-session-analyzer.js"></script>
 </BaseLayout>

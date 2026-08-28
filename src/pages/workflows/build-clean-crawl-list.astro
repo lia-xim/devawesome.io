@@ -13,7 +13,7 @@ const breadcrumbs = [
 const howTo = {
   "@type": "HowTo",
   name: "Build a clean crawl list",
-  step: ["Extract URLs", "Choose normalization rules", "Define host and protocol scope", "Review exclusions", "Export targets and rejection reasons"].map((name) => ({ "@type": "HowToStep", name })),
+  step: ["Extract URLs", "Choose normalization rules", "Define host and protocol scope", "Apply robots.txt for one crawler", "Review every group", "Export targets and the crawl plan"].map((name) => ({ "@type": "HowToStep", name })),
 };
 ---
 
@@ -21,14 +21,16 @@ const howTo = {
   <header class="workflow-page-header">
     <a href="/workflows">← All workflows</a>
     <h1>Build a clean crawl list</h1>
-    <p>Extract copied URLs, define exactly what belongs in scope, and export both crawl targets and documented exclusions.</p>
-    <WorkflowProgress steps={["Extract URLs", "Choose rules", "Define scope", "Review exclusions", "Export files"]} />
+    <p>Extract copied URLs, define exactly what belongs in scope, apply pasted robots.txt rules, and export a crawl plan with the winning rule for every blocked URL.</p>
+    <WorkflowProgress steps={["Extract URLs", "Choose rules", "Define scope", "Apply robots", "Review groups", "Export files"]} />
   </header>
 
   <section class="workflow-tool-surface" aria-label="Crawl list workbench">
     <div class="workflow-local-note"><strong>No crawl.</strong><span>The browser parses your text without requesting any URL.</span></div>
     <CrawlListWorkbench />
   </section>
+
+  <section class="worked-fixture section-rule"><div><span class="section-label">Crawl-plan fixture</span><h2>One allowed page, one block, one resource, one invalid value.</h2><p>The synthetic fixture shows how the same input is separated into operational groups and preserves the winning robots.txt rule.</p></div><div><div class="fixture-actions"><a href="/fixtures/crawl-plan.input.txt" download>Download URL input</a><a href="/fixtures/crawl-plan.robots.txt" download>Download robots.txt</a><a href="/fixtures/crawl-plan.expected.csv" download>Download expected plan</a></div><p class="fixture-reference">No URL was requested. The report is valid only for the pasted rule set and selected user-agent.</p></div></section>
 
   <section class="workflow-scenario-list" aria-labelledby="crawl-scenarios-title"><h2 id="crawl-scenarios-title">Use this workflow when…</h2><ul><li>A crawl export contains the same page in several URL forms.</li><li>You copied URLs from a spreadsheet, sitemap, sitemap index, Markdown file, or issue.</li><li>You need to restrict a crawl by host, subdomain, protocol, path pattern, or resource type.</li><li>You need an export that explains why each rejected URL was excluded.</li></ul></section>
 

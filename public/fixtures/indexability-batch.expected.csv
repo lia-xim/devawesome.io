@@ -1,0 +1,5 @@
+url,group,reason
+https://example.com/,Technically eligible,The supplied response signals do not contain a technical exclusion
+https://example.com/noindex,Excluded by noindex,Meta robots contains noindex
+https://example.com/conflict,Conflicting signals,robots blocks the crawler that would need to see noindex
+https://example.com/duplicate,Canonical points elsewhere,Canonical: https://example.com/original

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "workbench-core-contract",
   "status": "passed",
-  "capturedAt": "2026-08-28T20:14:58.284Z",
+  "capturedAt": "2026-08-28T20:51:29.628Z",
   "editor": "Matthias Ramahi",
   "technicalReview": "Not independently reviewed",
   "environment": {
@@ -75,6 +75,32 @@
       }
     },
     {
+      "id": "crawl-plan-groups",
+      "question": "Does the crawl plan preserve the winning robots rule and every non-target group?",
+      "status": "passed",
+      "observed": {
+        "counts": {
+          "allowed": 1,
+          "blocked": 1,
+          "outside-scope": 0,
+          "invalid": 1,
+          "resource": 1,
+          "review": 0
+        },
+        "winningRule": "Disallow: /private/"
+      }
+    },
+    {
+      "id": "recipe-column-preflight",
+      "question": "Does a recipe identify a moved column by name instead of silently reusing its old position?",
+      "status": "passed",
+      "observed": {
+        "canApply": true,
+        "resolvedKeywordColumn": 1,
+        "messages": 2
+      }
+    },
+    {
       "id": "indexability-noindex",
       "question": "Does the debugger treat a 200 response with noindex as technically blocked?",
       "status": "passed",
@@ -100,6 +126,20 @@
       }
     },
     {
+      "id": "batch-indexability",
+      "question": "Does a crawler export separate technical eligibility from noindex, robots, canonical, and conflicting signals?",
+      "status": "passed",
+      "observed": {
+        "counts": {
+          "technically-eligible": 1,
+          "noindex": 1,
+          "conflicting-signals": 1,
+          "canonical-elsewhere": 1
+        },
+        "boundary": "Technically eligible does not mean indexed, selected as canonical, ranking, or receiving traffic."
+      }
+    },
+    {
       "id": "mcp-correction",
       "question": "Does the MCP lab identify and repair core tools/call structure?",
       "status": "passed",
@@ -110,6 +150,32 @@
         "correctedArgumentsType": "object",
         "mismatchedPairDetected": true,
         "expectedShapeMatched": true
+      }
+    },
+    {
+      "id": "mcp-session-pairing",
+      "question": "Does the MCP session analyzer pair messages and expose unanswered and orphaned IDs?",
+      "status": "passed",
+      "observed": {
+        "summary": {
+          "messages": 4,
+          "pairs": 1,
+          "unansweredRequests": 1,
+          "orphanResponses": 1,
+          "errors": 1,
+          "invalidLines": 0
+        },
+        "versions": [
+          "2026-07-28"
+        ],
+        "capabilities": {
+          "client": [
+            "sampling"
+          ],
+          "server": [
+            "tools"
+          ]
+        }
       }
     },
     {

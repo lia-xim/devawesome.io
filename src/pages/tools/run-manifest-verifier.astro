@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RunManifestVerifier from "../../components/RunManifestVerifier.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+const schema = { "@type": "WebApplication", name: "DevAwesome Run Manifest Verifier", applicationCategory: "DeveloperApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript and Web Crypto.", isAccessibleForFree: true };
+---
+<BaseLayout title="Run Manifest Verifier" description="Verify a DevAwesome workbench input, output, and embedded settings against a saved run manifest without uploading the files." canonicalPath="/tools/run-manifest-verifier" schemaMainEntity={schema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>Run manifest verifier</h1></div><p>Check whether an input, output, and saved settings still match the SHA-256 receipts from one DevAwesome workbench run.</p></header>
+  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>Local verification.</strong> The three files are read in this tab and are not uploaded.</span><a href="/schemas/workbench-run-manifest.v1.json">Manifest schema</a></div><RunManifestVerifier /><noscript><p class="noscript-note">This verifier requires JavaScript and Web Crypto.</p></noscript></section>
+  <section class="worked-fixture section-rule"><div><span class="section-label">Try a known run</span><h2>Start with MATCH. Then break the output.</h2><p>Load the manifest, original input, and expected output together. The verifier should return MATCH. Replace only the output with the changed fixture to reproduce OUTPUT CHANGED.</p></div><div><div class="fixture-actions"><a href="/fixtures/run-verifier.manifest.json" download>Run manifest</a><a href="/fixtures/run-verifier.input.csv" download>Original input</a><a href="/fixtures/run-verifier.output.csv" download>Matching output</a><a href="/fixtures/run-verifier.changed-output.csv" download>Changed output</a></div><p class="fixture-reference">This is a synthetic fixture. The manifest stores hashes and settings, not the CSV contents.</p></div></section>
+  <ToolPageContent
+    steps={["Choose the run manifest downloaded from a DevAwesome workflow.", "Choose the exact original input and generated output files.", "Verify the three receipts. MATCH means the input, output, and embedded settings match this manifest."]}
+    handles={["DevAwesome run-manifest schema version 1", "Supported keyword, crawl-list, indexability, MCP payload, and MCP session workflow versions", "UTF-8 text with CRLF and CR normalized to LF before hashing", "Separate input, output, and settings results"]}
+    limits={["A matching receipt shows content equivalence under the declared normalization. It does not prove authorship, creation time, or that the workflow result was correct.", "The verifier cannot reconstruct a missing input or output from a hash.", "A manifest from an unsupported workflow version is not silently accepted."]}
+    sources={[{ label: "DevAwesome run-manifest JSON Schema", href: "/schemas/workbench-run-manifest.v1.json", note: "The versioned structure checked before receipts are compared." }, { label: "SHA-256 evidence contract", href: "/field-tests/evidence-receipt-contract", note: "Known-vector and Web Crypto equivalence tests for the digest layer." }]}
+    related={[{ label: "Reproducible developer-tool tests", href: "/guides/reproducible-developer-tool-tests", note: "Understand what a matching artifact does and does not prove." }, { label: "SHA-256 hash", href: "/tools/evidence-receipt", note: "Create a standalone digest for one text value." }]}
+  />
+  <script is:inline type="module" src="/run-manifest-verifier.js"></script>
+</BaseLayout>
