@@ -132,17 +132,21 @@ async function runTools(browser) {
   await page.goto(origin + "/tools/keyword-list-cleaner", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/keyword-list-cleaner");
   let before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator("[data-keyword-input]").fill("seo audit\nSEO Audit\nkeyword tracking");
+  await page.locator("[data-keyword-input]").fill("1. seo audit, SEO Audit | keyword tracking\n/\n2) content brief");
   await page.locator("[data-keyword-clean]").click();
-  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking", "keyword cleaner must normalize and deduplicate the list");
+  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking\ncontent brief", "keyword cleaner must remove list noise and deduplicate mixed separators");
+  await page.locator('[data-keyword-format][value="comma"]').check();
+  check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit, keyword tracking, content brief", "keyword cleaner must switch the output to comma-separated values");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword cleaner must not create a request");
 
   await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/url-list-normalizer");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator("[data-url-input]").fill("Example.com/page/#top\nhttps://example.com/page/\nnot a url");
+  await page.locator("[data-url-input]").fill("1. Example.com/page/#top | https://example.com/page/?utm_source=test\n[Pricing](https://example.com/pricing?plan=pro)\nnot a url");
   await page.locator("[data-url-normalize]").click();
-  check((await page.locator("[data-url-output]").inputValue()) === "https://example.com/page", "URL normalizer must strip fragments, trailing slashes, and duplicates");
+  check((await page.locator("[data-url-output]").inputValue()) === "https://example.com/page\nhttps://example.com/pricing?plan=pro", "URL normalizer must remove tracking parameters, normalize markdown URLs, strip fragments, and deduplicate");
+  await page.locator('[data-url-format][value="json"]').check();
+  check((await page.locator("[data-url-output]").inputValue()).includes('"https://example.com/pricing?plan=pro"'), "URL normalizer must switch the output to JSON");
   check((await page.locator("[data-url-status]").textContent()).includes("1 invalid"), "URL normalizer must report invalid entries");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "URL normalizer must not create a request");
 
@@ -192,16 +196,19 @@ async function runTools(browser) {
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   await page.locator("[data-mcp-input]").fill('{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}');
   await page.locator("[data-mcp-validate]").click();
-  check((await page.locator("[data-mcp-output]").inputValue()).includes("PASS:"), "MCP validator must accept a valid tools/list request");
+  check((await page.locator("[data-mcp-output]").inputValue()).includes("Looks good:"), "MCP validator must accept a valid tools/list request");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP validator must not create a request");
 
   await page.goto(origin + "/tools/robots-txt-tester", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/robots-txt-tester");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
-  await page.locator("[data-robots-agent]").fill("Googlebot");
-  await page.locator("[data-robots-path]").fill("/preview/article");
+  await page.locator("[data-robots-agent]").selectOption("Googlebot");
+  await page.locator("[data-robots-path]").fill("https://example.com/preview/article?draft=1");
   await page.locator("[data-robots-test]").click();
-  check((await page.locator("[data-robots-verdict]").textContent()) === "Disallowed from crawling", "robots tester must select the specific Googlebot disallow rule");
+  check((await page.locator("[data-robots-verdict]").textContent()) === "Blocked by robots.txt", "robots tester must select the specific Googlebot disallow rule");
+  check((await page.locator("[data-robots-tested-path]").textContent()) === "/preview/article?draft=1", "robots tester must extract the path and query from a full URL");
+  await page.locator('[data-robots-example="allowed"]').click();
+  check((await page.locator("[data-robots-verdict]").textContent()) === "Allowed by robots.txt", "robots tester must explain an Allow exception through the example control");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "robots tester must not create a request");
 
   await page.goto(origin + "/tools/serp-snippet-preview", { waitUntil: "networkidle" });

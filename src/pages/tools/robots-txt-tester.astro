@@ -6,16 +6,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const toolSchema = { "@type": "WebApplication", name: "DevAwesome Robots.txt Tester", applicationCategory: "BusinessApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
 ---
 
-<BaseLayout title="Robots.txt Tester" description="Test one crawler user-agent and URL path against pasted robots.txt rules locally in your browser." canonicalPath="/tools/robots-txt-tester" schemaMainEntity={toolSchema}>
-  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>Robots.txt tester</h1></div><p>Paste a robots file, enter one crawler and path, and see which Allow or Disallow rule wins. The tool never requests the website.</p></header>
-  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>No fetch.</strong> Only the pasted rules are evaluated.</span><span>RFC 9309 matching basics</span></div><RobotsTxtTester /></section>
+<BaseLayout title="Robots.txt Tester" description="Paste robots.txt rules and test a full URL or path for Googlebot, Bingbot, AI crawlers, or a custom user-agent." canonicalPath="/tools/robots-txt-tester" schemaMainEntity={toolSchema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>Robots.txt tester</h1></div><p>Paste a robots.txt file, choose a crawler, and enter either a complete URL or only its path. The result shows the user-agent group and the exact rule that decides the test.</p></header>
+  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>No fetch.</strong> Copy the file from <code>example.com/robots.txt</code>; this page only evaluates the text you paste.</span><span>Includes common search and AI crawler presets</span></div><RobotsTxtTester /></section>
   <ToolPageContent
-    steps={["Paste the robots.txt content you want to inspect.", "Enter the crawler user-agent and the path, including a query string when it matters.", "Run the test and inspect the selected group and longest matching rule."]}
+    steps={["Open the website's /robots.txt file and paste its contents into the left field.", "Choose a crawler. Enter a full URL such as https://example.com/preview/article or only /preview/article.", "Read the verdict together with the tested path, matched group, and winning rule. Use the two example buttons if you want to see both outcomes first."]}
     handles={["User-agent groups and multiple groups with the same specificity", "Allow and Disallow rules", "Wildcard asterisks and end-of-path dollar markers", "Longest-match selection with Allow winning an equal-length tie"]}
-    limits={["It does not download a live robots.txt file or confirm the HTTP status and content type.", "It does not normalize percent-encoded octets or reproduce crawler-specific extensions.", "Robots rules control crawling, not access control or guaranteed indexing."]}
+    limits={["It does not download the live file or verify its HTTP status and content type.", "It does not normalize percent-encoded octets or reproduce crawler-specific extensions.", "A robots.txt rule controls crawler access. It is not a password, and an allowed URL is not guaranteed to be indexed."]}
+    intro="Start with Blocked example and Allowed example. They use the same pasted file but select different crawler and path combinations."
+    handlesTitle="Rules this tester evaluates"
+    limitsTitle="Important boundaries"
+    sourcesIntro="The matching order and group selection follow the core Robots Exclusion Protocol rules in RFC 9309."
+    relatedIntro="Normalize a larger URL set first, or fetch one public page with a live crawler."
     sources={[{ label: "RFC 9309: Robots Exclusion Protocol", href: "https://www.rfc-editor.org/rfc/rfc9309.html", note: "Primary standard for groups, rules, matching, and access method." }]}
     related={[{ label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Clean the paths and URLs you plan to test." }, { label: "SERP snippet preview", href: "/tools/serp-snippet-preview", note: "Review the search-result inputs for an allowed page." }]}
   />
-  <WorkflowLink title="Need to inspect the live page?" description="Use AnalyseSpider when the next job is fetching one public URL and checking its real directives." href="https://analysespider.com/" cta="Check one live URL" />
+  <WorkflowLink title="Fetch the live page next" description="AnalyseSpider requests one public URL and reports the directives it actually receives." href="https://analysespider.com/" cta="Check one live URL" />
   <script is:inline src="/robots-txt-tester.js" defer></script>
 </BaseLayout>

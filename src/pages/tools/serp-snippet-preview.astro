@@ -6,12 +6,17 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome SERP Snippet P
 ---
 
 <BaseLayout title="SERP Snippet Preview" description="Preview a page title, display URL, and meta description together locally before publishing them." canonicalPath="/tools/serp-snippet-preview" schemaMainEntity={toolSchema}>
-  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>SERP snippet preview</h1></div><p>Put the title, URL, and description in one desktop-style preview. Use it to spot unclear wording, duplication, or an awkward first impression before publishing.</p></header>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>SERP snippet preview</h1></div><p>See your page title, URL, and meta description in one search-result-style preview. Edit the fields until the result says clearly what the page offers and who it is for.</p></header>
   <section class="tool-surface"><div class="tool-privacy-note"><span><strong>Illustrative preview.</strong> Search engines control the final result.</span><span>No uploads or saved drafts</span></div><SerpSnippetPreview /></section>
   <ToolPageContent
-    steps={["Enter the page title, canonical URL, and draft meta description.", "Read the preview as a searcher: can you identify the page and its useful outcome quickly?", "Check the final source HTML after publishing; the preview does not inspect your page."]}
-    handles={["A combined desktop-style title, display URL, and description preview", "Live character counts without pretending they are fixed ranking limits", "Long titles and descriptions through a constrained visual frame", "URLs with nested paths"]}
-    limits={["Google may rewrite title links and may generate the snippet from visible page content.", "The layout is illustrative and does not reproduce every device, query, locale, or search feature.", "Character counts are editorial context, not guaranteed pixel or truncation limits."]}
+    steps={["Replace the example title, URL, and description with the draft for your page.", "Read only the preview. If the page or benefit is unclear without extra context, rewrite the title or description.", "After publishing, inspect the actual HTML. This tool previews text; it does not read your website or confirm what a search engine selected."]}
+    handles={["A combined desktop-style title, display URL, and description preview", "Character counts for the title and description", "Long titles and descriptions inside a constrained visual frame", "URLs with nested paths"]}
+    limits={["Google can rewrite the title link and can build the snippet from visible page content instead of the meta description.", "The layout is an editorial preview, not a copy of every device, query, language, or search feature.", "Character counts help with editing. They are not fixed display or ranking limits."]}
+    intro="There is no score to chase. Use the preview to judge whether the page identity and useful outcome are obvious at a glance."
+    handlesTitle="What you can review"
+    limitsTitle="What the preview cannot predict"
+    sourcesIntro="Google's own documentation explains where title links and snippets can come from and why they may differ from your fields."
+    relatedIntro="Clean the query list behind the page, or check the crawler rules for its URL."
     sources={[{ label: "Google: Influencing title links", href: "https://developers.google.com/search/docs/advanced/appearance/good-titles-snippets", note: "Explains the sources and automation behind title links." }, { label: "Google: Control your snippets", href: "https://developers.google.com/search/docs/appearance/snippet", note: "Explains when page content or a meta description may become the snippet." }]}
     related={[{ label: "Keyword list cleaner", href: "/tools/keyword-list-cleaner", note: "Remove duplicate query inputs before mapping them to pages." }, { label: "Robots.txt tester", href: "/tools/robots-txt-tester", note: "Check whether the crawler path is allowed in pasted rules." }]}
   />

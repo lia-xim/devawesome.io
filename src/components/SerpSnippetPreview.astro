@@ -1,6 +1,7 @@
 <div class="preview-workbench" data-serp-preview>
   <div class="preview-controls">
-    <h2>Build the preview</h2>
+    <h2>Edit the search result</h2>
+    <p class="preview-control-intro">Change any field. The preview updates immediately.</p>
     <label class="tool-field"><span>Page title</span><input type="text" maxlength="300" value="Keyword List Cleaner | DevAwesome" data-serp-title /></label>
     <label class="tool-field"><span>Display URL</span><input type="url" maxlength="2000" value="https://devawesome.io/tools/keyword-list-cleaner" data-serp-url /></label>
     <label class="tool-field"><span>Meta description</span><textarea rows="5" maxlength="1000" data-serp-description>Clean and deduplicate keyword lists locally in your browser. No signup and no uploads.</textarea></label>
@@ -8,12 +9,17 @@
     <button class="tool-action-secondary" type="button" data-serp-reset>Reset example</button>
   </div>
   <div class="preview-output">
-    <span>Illustrative desktop preview</span>
-    <article class="serp-card">
-      <p data-serp-display-url>devawesome.io › tools › keyword-list-cleaner</p>
-      <h2 data-serp-display-title>Keyword List Cleaner | DevAwesome</h2>
-      <p data-serp-display-description>Clean and deduplicate keyword lists locally in your browser. No signup and no uploads.</p>
-    </article>
+    <div class="preview-output-heading">
+      <strong>Search preview</strong>
+      <span>Desktop-style layout</span>
+    </div>
+    <div class="serp-preview-frame">
+      <article class="serp-card">
+        <p data-serp-display-url>devawesome.io › tools › keyword-list-cleaner</p>
+        <h2 data-serp-display-title>Keyword List Cleaner | DevAwesome</h2>
+        <p data-serp-display-description>Clean and deduplicate keyword lists locally in your browser. No signup and no uploads.</p>
+      </article>
+    </div>
     <p class="preview-caveat">Search engines may rewrite the title or choose a different snippet from the page.</p>
   </div>
 </div>

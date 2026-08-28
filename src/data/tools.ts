@@ -34,7 +34,7 @@ export const tools: ReadonlyArray<{
   {
     path: "/tools/keyword-list-cleaner",
     name: "Keyword list cleaner",
-    description: "Clean, deduplicate, and export keyword lists.",
+    description: "Clean messy keyword lists and choose the output format.",
     glyph: "Aa",
     category: "seo-data",
     featured: true,
@@ -42,7 +42,7 @@ export const tools: ReadonlyArray<{
   {
     path: "/tools/url-list-normalizer",
     name: "URL list normalizer",
-    description: "Validate and normalize URLs for a crawl list.",
+    description: "Normalize mixed URL lists and control the final format.",
     glyph: "URL",
     category: "seo-data",
     featured: true,
@@ -50,7 +50,7 @@ export const tools: ReadonlyArray<{
   {
     path: "/tools/robots-txt-tester",
     name: "Robots.txt tester",
-    description: "Test one crawler and path against pasted robots rules.",
+    description: "Test a crawler and full URL against pasted robots rules.",
     glyph: "BOT",
     category: "technical-seo",
     featured: true,
@@ -65,7 +65,7 @@ export const tools: ReadonlyArray<{
   {
     path: "/tools/mcp-json-rpc-validator",
     name: "MCP JSON-RPC validator",
-    description: "Check MCP envelopes and tool definitions locally.",
+    description: "Check JSON copied from an MCP inspector, SDK, or log.",
     glyph: "MCP",
     category: "agents-and-mcp",
     featured: true,

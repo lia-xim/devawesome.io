@@ -16,7 +16,7 @@ const toolSchema = {
 
 <BaseLayout
   title="Keyword List Cleaner"
-  description="Clean, trim, and deduplicate keyword lists locally in your browser. Paste lines, CSV, or TSV and export one keyword per line."
+  description="Clean messy keyword lists, remove duplicates, and export lines, CSV, or JSON without uploading your data."
   canonicalPath="/tools/keyword-list-cleaner"
   schemaMainEntity={toolSchema}
 >
@@ -25,34 +25,39 @@ const toolSchema = {
       <a class="tool-page-back" href="/tools">← All tools</a>
       <h1>Keyword list cleaner</h1>
     </div>
-    <p>Paste keywords from a spreadsheet or export. Get one trimmed, deduplicated keyword per line without uploading the list.</p>
+    <p>Paste a clean export or a messy list. Remove duplicate entries and list noise, then choose whether the result should use lines, commas, or JSON.</p>
   </header>
 
   <section class="tool-surface">
     <div class="tool-privacy-note">
       <span><strong>No uploads.</strong> The list is processed only in this browser tab.</span>
-      <span>Lines, CSV, and TSV accepted</span>
+      <span>Lines, commas, tabs, semicolons, and pipes accepted</span>
     </div>
     <KeywordListCleaner />
   </section>
 
   <ToolPageContent
     steps={[
-      "Paste a list from a spreadsheet, CSV export, or plain-text file.",
-      "Choose whether differently capitalized entries should count as duplicates, then clean the list.",
-      "Review the count and copy or download the one-keyword-per-line result.",
+      "Paste the list. Auto mode understands common separators and removes ordinary bullets or list numbers.",
+      "Choose how duplicates and whitespace should be handled, then select Lines, Commas, or JSON for the result.",
+      "Copy the result or download it in the matching TXT, CSV, or JSON format.",
     ]}
     handles={[
-      "Blank lines and surrounding whitespace",
-      "Repeated spaces inside a keyword",
-      "Duplicate entries while preserving the first spelling and order",
-      "Comma- and tab-separated cells, including quoted CSV cells",
+      "Blank rows, repeated spaces, bullets, list numbers, and separator-only rows",
+      "Duplicate entries while keeping the first spelling and the original order",
+      "Line, comma, tab, semicolon, pipe, and spaced-slash separators",
+      "Quoted comma-separated values and three selectable output formats",
     ]}
     limits={[
       "It does not measure search volume, intent, difficulty, or rankings.",
-      "Every non-empty CSV or TSV cell is treated as a keyword; table columns are not preserved.",
+      "Auto mode treats common separators as list boundaries. Choose Lines if punctuation belongs inside a keyword.",
       "It does not upload, save, or import the result into another product.",
     ]}
+    intro="The example is deliberately messy. Change the separator and output controls to see exactly what will be removed and how the final list will be written."
+    handlesTitle="What gets cleaned"
+    limitsTitle="What stays your decision"
+    sourcesIntro="CSV quoting follows RFC 4180. The extra list cleanup is a documented DevAwesome convenience, not part of that standard."
+    relatedIntro="Use another cleaner when the next input is a URL set or structured JSON."
     sources={[
       { label: "RFC 4180: Common Format and MIME Type for CSV Files", href: "https://www.rfc-editor.org/info/rfc4180/", note: "Reference for quoted and comma-separated CSV fields." },
     ]}
@@ -63,8 +68,8 @@ const toolSchema = {
   />
 
   <WorkflowLink
-    title="Ready to organize or track the list?"
-    description="Use Contextter's Keyword Database for clustering, prioritization, and tracking after the local cleanup step."
+    title="Organize and track the cleaned list"
+    description="Contextter's Keyword Database can take over after cleanup when you need clustering, prioritization, and ongoing tracking."
     href="https://contextter.com/features/keyword-database"
     cta="Continue in Contextter"
   />

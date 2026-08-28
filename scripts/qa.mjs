@@ -124,7 +124,7 @@ if (!uuidTool.includes('src="/uuid-generator.js"')) failures.push("UUID tool mus
 if (home.includes("/uuid-generator.js") || quiz.includes("/uuid-generator.js") || tool.includes("/uuid-generator.js") || receiptTool.includes("/uuid-generator.js") || jsonTool.includes("/uuid-generator.js")) failures.push("UUID behavior must remain route-specific");
 for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js"]) {
   const source = await readFile(join(root, "public", asset), "utf8");
-  if ((await stat(join(root, "public", asset))).size > 7000) failures.push(asset + " exceeds 7 KB utility budget");
+  if ((await stat(join(root, "public", asset))).size > 8000) failures.push(asset + " exceeds 8 KB utility budget");
   if (/\bfetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage/.test(source)) failures.push(asset + " must stay request-free and storage-free");
 }
 

@@ -1,4 +1,10 @@
 (function () {
+  const examples = {
+    "tools-list-request": { jsonrpc: "2.0", id: 1, method: "tools/list", params: {} },
+    "tools-list-response": { jsonrpc: "2.0", id: 1, result: { tools: [{ name: "get_keyword_data", description: "Return metrics for one keyword.", inputSchema: { type: "object", properties: { keyword: { type: "string" } }, required: ["keyword"] } }] } },
+    "tool-definition": { name: "crawl_page", description: "Fetch one public page.", inputSchema: { type: "object", properties: { url: { type: "string", format: "uri" } }, required: ["url"] } },
+    "tools-call-request": { jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "crawl_page", arguments: { url: "https://example.com/" } } },
+  };
   function isObject(value) { return value !== null && typeof value === "object" && !Array.isArray(value); }
   function validId(value) { return value === null || typeof value === "string" || (typeof value === "number" && Number.isFinite(value)); }
 
@@ -69,18 +75,19 @@
     const validateButton = root.querySelector("[data-mcp-validate]");
     const clearButton = root.querySelector("[data-mcp-clear]");
     const copyButton = root.querySelector("[data-mcp-copy]");
-    if (!input || !output || !status || !validateButton || !clearButton || !copyButton) continue;
+    const example = root.querySelector("[data-mcp-example]");
+    if (!input || !output || !status || !validateButton || !clearButton || !copyButton || !example) continue;
 
     const run = () => {
       try {
         const result = validate(JSON.parse(input.value));
-        const lines = [`Detected: ${result.kind}`, ""];
-        if (!result.errors.length) lines.push("PASS: No structural errors found by this focused validator.");
+        const lines = [`Checked as: ${result.kind}`, ""];
+        if (!result.errors.length) lines.push("Looks good: no structural errors in the fields checked here.");
         for (const error of result.errors) lines.push("ERROR: " + error);
         for (const warning of result.warnings) lines.push("WARNING: " + warning);
-        lines.push("", "Scope: focused JSON-RPC and MCP tool checks; not the complete versioned MCP schema.");
+        lines.push("", "Still check: the exact schema and SDK version used by your MCP client or server.");
         output.value = lines.join("\n");
-        status.textContent = result.errors.length ? `${result.errors.length} structural ${result.errors.length === 1 ? "error" : "errors"}` : `${result.warnings.length} warnings · structure passed`;
+        status.textContent = result.errors.length ? `${result.errors.length} structural ${result.errors.length === 1 ? "error" : "errors"}` : `Structure passed · ${result.warnings.length} warning${result.warnings.length === 1 ? "" : "s"}`;
         status.dataset.state = result.errors.length ? "error" : "valid";
       } catch (error) {
         output.value = "ERROR: Invalid JSON.\n\n" + error.message;
@@ -90,6 +97,12 @@
       copyButton.disabled = !output.value;
     };
     validateButton.addEventListener("click", run);
+    input.addEventListener("input", run);
+    example.addEventListener("change", () => {
+      input.value = JSON.stringify(examples[example.value], null, 2);
+      run();
+      input.focus();
+    });
     clearButton.addEventListener("click", () => { input.value = ""; output.value = ""; copyButton.disabled = true; status.textContent = "Cleared"; input.focus(); });
     copyButton.addEventListener("click", async () => { try { await navigator.clipboard.writeText(output.value); status.textContent = "Report copied"; } catch { output.focus(); output.select(); status.textContent = "Select and copy the report manually"; } });
     run();

@@ -11,15 +11,31 @@ interface Props {
   limits: string[];
   sources: LinkItem[];
   related?: LinkItem[];
+  intro?: string;
+  handlesTitle?: string;
+  limitsTitle?: string;
+  sourcesIntro?: string;
+  relatedIntro?: string;
 }
 
-const { steps, handles, limits, sources, related = [] } = Astro.props;
+const {
+  steps,
+  handles,
+  limits,
+  sources,
+  related = [],
+  intro = "Use the example first, then replace it with your own input. Check the result before you copy or download it.",
+  handlesTitle = "What the tool changes",
+  limitsTitle = "What to check yourself",
+  sourcesIntro = "These are the specifications used for the tool's rules and terminology.",
+  relatedIntro = "A useful next step, if your job is not finished yet.",
+} = Astro.props;
 ---
 
 <section class="tool-copy-section" aria-labelledby="how-to-use-title">
   <div class="tool-copy-heading">
-    <h2 id="how-to-use-title">How to use it</h2>
-    <p>Start with the smallest input that represents the job. Check the result before you copy or export it.</p>
+    <h2 id="how-to-use-title">How it works</h2>
+    <p>{intro}</p>
   </div>
   <ol class="tool-step-list">
     {steps.map((step, index) => (
@@ -30,19 +46,19 @@ const { steps, handles, limits, sources, related = [] } = Astro.props;
 
 <section class="tool-copy-band" aria-label="Capabilities and limits">
   <div>
-    <h2>What it handles</h2>
+    <h2>{handlesTitle}</h2>
     <ul>{handles.map((item) => <li>{item}</li>)}</ul>
   </div>
   <div>
-    <h2>What it does not do</h2>
+    <h2>{limitsTitle}</h2>
     <ul>{limits.map((item) => <li>{item}</li>)}</ul>
   </div>
 </section>
 
 <section class="tool-reference-section" aria-labelledby="references-title">
   <div>
-    <h2 id="references-title">References</h2>
-    <p>The implementation and explanations are tied to the primary specifications below.</p>
+    <h2 id="references-title">Technical reference</h2>
+    <p>{sourcesIntro}</p>
   </div>
   <div class="tool-reference-links">
     {sources.map((source) => (
@@ -59,7 +75,7 @@ const { steps, handles, limits, sources, related = [] } = Astro.props;
   <section class="related-tools" aria-labelledby="related-tools-title">
     <div>
       <h2 id="related-tools-title">Related tools</h2>
-      <p>Continue with another small, specific job.</p>
+      <p>{relatedIntro}</p>
     </div>
     <div class="related-tool-links">
       {related.map((item) => (

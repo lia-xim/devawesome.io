@@ -15,18 +15,33 @@ const sample = `{
       <button type="button" data-mcp-copy disabled>Copy report</button>
     </div>
   </div>
+  <div class="tool-guidance">
+    <div>
+      <strong>What should I paste?</strong>
+      <p>Copy one JSON message from MCP Inspector, an SDK test, or a client/server debug log. You can also paste a single tool definition from a <code>tools/list</code> response. Remove secrets before using any debugging tool.</p>
+    </div>
+    <label class="list-select-field">
+      <span>Load an example</span>
+      <select data-mcp-example>
+        <option value="tools-list-request">tools/list request</option>
+        <option value="tools-list-response">tools/list response</option>
+        <option value="tool-definition">Single tool definition</option>
+        <option value="tools-call-request">tools/call request</option>
+      </select>
+    </label>
+  </div>
   <div class="list-panes">
     <label>
-      <span>JSON payload or tool definition</span>
+      <span>Paste one MCP JSON message</span>
       <textarea rows="16" maxlength="1000000" spellcheck="false" data-mcp-input>{sample}</textarea>
     </label>
     <label>
-      <span>Validation report</span>
+      <span>What the validator found</span>
       <textarea rows="16" readonly spellcheck="false" data-mcp-output></textarea>
     </label>
   </div>
   <div class="list-options list-options-simple">
     <p data-mcp-status aria-live="polite">Ready</p>
-    <button class="toolbox-button toolbox-button-small" type="button" data-mcp-validate>Validate payload</button>
+    <button class="toolbox-button toolbox-button-small" type="button" data-mcp-validate>Check JSON structure</button>
   </div>
 </div>

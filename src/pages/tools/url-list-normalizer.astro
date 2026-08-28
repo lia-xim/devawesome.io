@@ -15,7 +15,7 @@ const toolSchema = {
 
 <BaseLayout
   title="URL List Normalizer"
-  description="Validate, normalize, and deduplicate HTTP and HTTPS URL lists locally in your browser before a crawl or import."
+  description="Clean messy URL lists, remove duplicates, control query parameters, and export lines, CSV, or JSON locally."
   canonicalPath="/tools/url-list-normalizer"
   schemaMainEntity={toolSchema}
 >
@@ -24,13 +24,13 @@ const toolSchema = {
       <a class="tool-page-back" href="/tools">← All tools</a>
       <h1>URL list normalizer</h1>
     </div>
-    <p>Turn pasted URLs into a clean crawl list. Invalid entries, fragments, and duplicates are reported instead of hidden.</p>
+    <p>Turn copied URLs, spreadsheet cells, or a rough text list into one consistent set. Choose what happens to tracking parameters, fragments, trailing slashes, and the output format.</p>
   </header>
 
   <section class="tool-surface">
     <div class="tool-privacy-note">
       <span><strong>No crawling and no uploads.</strong> The browser parses the text without requesting any URL.</span>
-      <span>HTTP and HTTPS only</span>
+      <span>Accepts full URLs, bare domains, and common list separators</span>
     </div>
     <div class="list-workbench" data-url-normalizer>
       <div class="workbench-bar">
@@ -44,9 +44,9 @@ const toolSchema = {
       <div class="list-panes">
         <label>
           <span>Paste URLs</span>
-          <textarea rows="14" maxlength="1000000" spellcheck="false" data-url-input>https://Example.com/page/#section
-example.com/page/
-https://example.com/page?utm_source=test
+          <textarea rows="14" maxlength="1000000" spellcheck="false" data-url-input>1. https://Example.com/page/#section
+example.com/page/ | https://example.com/page?utm_source=test
+[Pricing](https://example.com/pricing?plan=pro)
 not a url</textarea>
         </label>
         <label>
@@ -54,11 +54,44 @@ not a url</textarea>
           <textarea rows="14" readonly spellcheck="false" data-url-output></textarea>
         </label>
       </div>
-      <div class="list-options">
-        <label><input type="checkbox" checked data-url-strip-query /> Remove query strings</label>
-        <label><input type="checkbox" checked data-url-strip-trailing /> Remove trailing slashes from paths</label>
-        <p data-url-status aria-live="polite">Ready</p>
-        <button class="toolbox-button toolbox-button-small" type="button" data-url-normalize>Normalize URLs</button>
+      <div class="list-control-panel">
+        <div class="list-control-grid list-control-grid-three">
+          <label class="list-select-field">
+            <span>Read the input as</span>
+            <select data-url-input-mode>
+              <option value="smart">Auto-detect separators</option>
+              <option value="lines">One URL per line</option>
+              <option value="comma">Comma-separated values</option>
+            </select>
+            <small>Use Lines when a valid URL itself contains commas or semicolons.</small>
+          </label>
+          <label class="list-select-field">
+            <span>Query parameters</span>
+            <select data-url-query-mode>
+              <option value="tracking" selected>Remove common tracking parameters</option>
+              <option value="keep">Keep all parameters</option>
+              <option value="remove">Remove the full query string</option>
+            </select>
+            <small>Tracking mode removes utm_*, gclid, fbclid, msclkid, and common email tags.</small>
+          </label>
+          <fieldset class="format-picker">
+            <legend>Output format</legend>
+            <div>
+              <label><input type="radio" name="url-output-format" value="lines" checked data-url-format /><span>Lines</span></label>
+              <label><input type="radio" name="url-output-format" value="comma" data-url-format /><span>Commas</span></label>
+              <label><input type="radio" name="url-output-format" value="json" data-url-format /><span>JSON</span></label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="cleanup-options">
+          <label><input type="checkbox" checked data-url-add-https /> Add https:// to bare domains</label>
+          <label><input type="checkbox" checked data-url-strip-fragment /> Remove #fragments</label>
+          <label><input type="checkbox" checked data-url-strip-trailing /> Remove trailing slashes from paths</label>
+        </div>
+        <div class="list-action-row">
+          <p data-url-status aria-live="polite">Ready</p>
+          <button class="toolbox-button toolbox-button-small" type="button" data-url-normalize>Normalize list</button>
+        </div>
       </div>
       <details class="invalid-list" data-url-invalid-wrap hidden>
         <summary data-url-invalid-summary>Invalid entries</summary>
@@ -69,21 +102,27 @@ not a url</textarea>
 
   <ToolPageContent
     steps={[
-      "Paste one URL per line. Bare domains such as example.com are accepted and receive https://.",
-      "Choose whether query strings and trailing path slashes should be removed, then normalize the list.",
-      "Review invalid entries and copy or download the unique result before using it as a crawl input.",
+      "Paste URLs as lines, spreadsheet cells, comma-separated values, or a mixed list. Markdown links are accepted too.",
+      "Choose how parameters, fragments, trailing slashes, and bare domains should be handled.",
+      "Pick Lines, Commas, or JSON, then copy or download the unique result. Invalid entries stay visible below the tool.",
     ]}
     handles={[
       "HTTP and HTTPS URLs, including bare domains",
       "Lowercase hostnames, default ports, fragments, and repeated URLs",
-      "Optional removal of query strings and trailing path slashes",
+      "Optional removal of tracking parameters, full query strings, fragments, and trailing path slashes",
+      "Markdown links, ordinary list numbers, and common separators",
       "International domain names through the browser's URL parser",
     ]}
     limits={[
       "It does not request, crawl, redirect-check, or verify that a URL exists.",
-      "Removing a query string can merge URLs that serve different content.",
+      "Removing parameters can merge URLs that serve different content. Review the result before crawling or importing it.",
       "It does not decide which URL should be canonical for a website.",
     ]}
+    intro="The sample contains the same page in several forms, plus one invalid row. Change the controls and watch which URLs merge."
+    handlesTitle="What gets normalized"
+    limitsTitle="What the tool cannot know"
+    sourcesIntro="URL parsing and serialization use the browser implementation of the WHATWG URL Standard."
+    relatedIntro="Run a live crawl check next, or clean the search terms attached to the URL set."
     sources={[
       { label: "WHATWG URL Standard", href: "https://url.spec.whatwg.org/", note: "The parsing and serialization model used by modern browsers." },
     ]}
@@ -94,8 +133,8 @@ not a url</textarea>
   />
 
   <WorkflowLink
-    title="Need to check what a live page returns?"
-    description="AnalyseSpider checks one public URL and shows the crawl result. The normalizer itself never requests the URLs you paste."
+    title="Check one normalized URL live"
+    description="AnalyseSpider fetches one public URL and shows the crawl result. This normalizer never requests the URLs you paste."
     href="https://analysespider.com/"
     cta="Check a URL with AnalyseSpider"
   />

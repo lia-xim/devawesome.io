@@ -1010,10 +1010,14 @@
 
 .list-workbench {
   overflow: hidden;
-  border: 1px solid #cfd5dd;
+  border: 1px solid #c7ced7;
   border-radius: var(--toolbox-radius);
   background: var(--toolbox-bg);
-  box-shadow: 0 18px 45px rgba(16, 24, 40, 0.05);
+  box-shadow: 0 20px 55px rgba(16, 24, 40, 0.08);
+}
+
+.list-workbench .workbench-bar {
+  background: #f7f9fb;
 }
 
 .list-panes {
@@ -1055,7 +1059,7 @@
 }
 
 .list-panes textarea[readonly] {
-  background: #fbfcfd;
+  background: #f3f6f9;
   color: #195ca8;
 }
 
@@ -1093,6 +1097,179 @@
   accent-color: #11161d;
 }
 
+.list-control-panel {
+  padding: 1.1rem;
+  border-top: 1px solid #cfd5dd;
+  background: #f5f7f9;
+}
+
+.list-control-grid {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.8fr) minmax(20rem, 1.2fr);
+  gap: 1rem;
+}
+
+.list-control-grid-three {
+  grid-template-columns: repeat(3, minmax(12rem, 1fr));
+}
+
+.list-select-field {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 0.45rem;
+}
+
+.list-select-field > span,
+.format-picker legend {
+  color: #3d4652;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.list-select-field select,
+.rule-controls select,
+.rule-controls input {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.65rem 2.2rem 0.65rem 0.75rem;
+  border: 1px solid #c4cbd4;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--toolbox-text);
+  font-family: var(--toolbox-sans);
+  font-size: 0.82rem;
+}
+
+.list-select-field small,
+.rule-controls small {
+  color: #687281;
+  font-size: 0.69rem;
+  line-height: 1.45;
+}
+
+.format-picker {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.format-picker > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 0.45rem;
+  overflow: hidden;
+  border: 1px solid #c4cbd4;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.format-picker label {
+  position: relative;
+  min-width: 0;
+}
+
+.format-picker label + label {
+  border-left: 1px solid #c4cbd4;
+}
+
+.format-picker input {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.format-picker span {
+  display: grid;
+  min-height: 2.75rem;
+  place-items: center;
+  padding: 0.55rem;
+  color: #4e5866;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.format-picker input:checked + span {
+  background: #11161d;
+  color: #fff;
+}
+
+.format-picker input:focus-visible + span {
+  box-shadow: inset 0 0 0 2px #62a8f3;
+}
+
+.cleanup-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d7dce3;
+}
+
+.cleanup-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4d5663;
+  font-size: 0.74rem;
+}
+
+.cleanup-options input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #11161d;
+}
+
+.list-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.list-action-row p {
+  margin: 0;
+  color: #515b68;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.tool-guidance {
+  display: grid;
+  grid-template-columns: minmax(22rem, 1.25fr) minmax(15rem, 0.75fr);
+  gap: 1.5rem 3rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #cfd5dd;
+  background: #eef3f7;
+}
+
+.tool-guidance strong {
+  font-size: 0.86rem;
+}
+
+.tool-guidance p {
+  max-width: 50rem;
+  margin: 0.35rem 0 0;
+  color: #4f5967;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.tool-guidance code,
+.rule-controls code {
+  font-family: var(--toolbox-mono);
+  font-size: 0.92em;
+}
+
 .list-workbench-compact .list-panes textarea {
   min-height: 14rem;
   font-size: 0.74rem;
@@ -1127,7 +1304,7 @@
 .rule-result {
   min-height: 16rem;
   padding: clamp(1.4rem, 3vw, 3rem);
-  background: #fbfcfd;
+  background: #f1f5f8;
 }
 
 .rule-result > span,
@@ -1153,33 +1330,45 @@
 
 .rule-controls {
   display: grid;
-  grid-template-columns: minmax(10rem, 0.6fr) minmax(18rem, 1.4fr) auto;
+  grid-template-columns: minmax(11rem, 0.55fr) minmax(22rem, 1.45fr) auto;
   align-items: end;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.1rem;
   border-top: 1px solid var(--toolbox-line);
+  background: #f7f9fb;
+}
+
+.rule-controls:has([data-robots-custom-wrap]:not([hidden])) {
+  grid-template-columns: minmax(11rem, 0.5fr) minmax(11rem, 0.5fr) minmax(20rem, 1.25fr) auto;
 }
 
 .rule-controls label { display: grid; gap: 0.45rem; }
 .rule-controls label span { color: var(--toolbox-muted); font-size: 0.74rem; }
-.rule-controls input { min-height: 2.8rem; padding: 0.65rem 0.75rem; border: 1px solid var(--toolbox-line); border-radius: 5px; font-family: var(--toolbox-mono); }
+.rule-controls input { padding-right: 0.75rem; font-family: var(--toolbox-mono); }
+.rule-controls [hidden] { display: none; }
 
 .preview-workbench {
   display: grid;
   grid-template-columns: minmax(20rem, 0.85fr) minmax(28rem, 1.15fr);
   overflow: hidden;
-  border: 1px solid var(--toolbox-line);
+  border: 1px solid #c7ced7;
   border-radius: var(--toolbox-radius);
+  box-shadow: 0 20px 55px rgba(16, 24, 40, 0.07);
 }
 
 .preview-controls,
 .preview-output { padding: clamp(1.5rem, 3.5vw, 3.5rem); }
-.preview-controls { border-right: 1px solid var(--toolbox-line); }
+.preview-controls { border-right: 1px solid #c7ced7; background: #f8fafb; }
 .preview-controls h2 { margin: 0; font-size: clamp(1.7rem, 2.8vw, 2.7rem); letter-spacing: -0.045em; }
+.preview-control-intro { margin: 0.7rem 0 0; color: var(--toolbox-muted); font-size: 0.82rem; }
 .preview-controls .tool-field textarea { min-height: 8rem; }
 .preview-counts { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin: 0.8rem 0 1rem; color: var(--toolbox-muted); font-size: 0.72rem; }
-.preview-output { display: grid; align-content: center; background: #fbfcfd; }
-.serp-card { max-width: 42rem; margin-top: 1.3rem; font-family: Arial, sans-serif; }
+.preview-output { display: grid; align-content: center; background: #edf2f6; }
+.preview-output-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.preview-output-heading strong { font-size: 0.82rem; }
+.preview-output-heading span { color: var(--toolbox-muted); font-size: 0.72rem; }
+.serp-preview-frame { margin-top: 1rem; padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid #d4dae1; border-radius: 8px; background: #fff; box-shadow: 0 12px 28px rgba(25, 33, 45, 0.09); }
+.serp-card { max-width: 42rem; font-family: Arial, sans-serif; }
 .serp-card p { margin: 0; }
 .serp-card > p:first-child { color: #202124; font-size: 0.86rem; line-height: 1.45; }
 .serp-card h2 { max-width: 37rem; margin: 0.35rem 0; overflow: hidden; color: #1a0dab; font-family: Arial, sans-serif; font-size: 1.28rem; font-weight: 400; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
@@ -1188,6 +1377,7 @@
 
 @media (max-width: 760px) {
   .rule-controls,
+  .rule-controls:has([data-robots-custom-wrap]:not([hidden])),
   .preview-workbench { grid-template-columns: 1fr; }
   .preview-controls { border-right: 0; border-bottom: 1px solid var(--toolbox-line); }
   .rule-result dl div { grid-template-columns: 1fr; gap: 0.25rem; }
@@ -1272,7 +1462,7 @@
   display: grid;
   grid-template-columns: minmax(20rem, 0.64fr) minmax(24rem, 1.36fr);
   gap: clamp(3rem, 8vw, 8rem);
-  padding: clamp(4rem, 7vw, 7rem) clamp(2rem, 4vw, 4.2rem);
+  padding: clamp(3.5rem, 5.5vw, 5.5rem) clamp(2rem, 4vw, 4.2rem);
   border-bottom: 1px solid var(--toolbox-line);
 }
 
@@ -1331,7 +1521,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-bottom: 1px solid var(--toolbox-line);
-  background: var(--toolbox-soft);
+  background: #f4f7f9;
 }
 
 .tool-copy-band > div {
@@ -1340,6 +1530,7 @@
 
 .tool-copy-band > div + div {
   border-left: 1px solid var(--toolbox-line);
+  background: #eef2f5;
 }
 
 .tool-copy-band h2 {
@@ -1597,6 +1788,12 @@
     grid-template-columns: 1fr;
   }
 
+  .list-control-grid,
+  .list-control-grid-three,
+  .tool-guidance {
+    grid-template-columns: 1fr;
+  }
+
   .workflow-link .ownership-disclosure {
     grid-column: auto;
   }
@@ -1797,6 +1994,29 @@
 
   .list-options .toolbox-button {
     width: 100%;
+  }
+
+  .list-action-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .list-action-row .toolbox-button {
+    width: 100%;
+  }
+
+  .cleanup-options {
+    display: grid;
+  }
+
+  .list-workbench .workbench-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .list-workbench .workbench-bar > div {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .workflow-directory a,

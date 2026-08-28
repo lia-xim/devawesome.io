@@ -7,16 +7,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 const toolSchema = { "@type": "WebApplication", name: "DevAwesome MCP JSON-RPC Validator", applicationCategory: "DeveloperApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
 ---
 
-<BaseLayout title="MCP JSON-RPC Validator" description="Validate JSON-RPC 2.0 envelopes, MCP tools/list payloads, and MCP tool definitions locally in your browser." canonicalPath="/tools/mcp-json-rpc-validator" schemaMainEntity={toolSchema}>
-  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>MCP JSON-RPC validator</h1></div><p>Paste one MCP message or tool definition. The report checks the envelope, request or response shape, and the core fields used by MCP tools.</p></header>
+<BaseLayout title="MCP JSON-RPC Validator" description="Check an MCP JSON message from MCP Inspector, an SDK test, or a debug log for common JSON-RPC and tool-definition errors." canonicalPath="/tools/mcp-json-rpc-validator" schemaMainEntity={toolSchema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>MCP JSON-RPC validator</h1></div><p>Paste one JSON message copied from MCP Inspector, an SDK test, or a client/server log. The validator explains whether it found a request, response, tools list, or tool definition and points to missing core fields.</p></header>
   <section class="tool-surface"><div class="tool-privacy-note"><span><strong>No uploads.</strong> Validation stays in this browser tab.</span><span>JSON-RPC and MCP structure</span></div><McpJsonRpcValidator /></section>
   <ToolPageContent
-    steps={["Paste a JSON-RPC request, response, tools/list result, or one MCP tool definition.", "Run the validator and fix each reported structural error.", "Validate the same payload with the SDK or server schema used by your real integration before release."]}
+    steps={["Choose an example to learn the expected shape, or copy one JSON message from MCP Inspector, your SDK test output, or a debug log.", "The report identifies the message type and lists structural errors or warnings as you edit.", "Before release, run the same message through the exact SDK and MCP protocol version used by your client or server."]}
     handles={["JSON-RPC 2.0 request and response envelopes", "MCP tools/list requests and results", "Tool names, descriptions, inputSchema, and optional outputSchema", "Clear pass, warning, and error lines that can be copied"]}
-    limits={["It is a focused structural check, not the complete versioned MCP schema.", "It does not execute a tool, connect to a server, or verify authorization.", "Custom extensions can be valid even when this focused validator does not interpret them."]}
+    limits={["This is a focused structural check, not a complete implementation of every versioned MCP schema.", "It does not connect to a server, execute a tool, inspect transport messages, or verify authorization.", "Custom extensions can be valid even when this validator does not interpret them."]}
+    intro="The dropdown contains four small examples. Use them to identify the message you have before replacing the example with your own JSON."
+    handlesTitle="Messages it recognizes"
+    limitsTitle="What still needs an SDK test"
+    sourcesIntro="The checks use the JSON-RPC 2.0 envelope rules and the MCP tools specification linked here."
+    relatedIntro="Format invalid JSON first, or turn a confirmed MCP behavior into a repeatable test case."
     sources={[{ label: "MCP 2025-11-25 tools specification", href: "https://modelcontextprotocol.io/specification/2025-11-25/server/tools", note: "Primary MCP definitions for tools/list, tools/call, and tool results." }, { label: "JSON-RPC 2.0 specification", href: "https://www.jsonrpc.org/specification", note: "Envelope, request, response, and error object rules." }]}
     related={[{ label: "JSON formatter", href: "/tools/json-formatter", note: "Repair JSON syntax before checking the protocol shape." }, { label: "Simple test case builder", href: "/tools/developer-tool-test-plan", note: "Record one expected MCP behavior as a test case." }]}
   />
-  <WorkflowLink title="Need the SEO-specific MCP context?" description="Read the versioned SEO MCP capability and integration reference after the payload structure is clean." href="https://seo-mcp.de/" cta="Open the SEO MCP guide" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." />
+  <WorkflowLink title="Read the SEO MCP reference" description="The versioned reference covers SEO-specific capabilities, integration choices, and security after the JSON structure is clean." href="https://seo-mcp.de/" cta="Open the SEO MCP guide" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." />
   <script is:inline src="/mcp-json-rpc-validator.js" defer></script>
 </BaseLayout>

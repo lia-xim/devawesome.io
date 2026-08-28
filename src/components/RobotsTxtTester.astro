@@ -10,7 +10,11 @@ Disallow: /preview/`;
 <div class="list-workbench" data-robots-tester>
   <div class="workbench-bar">
     <strong>Robots.txt tester</strong>
-    <div><button type="button" data-robots-clear>Clear</button></div>
+    <div>
+      <button type="button" data-robots-example="blocked">Blocked example</button>
+      <button type="button" data-robots-example="allowed">Allowed example</button>
+      <button type="button" data-robots-clear>Clear</button>
+    </div>
   </div>
   <div class="list-panes">
     <label>
@@ -22,14 +26,34 @@ Disallow: /preview/`;
       <strong data-robots-verdict>Enter a crawler and path</strong>
       <p data-robots-explanation>No rule tested yet.</p>
       <dl>
+        <div><dt>Tested path</dt><dd data-robots-tested-path>—</dd></div>
         <div><dt>Matched group</dt><dd data-robots-group>—</dd></div>
         <div><dt>Matched rule</dt><dd data-robots-rule>—</dd></div>
       </dl>
     </div>
   </div>
   <div class="rule-controls">
-    <label><span>Crawler user-agent</span><input type="text" value="Googlebot" maxlength="200" data-robots-agent /></label>
-    <label><span>URL path</span><input type="text" value="/preview/article?draft=1" maxlength="2000" data-robots-path /></label>
-    <button class="toolbox-button toolbox-button-small" type="button" data-robots-test>Test rule</button>
+    <label>
+      <span>Crawler</span>
+      <select data-robots-agent>
+        <option value="Googlebot" selected>Googlebot</option>
+        <option value="Bingbot">Bingbot</option>
+        <option value="GPTBot">GPTBot</option>
+        <option value="ChatGPT-User">ChatGPT-User</option>
+        <option value="ClaudeBot">ClaudeBot</option>
+        <option value="PerplexityBot">PerplexityBot</option>
+        <option value="AhrefsBot">AhrefsBot</option>
+        <option value="SemrushBot">SemrushBot</option>
+        <option value="*">Any crawler (*)</option>
+        <option value="custom">Custom user-agent…</option>
+      </select>
+    </label>
+    <label data-robots-custom-wrap hidden><span>Custom user-agent token</span><input type="text" value="MyCrawler" maxlength="200" data-robots-custom /></label>
+    <label class="rule-path-field">
+      <span>Full URL or path</span>
+      <input type="text" value="https://example.com/preview/article?draft=1" maxlength="2000" data-robots-path />
+      <small>Both <code>https://example.com/preview/article</code> and <code>/preview/article</code> test the same path.</small>
+    </label>
+    <button class="toolbox-button toolbox-button-small" type="button" data-robots-test>Test rules</button>
   </div>
 </div>

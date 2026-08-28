@@ -4,7 +4,7 @@ interface Props {
 }
 
 const { compact = false } = Astro.props;
-const sample = "technical seo audit\nkeyword clustering\nTechnical SEO Audit\n  search intent  \nkeyword clustering";
+const sample = "1. technical seo audit, keyword clustering\n2) Technical SEO Audit | search intent\n/\nkeyword clustering";
 ---
 
 <div class:list={["list-workbench", compact && "list-workbench-compact"]} data-keyword-cleaner>
@@ -26,9 +26,41 @@ const sample = "technical seo audit\nkeyword clustering\nTechnical SEO Audit\n  
       <textarea rows={compact ? 8 : 14} readonly spellcheck="false" data-keyword-output></textarea>
     </label>
   </div>
-  <div class="list-options">
-    <label><input type="checkbox" checked data-keyword-ignore-case /> Ignore capitalization when removing duplicates</label>
-    <p data-keyword-status aria-live="polite">Ready</p>
-    <button class="toolbox-button toolbox-button-small" type="button" data-keyword-clean>Clean keywords</button>
-  </div>
+  {compact ? (
+    <div class="list-options list-options-simple">
+      <p data-keyword-status aria-live="polite">Ready</p>
+      <button class="toolbox-button toolbox-button-small" type="button" data-keyword-clean>Clean list</button>
+    </div>
+  ) : (
+    <div class="list-control-panel">
+      <div class="list-control-grid">
+        <label class="list-select-field">
+          <span>Read the input as</span>
+          <select data-keyword-input-mode>
+            <option value="smart">Auto-detect separators</option>
+            <option value="lines">One keyword per line</option>
+            <option value="comma">Comma-separated values</option>
+          </select>
+          <small>Auto detects lines, commas, tabs, semicolons, pipes, and spaced slashes.</small>
+        </label>
+        <fieldset class="format-picker">
+          <legend>Output format</legend>
+          <div>
+            <label><input type="radio" name="keyword-output-format" value="lines" checked data-keyword-format /><span>Lines</span></label>
+            <label><input type="radio" name="keyword-output-format" value="comma" data-keyword-format /><span>Commas</span></label>
+            <label><input type="radio" name="keyword-output-format" value="json" data-keyword-format /><span>JSON</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="cleanup-options">
+        <label><input type="checkbox" checked data-keyword-ignore-case /> Remove duplicates regardless of capitalization</label>
+        <label><input type="checkbox" checked data-keyword-strip-noise /> Remove bullets, list numbers, and separator-only rows</label>
+        <label><input type="checkbox" checked data-keyword-whitespace /> Collapse repeated spaces</label>
+      </div>
+      <div class="list-action-row">
+        <p data-keyword-status aria-live="polite">Ready</p>
+        <button class="toolbox-button toolbox-button-small" type="button" data-keyword-clean>Clean list</button>
+      </div>
+    </div>
+  )}
 </div>
