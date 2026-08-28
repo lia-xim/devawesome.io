@@ -1,5 +1,6 @@
 import { extractUrlRows, formatCrawlList, prepareCrawlList } from "./workbench-core.js";
 import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
   sitemap: { mode: "sitemap", header: false, input: `<?xml version="1.0" encoding="UTF-8"?>
@@ -30,6 +31,7 @@ function makeListItem(primary, secondary) {
 
 for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   const input = root.querySelector("[data-crawl-input]");
+  const sourceFile = root.querySelector("[data-crawl-file]");
   const mode = root.querySelector("[data-crawl-mode]");
   const header = root.querySelector("[data-crawl-header]");
   const urlColumn = root.querySelector("[data-crawl-url-column]");
@@ -60,11 +62,13 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   const downloadExcluded = root.querySelector("[data-crawl-download-excluded]");
   const recipeSave = root.querySelector("[data-recipe-save]");
   const recipeLoad = root.querySelector("[data-recipe-load]");
+  const manifestSave = root.querySelector("[data-run-manifest-save]");
   if (!input || !mode || !header || !urlColumn || !output || !status) continue;
 
   let currentResult;
   let currentFormat = "lines";
   let knownHeaders = [];
+  let currentSourceType = "pasted-table";
 
   const settings = () => ({
     mode: mode.value,
@@ -124,8 +128,8 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
   }
 
   const rebuildAndRun = () => { rebuildColumns(); run(); };
-  input.addEventListener("input", rebuildAndRun);
-  mode.addEventListener("change", rebuildAndRun);
+  input.addEventListener("input", () => { currentSourceType = `pasted-${mode.value}`; rebuildAndRun(); });
+  mode.addEventListener("change", () => { currentSourceType = `pasted-${mode.value}`; rebuildAndRun(); });
   header.addEventListener("change", rebuildAndRun);
   for (const field of [urlColumn, query, addHttps, fragment, trailing, scopeMode, protocolMode, includeSitemapFiles, ...formats]) field.addEventListener("change", run);
   for (const field of [scopeHost, includePatterns, excludePatterns]) field.addEventListener("input", run);
@@ -135,8 +139,26 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
     mode.value = example.mode;
     header.checked = example.header;
     knownHeaders = [];
+    currentSourceType = `example-${button.dataset.crawlExample}`;
     rebuildAndRun();
     input.focus();
+  });
+  sourceFile?.addEventListener("change", async () => {
+    try {
+      const file = sourceFile.files?.[0];
+      const text = await file?.text();
+      if (!text) throw new Error("The selected file is empty.");
+      const extension = file.name.toLowerCase().split(".").pop();
+      mode.value = extension === "xml" ? "sitemap" : ["csv", "tsv"].includes(extension) ? "table" : "auto";
+      const parsed = extractUrlRows(text, { mode: mode.value });
+      header.checked = parsed.hasHeader;
+      input.value = text;
+      knownHeaders = [];
+      currentSourceType = `local-${extension || "text"}-file`;
+      rebuildAndRun();
+      status.textContent = `${file.name} loaded locally. Review the detected source type, URL column, and scope.`;
+    } catch (error) { status.textContent = `File not loaded: ${error.message}`; }
+    sourceFile.value = "";
   });
   copy.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(output.value); status.textContent = "Crawl list copied."; }
@@ -189,6 +211,23 @@ for (const root of document.querySelectorAll("[data-crawl-list-workbench]")) {
       status.textContent = "Recipe loaded. Pasted input was left unchanged.";
     } catch (error) { status.textContent = `Recipe not loaded: ${error.message}`; }
     recipeLoad.value = "";
+  });
+  manifestSave?.addEventListener("click", async () => {
+    try {
+      const manifest = await createRunManifest({
+        workflow: "crawl-list",
+        workflowVersion: "1.1.0",
+        sourceType: currentSourceType,
+        settings: settings(),
+        input: input.value,
+        output: output.value,
+        outputFormat: currentFormat,
+        summary: { inputRows: currentResult.inputRows, crawlTargets: currentResult.entries.length, excluded: currentResult.excluded.length, duplicates: currentResult.duplicates, invalid: currentResult.invalid.length, hosts: currentResult.hosts.length, sourceType: currentResult.sourceType },
+        limits: ["The manifest proves a local transformation, not that any output URL was requested or crawled."],
+      });
+      downloadRunManifest(manifest, "devawesome-crawl-list.run.json");
+      status.textContent = "Run manifest downloaded without source or crawl-list contents.";
+    } catch (error) { status.textContent = `Run manifest not created: ${error.message}`; }
   });
   rebuildAndRun();
 }

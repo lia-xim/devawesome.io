@@ -1,5 +1,6 @@
 ---
 import RecipeControls from "./RecipeControls.astro";
+import RunManifestControls from "./RunManifestControls.astro";
 ---
 
 <div class="deep-workbench" data-keyword-import-workbench>
@@ -13,7 +14,7 @@ import RecipeControls from "./RecipeControls.astro";
   </div>
 
   <section class="deep-workbench-step" aria-labelledby="keyword-source-title">
-    <div class="step-heading"><span>1</span><div><h2 id="keyword-source-title">Paste the source</h2><p>Use a table when other columns should survive the cleanup.</p></div></div>
+    <div class="step-heading"><span>1</span><div><h2 id="keyword-source-title">Add the source</h2><p>Paste a list or load a local file. Use a table when other columns should survive the cleanup.</p></div></div>
     <div class="source-grid">
       <label class="source-input"><span>Input</span><textarea rows="13" maxlength="1000000" spellcheck="false" data-keyword-workbench-input>keyword	volume	list
 technical seo audit	210	Audit
@@ -22,6 +23,7 @@ Keyword Clustering	90	Content
 /		
 search intent	140	Research</textarea></label>
       <div class="source-settings">
+        <label class="source-file-load"><span>Local source file</span><input type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain" data-keyword-workbench-file /><small>CSV, TSV, or TXT · read only in this tab</small></label>
         <label><span>Separator</span><select data-keyword-workbench-mode><option value="auto">Detect automatically</option><option value="tab" selected>Tabs / spreadsheet</option><option value=",">Comma-separated CSV</option><option value=";">Semicolon-separated</option><option value="|">Pipes</option><option value="lines">One keyword per line</option></select></label>
         <label class="switch-row"><input type="checkbox" checked data-keyword-workbench-header /><span>First row contains column names</span></label>
         <p data-keyword-source-summary>Reading the pasted table…</p>
@@ -68,4 +70,5 @@ search intent	140	Research</textarea></label>
     <p data-keyword-workbench-status aria-live="polite">Ready</p>
   </section>
   <RecipeControls label="Keyword import recipe" />
+  <RunManifestControls label="Keyword run manifest" />
 </div>

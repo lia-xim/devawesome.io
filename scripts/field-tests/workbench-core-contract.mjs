@@ -16,6 +16,7 @@ import {
   resolveRobotsPath,
   testRobots,
 } from "../../public/workbench-core.js";
+import { createRunManifest, stableJson } from "../../public/workbench-run-manifests.js";
 
 const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const resultPath = join(root, "reports", "field-tests", "workbench-core-contract-2026-08-28.json");
@@ -121,6 +122,27 @@ runCase("mcp-correction", "Does the MCP lab identify and repair core tools/call 
   assert.equal(expectedActual.valid, true);
   return { detectedType: result.type, protocolVersion: result.protocolVersion, errors: result.issues.filter((entry) => entry.level === "error").length, correctedArgumentsType: typeof result.corrected.params.arguments, mismatchedPairDetected: !pair.valid, expectedShapeMatched: expectedActual.valid };
 });
+
+try {
+  const manifest = await createRunManifest({
+    workflow: "keyword-import",
+    sourceType: "fixture",
+    settings: { mode: ",", hasHeader: true },
+    input: "private keyword,10",
+    output: "private keyword",
+    outputFormat: "csv",
+    summary: { outputRows: 1 },
+  });
+  const serialized = JSON.stringify(manifest);
+  assert.equal(manifest.kind, "devawesome-workbench-run-manifest");
+  assert.equal(manifest.receipts.input.sha256, "ea32a2bd236f7c540f8112f89dd1cb3a37e5f83771e6d78a51cb3d3d6afaf942");
+  assert.equal(manifest.receipts.output.sha256, "4b2589a030d1c1733ebfb4bce2a89c40283e264c707762cd1b0c3e74478f8b1e");
+  assert.equal(stableJson({ z: 1, a: { y: 2, b: 3 } }), '{"a":{"b":3,"y":2},"z":1}');
+  assert.ok(!serialized.includes("private keyword"));
+  cases.push({ id: "run-manifest-privacy", question: "Does a run manifest bind input, settings, and output without embedding source or export contents?", status: "passed", observed: { inputBytes: manifest.receipts.input.bytes, outputBytes: manifest.receipts.output.bytes, hashes: 3, rawContentsIncluded: false } });
+} catch (error) {
+  cases.push({ id: "run-manifest-privacy", question: "Does a run manifest bind input, settings, and output without embedding source or export contents?", status: "failed", observed: { error: error.message } });
+}
 
 const allPassed = cases.every((entry) => entry.status === "passed");
 if (!allPassed) {

@@ -1,5 +1,6 @@
 import { formatKeywordImport, prepareKeywordImport } from "./workbench-core.js";
 import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
   spreadsheet: {
@@ -39,6 +40,7 @@ function download(content, format) {
 
 for (const root of document.querySelectorAll("[data-keyword-import-workbench]")) {
   const input = root.querySelector("[data-keyword-workbench-input]");
+  const sourceFile = root.querySelector("[data-keyword-workbench-file]");
   const mode = root.querySelector("[data-keyword-workbench-mode]");
   const header = root.querySelector("[data-keyword-workbench-header]");
   const keywordColumn = root.querySelector("[data-keyword-column]");
@@ -63,12 +65,14 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
   const downloadButton = root.querySelector("[data-keyword-workbench-download]");
   const recipeSave = root.querySelector("[data-recipe-save]");
   const recipeLoad = root.querySelector("[data-recipe-load]");
+  const manifestSave = root.querySelector("[data-run-manifest-save]");
   if (!input || !mode || !header || !keywordColumn || !retained || !output || !status) continue;
 
   let currentResult;
   let currentFormat = "txt";
   let knownHeaders = [];
   let conflictResolutions = {};
+  let currentSourceType = "pasted-tabular-data";
 
   const options = () => ({
     mode: mode.value,
@@ -173,11 +177,12 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
       : `${currentResult.rows.length} rows ready for ${currentFormat === "contextter" ? "Contextter CSV" : currentFormat.toUpperCase()} export.`;
     copy.disabled = !output.value || currentResult.unresolvedConflicts > 0;
     downloadButton.disabled = !output.value || currentResult.unresolvedConflicts > 0;
+    if (manifestSave) manifestSave.disabled = !output.value || currentResult.unresolvedConflicts > 0;
   }
 
   const rebuildAndRun = () => { rebuildMapping(); run(); };
-  input.addEventListener("input", rebuildAndRun);
-  mode.addEventListener("change", rebuildAndRun);
+  input.addEventListener("input", () => { currentSourceType = `pasted-${mode.value}`; rebuildAndRun(); });
+  mode.addEventListener("change", () => { currentSourceType = `pasted-${mode.value}`; rebuildAndRun(); });
   header.addEventListener("change", rebuildAndRun);
   keywordColumn.addEventListener("change", run);
   for (const field of [caseMode, ignoreCase, stripNoise, whitespace, ...formats]) field.addEventListener("change", run);
@@ -190,8 +195,28 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     knownHeaders = [];
     retained.replaceChildren();
     conflictResolutions = {};
+    currentSourceType = `example-${button.dataset.keywordExample}`;
     rebuildAndRun();
     input.focus();
+  });
+  sourceFile?.addEventListener("change", async () => {
+    try {
+      const file = sourceFile.files?.[0];
+      const text = await file?.text();
+      if (!text) throw new Error("The selected file is empty.");
+      const extension = file.name.toLowerCase().split(".").pop();
+      mode.value = extension === "csv" ? "," : extension === "tsv" ? "tab" : "auto";
+      const probe = prepareKeywordImport(text, { mode: mode.value });
+      header.checked = probe.hasHeader;
+      input.value = text;
+      knownHeaders = [];
+      retained.replaceChildren();
+      conflictResolutions = {};
+      currentSourceType = `local-${extension || "text"}-file`;
+      rebuildAndRun();
+      status.textContent = `${file.name} loaded locally. Review the detected separator and column mapping.`;
+    } catch (error) { status.textContent = `File not loaded: ${error.message}`; }
+    sourceFile.value = "";
   });
   copy.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(output.value); status.textContent = "Export copied."; }
@@ -224,6 +249,25 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
       status.textContent = "Recipe loaded. Pasted input was left unchanged.";
     } catch (error) { status.textContent = `Recipe not loaded: ${error.message}`; }
     recipeLoad.value = "";
+  });
+  manifestSave?.addEventListener("click", async () => {
+    try {
+      const manifestSettings = options();
+      delete manifestSettings.conflictResolutions;
+      const manifest = await createRunManifest({
+        workflow: "keyword-import",
+        workflowVersion: "1.1.0",
+        sourceType: currentSourceType,
+        settings: manifestSettings,
+        input: input.value,
+        output: output.value,
+        outputFormat: currentFormat,
+        summary: { inputRows: currentResult.inputRows, outputRows: currentResult.rows.length, duplicates: currentResult.duplicates, conflicts: currentResult.conflicts.length, ignoredRows: currentResult.ignored },
+        limits: ["Row-specific manual conflict choices are reflected in the output receipt but omitted from settings because they can reveal source keywords."],
+      });
+      downloadRunManifest(manifest, "devawesome-keyword-import.run.json");
+      status.textContent = "Run manifest downloaded without keyword or export contents.";
+    } catch (error) { status.textContent = `Run manifest not created: ${error.message}`; }
   });
   rebuildAndRun();
 }

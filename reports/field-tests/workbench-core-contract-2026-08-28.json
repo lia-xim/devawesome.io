@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "workbench-core-contract",
   "status": "passed",
-  "capturedAt": "2026-08-28T18:16:09.330Z",
+  "capturedAt": "2026-08-28T20:14:58.284Z",
   "editor": "Matthias Ramahi",
   "technicalReview": "Not independently reviewed",
   "environment": {
@@ -110,6 +110,17 @@
         "correctedArgumentsType": "object",
         "mismatchedPairDetected": true,
         "expectedShapeMatched": true
+      }
+    },
+    {
+      "id": "run-manifest-privacy",
+      "question": "Does a run manifest bind input, settings, and output without embedding source or export contents?",
+      "status": "passed",
+      "observed": {
+        "inputBytes": 18,
+        "outputBytes": 15,
+        "hashes": 3,
+        "rawContentsIncluded": false
       }
     }
   ],

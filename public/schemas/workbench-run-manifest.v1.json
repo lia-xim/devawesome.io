@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://devawesome.io/schemas/workbench-run-manifest.v1.json",
+  "title": "DevAwesome Workbench Run Manifest",
+  "description": "A privacy-bounded record that links one local workbench input, its settings, and its output through SHA-256 receipts without embedding the input or output.",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "workflow", "workflowVersion", "createdAt", "sourceType", "settings", "receipts", "summary", "limits", "privacy"],
+  "properties": {
+    "$schema": { "const": "https://devawesome.io/schemas/workbench-run-manifest.v1.json" },
+    "schemaVersion": { "const": 1 },
+    "kind": { "const": "devawesome-workbench-run-manifest" },
+    "workflow": { "type": "string", "minLength": 1 },
+    "workflowVersion": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "sourceType": { "type": "string" },
+    "settings": { "type": "object" },
+    "receipts": {
+      "type": "object",
+      "required": ["input", "output", "settings"],
+      "properties": {
+        "input": { "$ref": "#/$defs/receipt" },
+        "output": { "allOf": [{ "$ref": "#/$defs/receipt" }, { "type": "object", "required": ["format"], "properties": { "format": { "type": "string" } } }] },
+        "settings": { "$ref": "#/$defs/receipt" }
+      }
+    },
+    "summary": { "type": "object" },
+    "limits": { "type": "array", "items": { "type": "string" } },
+    "privacy": { "type": "string" }
+  },
+  "$defs": {
+    "receipt": {
+      "type": "object",
+      "required": ["algorithm", "bytes", "sha256"],
+      "properties": {
+        "algorithm": { "const": "SHA-256" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

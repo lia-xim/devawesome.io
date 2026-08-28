@@ -1,5 +1,6 @@
 import { diagnoseIndexability, extractIndexabilitySignals } from "./workbench-core.js";
 import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
   noindex: { status: "200", canonical: "self", meta: "noindex", header: "index", robots: "allowed" },
@@ -30,6 +31,7 @@ for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
   const extractStatus = root.querySelector("[data-index-extract-status]");
   const recipeSave = root.querySelector("[data-recipe-save]");
   const recipeLoad = root.querySelector("[data-recipe-load]");
+  const manifestSave = root.querySelector("[data-run-manifest-save]");
   if (Object.values(fields).some((field) => !field) || !verdict || !explanation || !checks) continue;
 
   let report;
@@ -107,6 +109,24 @@ for (const root of document.querySelectorAll("[data-indexability-workflow]")) {
       statusText.textContent = "Recipe loaded. Pasted evidence was left unchanged.";
     } catch (error) { statusText.textContent = `Recipe not loaded: ${error.message}`; }
     recipeLoad.value = "";
+  });
+  manifestSave?.addEventListener("click", async () => {
+    try {
+      const inputEvidence = JSON.stringify({ url: pageUrl.value, userAgent: userAgent.value, headers: headerInput.value, html: htmlInput.value, robots: robotsInput.value });
+      const manifest = await createRunManifest({
+        workflow: "indexability-debugger",
+        workflowVersion: "1.1.0",
+        sourceType: extraction.evidence.length ? "pasted-response-evidence" : "manual-signals",
+        settings: { userAgent: userAgent.value, signals: signals() },
+        input: inputEvidence,
+        output: JSON.stringify(report),
+        outputFormat: "json",
+        summary: { verdict: report.verdict, state: report.state, extractedEvidenceItems: extraction.evidence.length, extractionWarnings: extraction.warnings.length },
+        limits: report.limits,
+      });
+      downloadRunManifest(manifest, "devawesome-indexability.run.json");
+      statusText.textContent = "Run manifest downloaded without the URL, headers, HTML, or robots.txt contents.";
+    } catch (error) { statusText.textContent = `Run manifest not created: ${error.message}`; }
   });
   update();
 }

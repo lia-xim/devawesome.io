@@ -983,7 +983,8 @@
 }
 
 .index-evidence-input,
-.indexability-workbench > .recipe-controls {
+.indexability-workbench > .recipe-controls,
+.indexability-workbench > .run-manifest-controls {
   grid-column: 1 / -1;
 }
 
@@ -1745,6 +1746,26 @@
   background: #eef0ff;
 }
 
+.run-manifest-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1.35rem, 2.5vw, 2rem);
+  border-top: 1px solid #cbd2e4;
+  background: #e5e9f7;
+}
+
+.run-manifest-controls > div { display: grid; gap: 0.2rem; }
+.run-manifest-controls span { max-width: 56rem; color: #4f596e; font-size: 0.76rem; line-height: 1.45; }
+.run-manifest-controls button { display: inline-flex; min-height: 2.5rem; flex: 0 0 auto; align-items: center; justify-content: center; padding: 0.5rem 0.75rem; border: 1px solid #aeb8d0; border-radius: 6px; background: #111823; color: #fff; font: inherit; font-size: 0.76rem; font-weight: 680; cursor: pointer; }
+.run-manifest-controls button:hover { background: var(--toolbox-accent); }
+.run-manifest-controls button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+.source-file-load input[type="file"] { width: 100%; box-sizing: border-box; padding: 0.55rem; border: 1px solid #c8cfdd; border-radius: 6px; background: #fff; color: var(--toolbox-muted); font-size: 0.72rem; }
+.source-file-load input[type="file"]::file-selector-button { margin-right: 0.65rem; padding: 0.45rem 0.6rem; border: 0; border-radius: 4px; background: #111823; color: #fff; font: inherit; font-weight: 680; cursor: pointer; }
+.source-file-load small { color: var(--toolbox-muted); font-size: 0.68rem; line-height: 1.35; }
+
 .recipe-controls > div:first-child { display: grid; gap: 0.2rem; }
 .recipe-controls > div:first-child span { color: #545e73; font-size: 0.76rem; }
 .recipe-controls > div:last-child { display: flex; gap: 0.5rem; }
@@ -2163,7 +2184,8 @@
   .secondary-workflows a:first-child { border-right: 0; border-bottom: 1px solid #cbd1df; }
   .hero-recipe-note,
   .recipe-controls,
-  .recipe-controls > div:last-child { align-items: stretch; flex-direction: column; }
+  .recipe-controls > div:last-child,
+  .run-manifest-controls { align-items: stretch; flex-direction: column; }
 
   .review-summary {
     display: grid;

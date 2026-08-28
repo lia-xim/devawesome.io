@@ -5,7 +5,7 @@ export const site = {
   language: "en",
   title: "DevAwesome Browser Workbench",
   description: "Browser-local workbenches for reviewable SEO and developer data.",
-  purpose: "A browser-local workbench that prepares keyword imports and crawl inputs, explains indexability and MCP evidence, saves reusable rules as portable recipes, and keeps focused mini-tools available for smaller jobs.",
+  purpose: "A browser-local workbench that prepares keyword imports and crawl inputs, explains indexability and MCP evidence, saves reusable rules as portable recipes, records private run manifests, and keeps focused mini-tools available for smaller jobs.",
   status: "Public, indexable browser-workbench publication launched by explicit owner decision on 28 August 2026.",
   boundary: "No former issues, authors, subscribers, consent, audience figures or brand endorsement transferred.",
   portfolioStatus: "Accepted Contextter support domain with a standalone editorial purpose; common ownership is not independent corroboration and does not imply automatic product coverage.",

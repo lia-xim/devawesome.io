@@ -1,5 +1,6 @@
 ---
 import RecipeControls from "./RecipeControls.astro";
+import RunManifestControls from "./RunManifestControls.astro";
 ---
 
 <div class="deep-workbench" data-crawl-list-workbench>
@@ -9,7 +10,7 @@ import RecipeControls from "./RecipeControls.astro";
   </div>
 
   <section class="deep-workbench-step" aria-labelledby="crawl-source-title">
-    <div class="step-heading"><span>1</span><div><h2 id="crawl-source-title">Paste the source</h2><p>The workbench extracts URLs from lists, tables, Markdown links, or pasted sitemap XML.</p></div></div>
+    <div class="step-heading"><span>1</span><div><h2 id="crawl-source-title">Add the source</h2><p>Paste content or load a local file. The workbench extracts URLs from lists, tables, Markdown links, or sitemap XML.</p></div></div>
     <div class="source-grid">
       <label class="source-input"><span>Input</span><textarea rows="13" maxlength="1000000" spellcheck="false" data-crawl-input>Address,Status Code,Content Type
 https://example.com/,200,text/html
@@ -18,6 +19,7 @@ https://EXAMPLE.com/page,200,text/html
 https://example.com/Products,200,text/html
 not a url,0,unknown</textarea></label>
       <div class="source-settings">
+        <label class="source-file-load"><span>Local source file</span><input type="file" accept=".xml,.csv,.tsv,.txt,application/xml,text/xml,text/csv,text/tab-separated-values,text/plain" data-crawl-file /><small>XML, CSV, TSV, or TXT · read only in this tab</small></label>
         <label><span>Source type</span><select data-crawl-mode><option value="auto">Detect automatically</option><option value="sitemap">Pasted sitemap XML</option><option value="table" selected>CSV or spreadsheet table</option><option value="lines">One entry per line</option></select></label>
         <label class="switch-row"><input type="checkbox" checked data-crawl-header /><span>First table row contains column names</span></label>
         <label><span>URL column</span><select data-crawl-url-column></select></label>
@@ -68,4 +70,5 @@ not a url,0,unknown</textarea></label>
     <p data-crawl-status aria-live="polite">Ready</p>
   </section>
   <RecipeControls label="Crawl-list recipe" />
+  <RunManifestControls label="Crawl-list run manifest" />
 </div>

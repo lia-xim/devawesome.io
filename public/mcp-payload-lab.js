@@ -1,5 +1,6 @@
 import { analyzeMcpMessage, compareMcpExpectedActual, compareMcpPair } from "./workbench-core.js";
 import { createRecipe, downloadRecipe, readRecipeFile } from "./workbench-recipes.js";
+import { createRunManifest, downloadRunManifest } from "./workbench-run-manifests.js";
 
 const examples = {
   request: {
@@ -37,9 +38,11 @@ for (const root of document.querySelectorAll("[data-mcp-payload-lab]")) {
   const status = root.querySelector("[data-mcp-lab-status]");
   const recipeSave = root.querySelector("[data-recipe-save]");
   const recipeLoad = root.querySelector("[data-recipe-load]");
+  const manifestSave = root.querySelector("[data-run-manifest-save]");
   if (!source || !type || !input || !related || !detected || !findings || !corrected || !pairChecks || !status) continue;
 
   let result;
+  let comparison = null;
   const run = () => {
     result = analyzeMcpMessage(input.value, type.value, version.value);
     detected.textContent = result.type.replaceAll("-", " ");
@@ -58,14 +61,15 @@ for (const root of document.querySelectorAll("[data-mcp-payload-lab]")) {
     copy.disabled = !corrected.value;
     downloadButton.disabled = !corrected.value;
     if (related.value.trim()) {
-      const pair = compareMode.value === "expected" ? compareMcpExpectedActual(input.value, related.value) : compareMcpPair(input.value, related.value);
-      pairChecks.replaceChildren(...pair.checks.map((check) => {
+      comparison = compareMode.value === "expected" ? compareMcpExpectedActual(input.value, related.value) : compareMcpPair(input.value, related.value);
+      pairChecks.replaceChildren(...comparison.checks.map((check) => {
         const item = document.createElement("li");
         item.dataset.state = check.pass ? "pass" : "error";
         item.textContent = `${check.pass ? "Pass" : "Check"}: ${check.label}`;
         return item;
       }));
     } else {
+      comparison = null;
       const item = document.createElement("li");
       item.textContent = compareMode.value === "expected" ? "Paste the actual JSON to compare it with the expected shape." : "Paste a related response to compare the pair.";
       pairChecks.replaceChildren(item);
@@ -128,6 +132,24 @@ for (const root of document.querySelectorAll("[data-mcp-payload-lab]")) {
       status.textContent = "Recipe loaded. Payloads were left unchanged.";
     } catch (error) { status.textContent = `Recipe not loaded: ${error.message}`; }
     recipeLoad.value = "";
+  });
+  manifestSave?.addEventListener("click", async () => {
+    try {
+      const outputReport = { detectedType: result.type, protocolVersion: result.protocolVersion, valid: result.valid, issues: result.issues, corrected: result.corrected, comparison };
+      const manifest = await createRunManifest({
+        workflow: "mcp-payload-validation",
+        workflowVersion: "1.1.0",
+        sourceType: source.value,
+        settings: { declaredType: type.value, protocolVersion: version.value, comparisonMode: compareMode.value },
+        input: JSON.stringify({ primary: input.value, related: related.value }),
+        output: JSON.stringify(outputReport),
+        outputFormat: "json",
+        summary: { detectedType: result.type, valid: result.valid, errors: result.issues.filter((entry) => entry.level === "error").length, warnings: result.issues.filter((entry) => entry.level === "warning").length, comparisonPassed: comparison?.valid ?? null },
+        limits: ["This validates selected message structures. It does not execute a client/server exchange or prove transport compatibility."],
+      });
+      downloadRunManifest(manifest, "devawesome-mcp-validation.run.json");
+      status.textContent = "Run manifest downloaded without payload or log contents.";
+    } catch (error) { status.textContent = `Run manifest not created: ${error.message}`; }
   });
   run();
 }

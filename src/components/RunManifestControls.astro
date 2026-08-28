@@ -1,0 +1,15 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = "Run manifest" } = Astro.props;
+---
+
+<div class="run-manifest-controls">
+  <div>
+    <strong>{label}</strong>
+    <span>Download settings, counts, and SHA-256 receipts for this run. Raw input and output stay out of the file.</span>
+  </div>
+  <button type="button" data-run-manifest-save>Download run manifest</button>
+</div>

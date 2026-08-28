@@ -45,8 +45,10 @@ const vercel = JSON.parse(await readFile(join(root, "vercel.json"), "utf8"));
 const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const planSchema = JSON.parse(await readFile(join(dist, "schemas", "developer-tool-test-plan.v0.1.json"), "utf8"));
 const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-receipt.v0.1.json"), "utf8"));
+const runManifestSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-run-manifest.v1.json"), "utf8"));
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
+if (runManifestSchema.$id !== "https://devawesome.io/schemas/workbench-run-manifest.v1.json" || runManifestSchema.properties?.kind?.const !== "devawesome-workbench-run-manifest") failures.push("workbench run-manifest JSON Schema must build as the declared privacy-bounded contract");
 const headers = Object.fromEntries((vercel.headers?.[0]?.headers ?? []).map(({ key, value }) => [key.toLowerCase(), value]));
 if (rights.launchState !== "production_indexable") failures.push("rights manifest must record production_indexable");
 if (!rights.unknowns.includes("independent technical reviewer") || !rights.unknowns.includes("brand or mark clearance")) failures.push("open reviewer and identity gates must stay explicit");
@@ -142,7 +144,7 @@ const utilityBudgets = {
   "crawl-list-workbench.js": 14000,
   "mcp-payload-lab.js": 12000,
 };
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", ...Object.keys(utilityBudgets)]) {
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", "workbench-run-manifests.js", ...Object.keys(utilityBudgets)]) {
   const source = await readFile(join(root, "public", asset), "utf8");
   const budget = utilityBudgets[asset] ?? 8000;
   if ((await stat(join(root, "public", asset))).size > budget) failures.push(`${asset} exceeds its ${budget} byte utility budget`);

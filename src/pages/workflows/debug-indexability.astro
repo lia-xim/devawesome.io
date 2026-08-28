@@ -3,6 +3,7 @@ import ArrowIcon from "../../components/ArrowIcon.astro";
 import WorkflowHandoff from "../../components/WorkflowHandoff.astro";
 import WorkflowProgress from "../../components/WorkflowProgress.astro";
 import RecipeControls from "../../components/RecipeControls.astro";
+import RunManifestControls from "../../components/RunManifestControls.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const breadcrumbs = [
@@ -54,6 +55,7 @@ const toolSchema = { "@type": "WebApplication", name: "DevAwesome Indexability D
         <p class="indexability-status" data-index-report-status aria-live="polite">Diagnosis updates as signals change.</p>
       </div>
       <RecipeControls label="Indexability recipe" />
+      <RunManifestControls label="Indexability run manifest" />
     </div>
   </section>
 
