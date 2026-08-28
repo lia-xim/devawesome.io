@@ -6,13 +6,13 @@ export const site = {
   title: "DevAwesome Mini Tools",
   description: "Simple browser-local mini tools for developers and SEO teams.",
   purpose: "A categorized library of simple browser-local tools for developer and SEO data jobs, backed by clear limits and primary references.",
-  status: "Production preview held from indexing until the documented reviewer and identity gates are cleared.",
+  status: "Public, indexable mini-tool library launched by explicit owner decision on 28 August 2026.",
   boundary: "No former issues, authors, subscribers, consent, audience figures or brand endorsement transferred.",
   portfolioStatus: "Accepted Contextter support domain with a standalone editorial purpose; common ownership is not independent corroboration and does not imply automatic product coverage.",
   githubUrl: "https://github.com/lia-xim/devawesome.io",
   githubIssuesUrl: "https://github.com/lia-xim/devawesome.io/issues",
   securityUrl: "https://github.com/lia-xim/devawesome.io/security",
-  indexable: false,
+  indexable: true,
   ownershipLabel: "New ownership / 2026",
   operator: {
     name: "Matthias Ramahi",
@@ -31,5 +31,6 @@ export const site = {
     namedTechnicalReviewer: null,
     technicalReviewDisclosure: "Not independently reviewed",
     formerOperatorAndMarkClearance: false,
+    ownerIndexReleaseApprovedAt: "2026-08-28",
   },
 } as const;

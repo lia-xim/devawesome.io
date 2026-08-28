@@ -1,0 +1,32 @@
+---
+const sample = `{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list",
+  "params": {}
+}`;
+---
+
+<div class="list-workbench" data-mcp-validator>
+  <div class="workbench-bar">
+    <strong>MCP JSON-RPC validator</strong>
+    <div>
+      <button type="button" data-mcp-clear>Clear</button>
+      <button type="button" data-mcp-copy disabled>Copy report</button>
+    </div>
+  </div>
+  <div class="list-panes">
+    <label>
+      <span>JSON payload or tool definition</span>
+      <textarea rows="16" maxlength="1000000" spellcheck="false" data-mcp-input>{sample}</textarea>
+    </label>
+    <label>
+      <span>Validation report</span>
+      <textarea rows="16" readonly spellcheck="false" data-mcp-output></textarea>
+    </label>
+  </div>
+  <div class="list-options list-options-simple">
+    <p data-mcp-status aria-live="polite">Ready</p>
+    <button class="toolbox-button toolbox-button-small" type="button" data-mcp-validate>Validate payload</button>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 # DevAwesome rights and independent-review dossier
 
-Status date: 2026-08-22  
-Launch state: production preview, crawlable noindex  
-Decision owner: Matthias Ramahi  
+Status date: 2026-08-28
+Launch state: owner-approved indexable production release
+Decision owner: Matthias Ramahi
 Scope: devawesome.io under new ownership
 
 This dossier is an operating checklist, not a legal opinion. Buying the domain established control of the hostname. It did not transfer the former publication, mark, issues, code, media, authorship, subscribers, consent, analytics, sponsors, endorsements, customers, or reputation.
@@ -19,7 +19,7 @@ This dossier is an operating checklist, not a legal opinion. Buying the domain e
 | Brand / mark clearance | NOT PROVEN | Domain ownership and historical use are known; a current clearance record is not present | Dated DPMA, EUIPO, and WIPO searches plus a written risk decision; obtain qualified legal advice if a live or confusingly similar right appears |
 | Named editor | PASS | Matthias Ramahi is publicly named as operator and editor | Confirm again if editorial control changes |
 | Independent technical reviewer | NOT PROVEN | The tests say “Not independently reviewed”; Codex is an implementation agent, not the missing independent reviewer | A qualified named person reproduces the locked review packet, declares conflicts, and signs a bounded verdict |
-| Index release | FAIL | Two mandatory gates remain NOT PROVEN | All rights and review gates pass, production QA is rerun against the exact approved commit, and Matthias records a fresh explicit release decision |
+| Index release | OWNER APPROVED | Matthias explicitly directed the site to become indexable on 28 August 2026. The independent-review and mark-clearance gaps remain disclosed and were not converted into false PASS states. | Reassess after any rights claim, former asset reuse, identity change, or material reviewer finding |
 
 ## Rights workstream
 
@@ -74,7 +74,7 @@ The reviewer receives:
 3. `corepack pnpm install --frozen-lockfile` and `corepack pnpm verify` commands.
 4. FT-01, FT-02, and FT-03 runners plus saved JSON results.
 5. Rights manifest, legacy URL manifest, this dossier, and the protected-preview audit.
-6. Production Preview URL and the statement that noindex must remain in both HTML and response headers.
+6. Production URL and the current owner-approved indexability state, including the unresolved review and mark-clearance disclosures.
 
 ### Required reviewer actions
 
@@ -83,7 +83,7 @@ The reviewer receives:
 - Compare FT-03 known vectors and the Node/Web Crypto cross-check.
 - Check that every public verdict stays within the saved result and limitations.
 - Exercise quiz, plan builder, and evidence-receipt controls with keyboard and mobile viewport.
-- Verify canonicals, robots, empty hold sitemap, 404, redirects, CSP, noindex header, and console health on the exact preview.
+- Verify canonicals, robots, generated sitemap, index directives, 404, redirects, CSP, and console health on the exact release.
 - Record discrepancies, conflicts, environment differences, and any part not reproduced.
 
 ### Sign-off record
@@ -102,9 +102,9 @@ The completed record must contain:
 
 `approved_with_limits` does not automatically clear index release. The editor must show that each limit is compatible with every public claim.
 
-## Launch gates
+## Post-launch evidence gates
 
-Indexing remains blocked until all are true at the same time:
+Indexing was released by explicit owner decision on 28 August 2026. The following work remains open and must be completed before the site can claim independent technical review or former-brand clearance:
 
 - Former-operator and mark decision is documented and supports the current identity.
 - A qualified independent technical reviewer has signed the locked packet.
@@ -112,6 +112,6 @@ Indexing remains blocked until all are true at the same time:
 - All former assets remain excluded unless their individual rights are documented.
 - `corepack pnpm verify`, dependency audit, live HTTP audit, mobile/desktop/keyboard/Axe/console checks, and internal-link checks pass against the approved commit.
 - Apex and www preserve host, HTTPS, path, and query rules; 404 and legacy decisions match the manifest.
-- Matthias makes a new explicit index-release decision after reading the final evidence. Earlier general launch language does not satisfy this domain-specific hold.
+- Any future use of former material or broader identity claims requires a fresh rights decision; the current release contains newly authored tools and copy only.
 
-Until then, required state is: crawlable robots, meta `noindex, follow, noarchive`, matching `X-Robots-Tag`, and an empty sitemap with no advertised URL list.
+Current required state: crawlable robots with the canonical sitemap, `index, follow` on canonical pages, `noindex` on the custom 404, no global `X-Robots-Tag` block, and public disclosure that the field tests are not independently reviewed.

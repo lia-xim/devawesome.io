@@ -1,0 +1,21 @@
+---
+import RobotsTxtTester from "../../components/RobotsTxtTester.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import WorkflowLink from "../../components/WorkflowLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const toolSchema = { "@type": "WebApplication", name: "DevAwesome Robots.txt Tester", applicationCategory: "BusinessApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
+---
+
+<BaseLayout title="Robots.txt Tester" description="Test one crawler user-agent and URL path against pasted robots.txt rules locally in your browser." canonicalPath="/tools/robots-txt-tester" schemaMainEntity={toolSchema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>Robots.txt tester</h1></div><p>Paste a robots file, enter one crawler and path, and see which Allow or Disallow rule wins. The tool never requests the website.</p></header>
+  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>No fetch.</strong> Only the pasted rules are evaluated.</span><span>RFC 9309 matching basics</span></div><RobotsTxtTester /></section>
+  <ToolPageContent
+    steps={["Paste the robots.txt content you want to inspect.", "Enter the crawler user-agent and the path, including a query string when it matters.", "Run the test and inspect the selected group and longest matching rule."]}
+    handles={["User-agent groups and multiple groups with the same specificity", "Allow and Disallow rules", "Wildcard asterisks and end-of-path dollar markers", "Longest-match selection with Allow winning an equal-length tie"]}
+    limits={["It does not download a live robots.txt file or confirm the HTTP status and content type.", "It does not normalize percent-encoded octets or reproduce crawler-specific extensions.", "Robots rules control crawling, not access control or guaranteed indexing."]}
+    sources={[{ label: "RFC 9309: Robots Exclusion Protocol", href: "https://www.rfc-editor.org/rfc/rfc9309.html", note: "Primary standard for groups, rules, matching, and access method." }]}
+    related={[{ label: "URL list normalizer", href: "/tools/url-list-normalizer", note: "Clean the paths and URLs you plan to test." }, { label: "SERP snippet preview", href: "/tools/serp-snippet-preview", note: "Review the search-result inputs for an allowed page." }]}
+  />
+  <WorkflowLink title="Need to inspect the live page?" description="Use AnalyseSpider when the next job is fetching one public URL and checking its real directives." href="https://analysespider.com/" cta="Check one live URL" />
+  <script is:inline src="/robots-txt-tester.js" defer></script>
+</BaseLayout>

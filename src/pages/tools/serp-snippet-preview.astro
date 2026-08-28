@@ -1,0 +1,19 @@
+---
+import SerpSnippetPreview from "../../components/SerpSnippetPreview.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const toolSchema = { "@type": "WebApplication", name: "DevAwesome SERP Snippet Preview", applicationCategory: "BusinessApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
+---
+
+<BaseLayout title="SERP Snippet Preview" description="Preview a page title, display URL, and meta description together locally before publishing them." canonicalPath="/tools/serp-snippet-preview" schemaMainEntity={toolSchema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>SERP snippet preview</h1></div><p>Put the title, URL, and description in one desktop-style preview. Use it to spot unclear wording, duplication, or an awkward first impression before publishing.</p></header>
+  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>Illustrative preview.</strong> Search engines control the final result.</span><span>No uploads or saved drafts</span></div><SerpSnippetPreview /></section>
+  <ToolPageContent
+    steps={["Enter the page title, canonical URL, and draft meta description.", "Read the preview as a searcher: can you identify the page and its useful outcome quickly?", "Check the final source HTML after publishing; the preview does not inspect your page."]}
+    handles={["A combined desktop-style title, display URL, and description preview", "Live character counts without pretending they are fixed ranking limits", "Long titles and descriptions through a constrained visual frame", "URLs with nested paths"]}
+    limits={["Google may rewrite title links and may generate the snippet from visible page content.", "The layout is illustrative and does not reproduce every device, query, locale, or search feature.", "Character counts are editorial context, not guaranteed pixel or truncation limits."]}
+    sources={[{ label: "Google: Influencing title links", href: "https://developers.google.com/search/docs/advanced/appearance/good-titles-snippets", note: "Explains the sources and automation behind title links." }, { label: "Google: Control your snippets", href: "https://developers.google.com/search/docs/appearance/snippet", note: "Explains when page content or a meta description may become the snippet." }]}
+    related={[{ label: "Keyword list cleaner", href: "/tools/keyword-list-cleaner", note: "Remove duplicate query inputs before mapping them to pages." }, { label: "Robots.txt tester", href: "/tools/robots-txt-tester", note: "Check whether the crawler path is allowed in pasted rules." }]}
+  />
+  <script is:inline src="/serp-snippet-preview.js" defer></script>
+</BaseLayout>

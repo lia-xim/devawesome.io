@@ -10,13 +10,13 @@ const captured = result.capturedAt ? new Date(result.capturedAt).toLocaleString(
 const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "/field-tests" }, { name: "Astro Static Route Contract", path: "/field-tests/astro-static-route-contract" }];
 ---
 
-<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, crawlable noindex controls, an empty hold sitemap, and a real 404." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-22" breadcrumbs={breadcrumbs}>
+<BaseLayout title="Astro Static Route Contract" description="A reproducible Astro 7.2.1 field test for static routes, index directives, generated sitemap membership, and a real noindex 404." schemaType="TechArticle" datePublished="2026-08-22" dateModified="2026-08-28" breadcrumbs={breadcrumbs}>
   <Breadcrumbs items={breadcrumbs} />
-  <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Does every built page honor the indexing hold?" intro="We ran the production source as the fixture, generated the static output, then checked every canonical HTML document for noindex and verified that the hold sitemap exposes zero indexable URLs." />
+  <PageIntro number="FT-01" label="Astro 7.2.1 / static publishing" title="Does every built page honor the indexability contract?" intro="We run the production source as the fixture, generate the static output, then compare canonical HTML, robots directives, sitemap membership, redirects, and the custom 404." />
 
   <section class="test-verdict section-rule">
     <div><span class="section-label">Observed verdict</span><strong>{result.status === "passed" ? "PASS" : "PENDING"}</strong></div>
-    <p>Astro generated the expected static HTML, retained a custom 404, added the same noindex directive to every canonical document, and exposed zero URLs in the hold sitemap. This is a repository-specific publishing result, not a general Astro performance score.</p>
+    <p>Astro generated the expected canonical HTML, kept the custom 404 out of search, and exposed the registry-backed search-eligible routes in the sitemap. This is a repository-specific publishing result, not a general Astro performance score.</p>
   </section>
 
   <section class="test-layout section-rule">
@@ -33,7 +33,7 @@ const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "
       <section>
         <span class="section-label">Question and method</span>
         <h2>Build first. Inspect the output, not the promise.</h2>
-        <p>The runner executes the pinned Astro build in this repository. It walks every generated canonical HTML file, checks the exact crawlable noindex directive, reads the empty sitemap, and verifies the custom 404. A passing run requires zero discoverable sitemap URLs and no canonical HTML document without the indexing hold.</p>
+        <p>The runner executes the pinned Astro build in this repository. It walks every generated canonical HTML file, checks the index directive, compares the sitemap with the route registry, and verifies the custom noindex 404.</p>
         <pre class="command-block"><code>{result.command ?? "corepack pnpm exec astro build"}</code></pre>
       </section>
 
@@ -42,7 +42,7 @@ const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "
         <div class="metric-grid">
           <div><small>Astro</small><strong>{result.environment?.astro ?? "7.2.1"}</strong></div>
           <div><small>Node</small><strong>{result.environment?.node ?? "v24.15.0"}</strong></div>
-          <div><small>Sitemap mode</small><strong>{result.environment?.sitemapMode ?? "empty static hold sitemap"}</strong></div>
+          <div><small>Sitemap mode</small><strong>{result.environment?.sitemapMode ?? "registry-generated indexable sitemap"}</strong></div>
           <div><small>Platform</small><strong>{result.environment?.platform ?? "win32"} / {result.environment?.architecture ?? "x64"}</strong></div>
         </div>
       </section>
@@ -58,9 +58,9 @@ const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Field tests", path: "
         <ul class="assertion-list">
           <li><span>All registry routes built</span><strong>{result.assertions?.allRegistryRoutesBuilt ? "PASS" : "PENDING"}</strong></li>
           <li><span>Custom 404 exists</span><strong>{result.assertions?.custom404Exists ? "PASS" : "PENDING"}</strong></li>
-          <li><span>All canonical HTML is noindex</span><strong>{result.assertions?.allCanonicalHtmlNoindex ? "PASS" : "PENDING"}</strong></li><li><span>Custom 404 is noindex</span><strong>{result.assertions?.custom404Noindex ? "PASS" : "PENDING"}</strong></li>
+          <li><span>All canonical HTML is indexable</span><strong>{result.assertions?.allCanonicalHtmlIndexable ? "PASS" : "PENDING"}</strong></li><li><span>Custom 404 is noindex</span><strong>{result.assertions?.custom404Noindex ? "PASS" : "PENDING"}</strong></li>
           <li><span>Redirect alias not discoverable</span><strong>{result.assertions?.redirectAliasNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
-          <li><span>Hold sitemap has zero URLs</span><strong>{result.assertions?.sitemapContainsNoIndexableUrls ? "PASS" : "PENDING"}</strong></li><li><span>Error route not discoverable</span><strong>{result.assertions?.errorRouteNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
+          <li><span>Sitemap matches eligible routes</span><strong>{result.assertions?.sitemapMatchesSearchEligibleRoutes ? "PASS" : "PENDING"}</strong></li><li><span>Error route not discoverable</span><strong>{result.assertions?.errorRouteNotDiscoverable ? "PASS" : "PENDING"}</strong></li>
         </ul>
       </section>
 

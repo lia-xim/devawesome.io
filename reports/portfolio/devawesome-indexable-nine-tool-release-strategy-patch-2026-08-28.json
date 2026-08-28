@@ -1,0 +1,56 @@
+{
+  "productAssets": [
+    "Browser-local Keyword List Cleaner",
+    "Browser-local URL List Normalizer",
+    "Browser-local Robots.txt Tester",
+    "Browser-local SERP Snippet Preview",
+    "Browser-local MCP JSON-RPC Validator",
+    "Browser-local JSON Formatter and Validator",
+    "Browser-local UUID v4 Generator",
+    "Browser-local SHA-256 Hash Generator with optional JSON receipt",
+    "Browser-local Simple Test Case Builder with Markdown export",
+    "Original Programming Language Quiz",
+    "Guide hub plus reproducible test repositories and fixtures"
+  ],
+  "informationArchitecture": [
+    { "path": "/", "role": "mini-tool entry", "job": "Understand the offer and open one useful developer or SEO tool immediately" },
+    { "path": "/tools", "role": "categorized tool directory", "job": "Browse all maintained browser-local mini tools by user job" },
+    { "path": "/tools/keyword-list-cleaner", "role": "SEO data utility", "job": "Clean and deduplicate keyword lists before import, clustering, or tracking" },
+    { "path": "/tools/url-list-normalizer", "role": "SEO and crawler input utility", "job": "Validate and normalize URL lists before a crawl or import" },
+    { "path": "/tools/robots-txt-tester", "role": "technical SEO rule utility", "job": "Check which pasted robots.txt rule applies to one crawler and path" },
+    { "path": "/tools/serp-snippet-preview", "role": "search appearance utility", "job": "Review a title and meta description in a search-result-style preview" },
+    { "path": "/tools/mcp-json-rpc-validator", "role": "MCP protocol utility", "job": "Find structural errors in an MCP JSON-RPC payload or tool definition" },
+    { "path": "/tools/json-formatter", "role": "developer and API data utility", "job": "Format, validate, or minify JSON without uploading it" },
+    { "path": "/tools/uuid-generator", "role": "developer utility", "job": "Generate and copy one or more UUID v4 values" },
+    { "path": "/tools/evidence-receipt", "role": "developer integrity utility", "job": "Create a SHA-256 digest and optional portable receipt for normalized text" },
+    { "path": "/tools/developer-tool-test-plan", "role": "testing utility", "job": "Create a compact Markdown test case from one action and expected result" },
+    { "path": "/guides", "role": "guide directory", "job": "Choose the method or evidence collection needed after a tool result" },
+    { "path": "/guess-the-programming-language/", "role": "secondary evergreen interactive tool", "job": "Practice identifying programming languages from syntax clues" },
+    { "path": "/field-tests", "role": "secondary firsthand evidence library", "job": "Inspect executable evidence behind selected tool claims" },
+    { "path": "/new-ownership", "role": "identity and consent disclosure", "job": "Understand the separation from the former newsletter and audience and the owner-approved indexable launch" }
+  ],
+  "operatingModel": {
+    "owner": "Matthias Ramahi",
+    "burden": "medium for the current maintained set; high if expansion toward 50 tools outpaces testing, sources, and landing-page maintenance",
+    "cadence": "Release small categorized batches only after each tool, landing page, primary references, limits, mobile flow, and browser-local privacy behavior pass QA",
+    "annualCost": null,
+    "stopCondition": "Indexing was explicitly approved by Matthias Ramahi on 28 August 2026 while independent technical review and former-operator or mark clearance remain disclosed as not proven. Stop adding tools when existing utilities are stale, overlapping, untested, or lack a distinct user job. Park or reduce the site to the maintained evergreen set if recurring use does not justify the operating burden."
+  },
+  "roadmap": {
+    "days30": [
+      "Hold the nine shipped tools stable after launch and collect privacy-approved usage evidence only after a separate analytics decision",
+      "Complete former-operator and mark due diligence without changing the newly authored identity boundary",
+      "Obtain a qualifying independent technical reviewer and retain the public not-independently-reviewed disclosure until then"
+    ],
+    "days60": [
+      "Improve the strongest utilities from observed failure cases and real user feedback",
+      "Choose the next small SEO or developer-tool batch from distinct user jobs rather than keyword fan-out",
+      "Keep guides, quiz, methodology, and field tests as secondary paths"
+    ],
+    "days90": [
+      "Review direct use, return use, maintenance burden, source freshness, and workflow continuation",
+      "Choose a maintained nine-tool library, a justified expanded batch, or a reduced evergreen set",
+      "Review Search Console discovery and query evidence without promising indexing or rankings"
+    ]
+  }
+}

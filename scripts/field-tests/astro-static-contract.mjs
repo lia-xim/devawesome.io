@@ -49,22 +49,22 @@ async function inspectBuild() {
   const missingCanonicalFiles = canonicalHtmlFiles.filter((file) => !htmlFiles.includes(file));
   const sitemap = await readFile(join(dist, "sitemap.xml"), "utf8");
   const sitemapUrls = [...sitemap.matchAll(new RegExp("<loc>([^<]+)</loc>", "g"))].map((match) => match[1]);
-  const noindexFailures = [];
+  const indexDirectiveFailures = [];
   for (const file of canonicalHtmlFiles.filter((name) => htmlFiles.includes(name))) {
     const html = await readFile(join(dist, file), "utf8");
-    if (!/<meta name="robots" content="noindex, follow, noarchive"/.test(html)) noindexFailures.push(file);
+    if (!/<meta name="robots" content="index, follow"/.test(html)) indexDirectiveFailures.push(file);
   }
   const errorHtml = await readFile(join(dist, "404.html"), "utf8");
   const assertions = {
     allRegistryRoutesBuilt: missingCanonicalFiles.length === 0,
     custom404Exists: htmlFiles.includes("404.html"),
-    allCanonicalHtmlNoindex: noindexFailures.length === 0,
+    allCanonicalHtmlIndexable: indexDirectiveFailures.length === 0,
     custom404Noindex: /<meta name="robots" content="noindex, follow, noarchive"/.test(errorHtml),
-    sitemapContainsNoIndexableUrls: sitemapUrls.length === 0,
+    sitemapMatchesSearchEligibleRoutes: sitemapUrls.length === canonicalRoutes.filter((route) => route.searchEligible).length && canonicalRoutes.filter((route) => route.searchEligible).every((route) => sitemapUrls.includes(new URL(route.path, "https://devawesome.io").href)),
     redirectAliasNotDiscoverable: !sitemapUrls.some((url) => new URL(url).pathname.split("/").filter(Boolean).join("/") === "quiz"),
     errorRouteNotDiscoverable: !sitemapUrls.some((url) => ["404", "404.html"].includes(new URL(url).pathname.split("/").filter(Boolean).join("/"))),
   };
-  return { htmlFiles, canonicalHtmlFiles, missingCanonicalFiles, sitemapUrls, noindexFailures, assertions };
+  return { htmlFiles, canonicalHtmlFiles, missingCanonicalFiles, sitemapUrls, indexDirectiveFailures, assertions };
 }
 let buildRun = null;
 if (capture) {
@@ -96,7 +96,7 @@ const recorded = {
     architecture: arch(),
     node: process.version,
     astro: packageJson.dependencies.astro,
-    sitemapMode: "empty static hold sitemap",
+    sitemapMode: "registry-generated indexable sitemap",
   },
   command: "corepack pnpm exec astro build",
   buildDurationMs: buildRun?.durationMs ?? null,
@@ -118,4 +118,4 @@ if (capture) {
   await writeFile(resultPath, JSON.stringify(recorded, null, 2) + "\n", "utf8");
 }
 
-console.log("Astro noindex contract passed:", inspection.sitemapUrls.length, "indexable sitemap entries,", inspection.canonicalHtmlFiles.length, "registry-backed canonical noindex files, one noindex 404, and one redirect alias.");
+console.log("Astro indexability contract passed:", inspection.sitemapUrls.length, "indexable sitemap entries,", inspection.canonicalHtmlFiles.length, "registry-backed canonical indexable files, one noindex 404, and one redirect alias.");

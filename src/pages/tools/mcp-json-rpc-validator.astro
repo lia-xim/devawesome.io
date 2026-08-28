@@ -1,0 +1,22 @@
+---
+import McpJsonRpcValidator from "../../components/McpJsonRpcValidator.astro";
+import ToolPageContent from "../../components/ToolPageContent.astro";
+import WorkflowLink from "../../components/WorkflowLink.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const toolSchema = { "@type": "WebApplication", name: "DevAwesome MCP JSON-RPC Validator", applicationCategory: "DeveloperApplication", operatingSystem: "Any", browserRequirements: "Requires JavaScript.", isAccessibleForFree: true };
+---
+
+<BaseLayout title="MCP JSON-RPC Validator" description="Validate JSON-RPC 2.0 envelopes, MCP tools/list payloads, and MCP tool definitions locally in your browser." canonicalPath="/tools/mcp-json-rpc-validator" schemaMainEntity={toolSchema}>
+  <header class="tool-page-header"><div><a class="tool-page-back" href="/tools">← All tools</a><h1>MCP JSON-RPC validator</h1></div><p>Paste one MCP message or tool definition. The report checks the envelope, request or response shape, and the core fields used by MCP tools.</p></header>
+  <section class="tool-surface"><div class="tool-privacy-note"><span><strong>No uploads.</strong> Validation stays in this browser tab.</span><span>JSON-RPC and MCP structure</span></div><McpJsonRpcValidator /></section>
+  <ToolPageContent
+    steps={["Paste a JSON-RPC request, response, tools/list result, or one MCP tool definition.", "Run the validator and fix each reported structural error.", "Validate the same payload with the SDK or server schema used by your real integration before release."]}
+    handles={["JSON-RPC 2.0 request and response envelopes", "MCP tools/list requests and results", "Tool names, descriptions, inputSchema, and optional outputSchema", "Clear pass, warning, and error lines that can be copied"]}
+    limits={["It is a focused structural check, not the complete versioned MCP schema.", "It does not execute a tool, connect to a server, or verify authorization.", "Custom extensions can be valid even when this focused validator does not interpret them."]}
+    sources={[{ label: "MCP 2025-11-25 tools specification", href: "https://modelcontextprotocol.io/specification/2025-11-25/server/tools", note: "Primary MCP definitions for tools/list, tools/call, and tool results." }, { label: "JSON-RPC 2.0 specification", href: "https://www.jsonrpc.org/specification", note: "Envelope, request, response, and error object rules." }]}
+    related={[{ label: "JSON formatter", href: "/tools/json-formatter", note: "Repair JSON syntax before checking the protocol shape." }, { label: "Simple test case builder", href: "/tools/developer-tool-test-plan", note: "Record one expected MCP behavior as a test case." }]}
+  />
+  <WorkflowLink title="Need the SEO-specific MCP context?" description="Read the versioned SEO MCP capability and integration reference after the payload structure is clean." href="https://seo-mcp.de/" cta="Open the SEO MCP guide" disclosure="DevAwesome and seo-mcp.de are operated by Matthias Ramahi. This link connects related workflow steps and is not an independent recommendation." />
+  <script is:inline src="/mcp-json-rpc-validator.js" defer></script>
+</BaseLayout>

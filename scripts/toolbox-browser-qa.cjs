@@ -25,7 +25,7 @@ async function verifyStructure(page, route) {
   const h1Count = await page.locator("main h1").count();
   check(h1Count === 1, route + " must have one H1, found " + h1Count);
   check((await page.locator("main").count()) === 1, route + " must have one main element");
-  check((await page.locator('meta[name="robots"]').getAttribute("content")) === "noindex, follow, noarchive", route + " must keep noindex");
+  check((await page.locator('meta[name="robots"]').getAttribute("content")) === "index, follow", route + " must be indexable");
   check((await page.locator(".skip-link").count()) === 1, route + " must include skip link");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check(overflow <= 1, route + " has horizontal overflow of " + overflow + "px");
@@ -43,7 +43,7 @@ async function runDesktop(browser) {
   await verifyStructure(page, "/");
 
   await page.getByRole("heading", { level: 1, name: /Simple tools for developers and SEO teams/ }).waitFor();
-  check((await page.locator(".tool-row").count()) === 6, "home must show exactly six real tool rows");
+  check((await page.locator(".tool-row").count()) === 9, "home must show exactly nine real tool rows");
   check(await page.getByRole("link", { name: /Browse tools/ }).first().isVisible(), "primary Browse tools CTA must be visible");
   check(await page.locator(".hero-tool-preview").isVisible(), "desktop must show the working keyword cleaner preview");
 
@@ -105,7 +105,7 @@ async function runMobile(browser) {
   await page.locator(".mobile-nav summary").click();
   check(await page.locator(".mobile-nav nav").isVisible(), "mobile navigation must open");
   await page.locator(".mobile-nav summary").click();
-  check((await page.locator(".tool-row").count()) === 6, "mobile must show all six tools");
+  check((await page.locator(".tool-row").count()) === 9, "mobile must show all nine tools");
 
   const mobileStyles = await page.evaluate(() => {
     const hero = getComputedStyle(document.querySelector(".toolbox-hero-copy h1"));
@@ -187,6 +187,30 @@ async function runTools(browser) {
   check(plan.includes(values.subject) && plan.includes(values.edge) && plan.includes("Result: Not run"), "test-case builder must create the declared Markdown structure");
   check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "test-plan tool must not create a request");
 
+  await page.goto(origin + "/tools/mcp-json-rpc-validator", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/tools/mcp-json-rpc-validator");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-mcp-input]").fill('{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}');
+  await page.locator("[data-mcp-validate]").click();
+  check((await page.locator("[data-mcp-output]").inputValue()).includes("PASS:"), "MCP validator must accept a valid tools/list request");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP validator must not create a request");
+
+  await page.goto(origin + "/tools/robots-txt-tester", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/tools/robots-txt-tester");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-robots-agent]").fill("Googlebot");
+  await page.locator("[data-robots-path]").fill("/preview/article");
+  await page.locator("[data-robots-test]").click();
+  check((await page.locator("[data-robots-verdict]").textContent()) === "Disallowed from crawling", "robots tester must select the specific Googlebot disallow rule");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "robots tester must not create a request");
+
+  await page.goto(origin + "/tools/serp-snippet-preview", { waitUntil: "networkidle" });
+  await verifyStructure(page, "/tools/serp-snippet-preview");
+  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  await page.locator("[data-serp-title]").fill("Technical SEO Checklist | Example");
+  check((await page.locator("[data-serp-display-title]").textContent()) === "Technical SEO Checklist | Example", "SERP preview must update the visible title");
+  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "SERP preview must not create a request");
+
   await context.close();
 }
 
@@ -231,7 +255,7 @@ async function captureConceptViewports(browser) {
       ],
       consoleErrors: 0,
       externalRequests: 0,
-      checkedTools: 6,
+      checkedTools: 9,
     }, null, 2));
   } finally {
     await browser.close();

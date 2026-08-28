@@ -18,7 +18,8 @@ for (const route of routes) built.set("/" + route, await builtRoute(route));
 built.set("/404", { html: await readFile(join(dist, "404.html"), "utf8"), file: join(dist, "404.html") });
 
 for (const [route, { html }] of built) {
-  if (!html.includes('<meta name="robots" content="noindex, follow, noarchive">')) failures.push(route + " lacks exact noindex meta");
+  const expectedRobots = route === "/404" ? "noindex, follow, noarchive" : "index, follow";
+  if (!html.includes(`<meta name="robots" content="${expectedRobots}">`)) failures.push(route + " lacks expected robots meta: " + expectedRobots);
   if (route === "/404" && html.includes('rel="canonical"')) failures.push("/404 must not claim a canonical");
   if (route !== "/404" && !html.includes(`rel="canonical" href="${canonicals.get(route)}"`)) failures.push(route + " has wrong canonical");
   if (!html.includes("Skip to content")) failures.push(route + " lacks skip link");
@@ -31,9 +32,11 @@ for (const [route, { html }] of built) {
   }
 }
 const robots = await readFile(join(dist, "robots.txt"), "utf8");
-if (robots.trim() !== "User-agent: *\nAllow: /") failures.push("robots must be crawlable and must not advertise a sitemap during hold");
+if (robots.trim() !== "User-agent: *\nAllow: /\nSitemap: https://devawesome.io/sitemap.xml") failures.push("robots must allow crawling and advertise the canonical sitemap");
 const sitemap = await readFile(join(dist, "sitemap.xml"), "utf8");
-if (/<loc>/i.test(sitemap)) failures.push("hold sitemap must contain zero URLs");
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const expectedSitemapUrls = canonicalRoutes.filter((route) => route.searchEligible).map((route) => toCanonicalUrl(route.path));
+if (sitemapUrls.length !== expectedSitemapUrls.length || expectedSitemapUrls.some((url) => !sitemapUrls.includes(url))) failures.push("sitemap must exactly match search-eligible canonical routes");
 for (const old of ["sitemap-index.xml", "sitemap-0.xml"]) { try { await access(join(dist, old)); failures.push(old + " must not exist"); } catch {} }
 
 const rights = JSON.parse(await readFile(join(root, "src/data/manifests/rights-evidence.v1.json"), "utf8"));
@@ -45,18 +48,18 @@ const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
 const headers = Object.fromEntries((vercel.headers?.[0]?.headers ?? []).map(({ key, value }) => [key.toLowerCase(), value]));
-if (rights.launchState !== "production_noindex") failures.push("rights manifest must record production_noindex");
+if (rights.launchState !== "production_indexable") failures.push("rights manifest must record production_indexable");
 if (!rights.unknowns.includes("independent technical reviewer") || !rights.unknowns.includes("brand or mark clearance")) failures.push("open reviewer and identity gates must stay explicit");
-if (rights.governance?.independentTechnicalReviewer !== "not_proven" || rights.governance?.brandOrMarkClearance !== "not_proven" || rights.governance?.indexRelease !== "fail") failures.push("governance manifest must keep reviewer, mark, and index-release gates closed");
+if (rights.governance?.independentTechnicalReviewer !== "not_proven" || rights.governance?.brandOrMarkClearance !== "not_proven" || rights.governance?.ownerIndexReleaseDecision !== "pass" || rights.governance?.indexRelease !== "owner_approved_with_disclosed_residual_risk") failures.push("governance manifest must preserve open evidence gaps and the explicit owner index-release decision");
 try { await access(join(root, rights.governance.dossier)); } catch { failures.push("rights and reviewer governance dossier must exist"); }
 if (pkg.dependencies?.gsap || pkg.dependencies?.["@astrojs/sitemap"]) failures.push("global GSAP and unused sitemap dependencies must be absent");
-if (headers["x-robots-tag"] !== "noindex, follow, noarchive") failures.push("Vercel X-Robots-Tag must match meta");
+if (headers["x-robots-tag"]) failures.push("global Vercel X-Robots-Tag must be absent for the indexable launch");
 for (const key of ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options", "cross-origin-opener-policy"]) if (!headers[key]) failures.push("missing security header " + key);
 if (!vercel.redirects?.some((r) => r.source === "/quiz" && r.destination === "/guess-the-programming-language/" && r.permanent === true)) failures.push("/quiz must permanently redirect");
 if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect !== false) failures.push("legacy default must remain real 404");
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
 if (!built.get("/datenschutz").html.includes("keine Webanalyse")) failures.push("privacy copy must match analytics-free runtime");
-if (!built.get("/new-ownership").html.includes("remains out of search indexes")) failures.push("ownership page must disclose hold");
+if (!built.get("/new-ownership").html.includes("now eligible for search indexing")) failures.push("ownership page must disclose the current indexable launch status");
 for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract"]) {
   const html = built.get(route).html;
   if (!html.includes("Not independently reviewed")) failures.push(route + " must disclose review boundary");
@@ -75,6 +78,7 @@ if (!built.get("/tools/json-formatter").html.includes('"@type":"WebApplication"'
 if (!built.get("/tools/uuid-generator").html.includes('"@type":"WebApplication"')) failures.push("UUID generator needs WebApplication schema");
 if (!built.get("/tools/developer-tool-test-plan").html.includes('"@type":"WebApplication"')) failures.push("test-plan tool needs WebApplication schema");
 if (!built.get("/tools/evidence-receipt").html.includes('"@type":"WebApplication"')) failures.push("hash tool needs WebApplication schema");
+for (const route of ["/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator"]) if (!built.get(route).html.includes('"@type":"WebApplication"')) failures.push(route + " needs WebApplication schema");
 if (!built.get("/tools/evidence-receipt").html.includes('href="/schemas/evidence-receipt.v0.1.json"')) failures.push("receipt tool must expose its versioned JSON Schema");
 if (built.get("/404").html.includes("application/ld+json")) failures.push("404 must not emit page schema");
 
@@ -89,7 +93,7 @@ for (const name of js) {
 }
 const home = built.get("/").html;
 for (const copy of ["Simple tools for developers and SEO teams.", "Pick one small job", "Use the tool first. Check the details when they matter."]) if (!home.includes(copy)) failures.push("home lacks plain-language toolbox copy: " + copy);
-for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
+for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const route of canonicalRoutes.map(({ path }) => path.replace(/\/$/, "") || "/")) if (!built.get(route).html.includes('class="toolbox-page"')) failures.push(route + " must use the unified toolbox surface");
 const revealPath = join(root, "public/reveal.js");
 const revealBytes = (await stat(revealPath)).size;
@@ -118,7 +122,7 @@ if (!urlTool.includes('src="/url-list-normalizer.js"')) failures.push("URL norma
 if (home.includes("/url-list-normalizer.js") || quiz.includes("/url-list-normalizer.js") || tool.includes("/url-list-normalizer.js") || receiptTool.includes("/url-list-normalizer.js") || uuidTool.includes("/url-list-normalizer.js") || keywordTool.includes("/url-list-normalizer.js") || jsonTool.includes("/url-list-normalizer.js")) failures.push("URL normalizer behavior must stay route-specific");
 if (!uuidTool.includes('src="/uuid-generator.js"')) failures.push("UUID tool must load its route-specific behavior");
 if (home.includes("/uuid-generator.js") || quiz.includes("/uuid-generator.js") || tool.includes("/uuid-generator.js") || receiptTool.includes("/uuid-generator.js") || jsonTool.includes("/uuid-generator.js")) failures.push("UUID behavior must remain route-specific");
-for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "json-formatter.js", "keyword-list-cleaner.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js"]) {
+for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js"]) {
   const source = await readFile(join(root, "public", asset), "utf8");
   if ((await stat(join(root, "public", asset))).size > 7000) failures.push(asset + " exceeds 7 KB utility budget");
   if (/\bfetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage/.test(source)) failures.push(asset + " must stay request-free and storage-free");
@@ -139,4 +143,4 @@ const forbidden = [/80,?000/i, /80k/i, /our subscribers/i, /weekly newsletter is
 for (const [route, { html }] of built) for (const claim of forbidden) if (claim.test(html)) failures.push(route + " contains forbidden historical claim");
 
 if (failures.length) { console.error(failures.join("\n")); process.exit(1); }
-console.log(`QA passed: ${routes.length} registry-backed canonical routes plus 404, crawlable noindex, empty hold sitemap, OG/Twitter/schema metadata, security headers, route-scoped JS, legal/identity boundaries, internal links, and permanent aliases.`);
+console.log(`QA passed: ${routes.length} registry-backed canonical routes plus 404, indexable canonical pages, generated sitemap, crawlable robots, OG/Twitter/schema metadata, security headers, route-scoped JS, legal/identity boundaries, internal links, and permanent aliases.`);

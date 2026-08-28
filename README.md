@@ -4,9 +4,9 @@ Public source repository for the current devawesome.io website.
 
 ## Current state
 
-DevAwesome is a categorized browser-local mini-tool library for developers and SEO teams. It remains held from indexing until its documented reviewer and identity gates are cleared. The primary visitor job is simple: open one focused tool, transform an input, and leave with a usable result without signing up or uploading the data.
+DevAwesome is a categorized browser-local mini-tool library for developers and SEO teams. The owner explicitly approved indexable publication on 28 August 2026. The primary visitor job is simple: open one focused tool, transform an input, and leave with a usable result without signing up or uploading the data.
 
-The current toolbox includes a keyword list cleaner, URL list normalizer, JSON formatter and validator, UUID v4 generator, SHA-256 text hash generator, and simple test-case builder. The protected release also keeps an original programming-language quiz, three reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
+The current toolbox includes keyword and URL preparation, technical SEO checks, an MCP JSON-RPC validator, JSON formatting, UUID generation, SHA-256 hashing, and a simple test-case builder. The release also keeps an original programming-language quiz, three reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
 Matthias Ramahi is the operator and editor. All three field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
 
@@ -33,13 +33,13 @@ Run and recapture the three field tests:
     corepack pnpm field-test:pnpm:capture
     corepack pnpm field-test:receipt:capture
 
-The QA pass checks all canonical routes, crawlable robots, consistent meta and Vercel-header noindex, the empty hold sitemap, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all three test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, security headers, closed governance gates, and historical-identity claims.
+The QA pass checks all canonical routes, index directives, crawlable robots, generated sitemap membership, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all three test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, security headers, governance disclosures, and historical-identity claims.
 
 ## Deployment
 
 Vercel project: devawesome-io.
 
-During the release hold Astro serves an intentionally empty /sitemap.xml. robots.txt allows crawling but does not advertise indexable URLs. Every HTML document and every Vercel response carries noindex, follow, noarchive. These controls change together only after the outstanding reviewer and identity gates receive an explicit recorded approval.
+Astro generates `/sitemap.xml` from the central canonical-route registry. `robots.txt` allows crawling and references that sitemap. Canonical pages use `index, follow`; the custom 404 remains `noindex`. The independent technical reviewer and former-operator or mark clearance are still not proven and remain disclosed rather than invented.
 
 ## Rights
 

@@ -5,6 +5,16 @@ export const toolCategories = [
     description: "Clean keyword and URL inputs before they enter a crawl, import, or reporting workflow.",
   },
   {
+    id: "technical-seo",
+    name: "Technical SEO",
+    description: "Check directives and search-result inputs before they reach a crawler or production template.",
+  },
+  {
+    id: "agents-and-mcp",
+    name: "Agents and MCP",
+    description: "Inspect protocol payloads and tool definitions without sending them to a server.",
+  },
+  {
     id: "developer-utilities",
     name: "Developer utilities",
     description: "Small browser tools for structured data, identifiers, hashing, and repeatable test cases.",
@@ -35,6 +45,29 @@ export const tools: ReadonlyArray<{
     description: "Validate and normalize URLs for a crawl list.",
     glyph: "URL",
     category: "seo-data",
+    featured: true,
+  },
+  {
+    path: "/tools/robots-txt-tester",
+    name: "Robots.txt tester",
+    description: "Test one crawler and path against pasted robots rules.",
+    glyph: "BOT",
+    category: "technical-seo",
+    featured: true,
+  },
+  {
+    path: "/tools/serp-snippet-preview",
+    name: "SERP snippet preview",
+    description: "Preview a title, URL, and meta description together.",
+    glyph: "SERP",
+    category: "technical-seo",
+  },
+  {
+    path: "/tools/mcp-json-rpc-validator",
+    name: "MCP JSON-RPC validator",
+    description: "Check MCP envelopes and tool definitions locally.",
+    glyph: "MCP",
+    category: "agents-and-mcp",
     featured: true,
   },
   {
