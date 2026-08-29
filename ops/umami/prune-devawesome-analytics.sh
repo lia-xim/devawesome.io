@@ -2,7 +2,7 @@
 set -eu
 
 WEBSITE_ID="507834ba-6479-41a7-bac6-177240a39c95"
-CUTOFF="14 months"
+CUTOFF="24 months"
 MODE="${1:-apply}"
 
 if [ "$MODE" != "apply" ] && [ "$MODE" != "--dry-run" ]; then

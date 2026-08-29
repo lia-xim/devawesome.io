@@ -67,7 +67,7 @@ if (!vercel.redirects?.some((r) => r.source === "/quiz" && r.destination === "/g
 if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect !== false) failures.push("legacy default must remain real 404");
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
 const privacyHtml = built.get("/datenschutz").html;
-for (const disclosure of ["Reichweitenmessung mit Umami", "weder Dateiname noch Dateityp", "umami.disabled", "höchstens 14 Monate", "data-analytics-disable", "data-analytics-enable"]) if (!privacyHtml.includes(disclosure)) failures.push("privacy copy must disclose the implemented analytics boundary: " + disclosure);
+for (const disclosure of ["Reichweitenmessung mit Umami", "weder Dateiname noch Dateityp", "umami.disabled", "höchstens 24 Monate", "data-analytics-disable", "data-analytics-enable"]) if (!privacyHtml.includes(disclosure)) failures.push("privacy copy must disclose the implemented analytics boundary: " + disclosure);
 for (const [route, { html }] of built) {
   for (const trackerContract of [
     'src="https://analytics.contextter.com/script.js"',
@@ -84,7 +84,7 @@ for (const forbidden of [/\.value\b/, /FileReader/, /FormData/, /\.identify\s*\(
 for (const eventName of ["tool-view", "tool-start", "tool-input", "tool-run", "tool-action", "tool-result", "tool-file-selected", "tool-config-change", "tool-output-ready", "tool-result-visible", "tool-export", "tool-error", "link-click", "scroll-depth", "engaged-time"]) if (!analyticsSource.includes(`\"${eventName}\"`)) failures.push("analytics must declare event " + eventName);
 for (const workflow of ["prepare-keyword-import", "build-clean-crawl-list"]) if (!analyticsSource.includes(`\"${workflow}\"`)) failures.push("analytics must declare named funnel lifecycle for " + workflow);
 if ((await stat(join(root, "public", "analytics.js"))).size > 12000) failures.push("analytics.js exceeds its 12000 byte budget");
-for (const contract of ["507834ba-6479-41a7-bac6-177240a39c95", 'CUTOFF="14 months"', "--dry-run", "website_event", "event_data", "session_replay_saved"]) if (!retentionSource.includes(contract)) failures.push("retention job lacks scoped contract " + contract);
+for (const contract of ["507834ba-6479-41a7-bac6-177240a39c95", 'CUTOFF="24 months"', "--dry-run", "website_event", "event_data", "session_replay_saved"]) if (!retentionSource.includes(contract)) failures.push("retention job lacks scoped contract " + contract);
 for (const name of ["All tool completions", "Keyword import workflow", "Crawl-list workflow"]) if (!funnelSource.includes(name)) failures.push("saved funnel definition missing " + name);
 for (const forbidden of ["POSTGRES_PASSWORD", "APP_SECRET", "Bearer "]) if (retentionSource.includes(forbidden) || funnelSource.includes(forbidden)) failures.push("Umami operations must not contain a credential: " + forbidden);
 if (!built.get("/new-ownership").html.includes("now eligible for search indexing")) failures.push("ownership page must disclose the current indexable launch status");
