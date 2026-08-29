@@ -4,12 +4,12 @@ import { site } from "../data/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="Datenschutz" description="Datenschutzhinweise für die technisch schlanke Website devawesome.io." language="de">
-  <PageIntro number="01" label="Datenschutzhinweise" title="Datenschutz" intro="Welche Daten beim Besuch der aktuellen Website tatsächlich verarbeitet werden – und welche Dienste nicht eingesetzt werden." />
+<BaseLayout title="Datenschutz" description="Datenschutzhinweise für Hosting, browser-lokale Werkzeuge und die datensparsame Umami-Webanalyse auf devawesome.io." language="de">
+  <PageIntro number="01" label="Datenschutzhinweise" title="Datenschutz" intro="Welche Daten beim Besuch verarbeitet werden, was die Werkzeuge im Browser behalten und welche anonymen Nutzungssignale Umami erfasst." />
 
   <section class="legal-document">
     <aside class="legal-toc">
-      <span class="section-label">Stand / 28.08.2026</span>
+      <span class="section-label">Stand / 29.08.2026</span>
       <p>Diese Erklärung bildet den gegenwärtigen technischen Stand der statischen Website ab.</p>
     </aside>
     <div class="legal-content">
@@ -34,41 +34,59 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <section>
         <h2>3. Browser-lokale Tools und Quiz</h2>
-        <p>Die Mini-Tools und der Programmiersprachen-Quiz werden vollständig im Browser ausgeführt. Eingaben, erzeugte Ergebnisse, Antworten und Punktestand werden nur für die laufende Seitenansicht im Arbeitsspeicher gehalten. Sie werden nicht an uns übertragen und nicht in Cookies, Local Storage oder Session Storage gespeichert. Downloads werden erst nach einem ausdrücklichen Klick lokal im Browser erzeugt.</p>
+        <p>Die Mini-Tools und der Programmiersprachen-Quiz werden vollständig im Browser ausgeführt. Eingegebene Keywords, URLs, JSON- oder MCP-Inhalte, hochgeladene Dateien, erzeugte Ergebnisse, Quizantworten und Punktestand werden nicht an die Analyse übermittelt. Sie werden nur für die laufende Seitenansicht im Arbeitsspeicher gehalten. Downloads entstehen erst nach einem ausdrücklichen Klick lokal im Browser.</p>
+        <p>Die Webanalyse kann ausschließlich festhalten, dass ein Werkzeug gestartet, eine bestimmte Funktionsart ausgelöst, eine Konfiguration geändert, eine Datei ausgewählt, ein Ergebnisbereich sichtbar oder ein Fehlerzustand erreicht wurde. Bei einer Dateiauswahl werden weder Dateiname noch Dateityp, Dateigröße oder Dateiinhalt übertragen. Bei Eingabefeldern werden keine Werte, Längen oder daraus erzeugten Ergebnisse erfasst.</p>
       </section>
 
       <section>
-        <h2>4. Kontakt per E-Mail oder Telefon</h2>
+        <h2>4. Reichweitenmessung mit Umami</h2>
+        <p>Wir verwenden eine selbst betriebene Umami-Installation unter <a href={site.analytics.hostUrl}>analytics.contextter.com</a>, um zu verstehen, welche Seiten und Werkzeuge tatsächlich genutzt werden, an welchen Stellen Arbeitsabläufe abgebrochen werden und ob technische oder gestalterische Probleme auftreten. Die Analyse dient nicht der Werbung und wird nicht mit Nutzerkonten, Kundenprofilen oder Daten aus Contextter zusammengeführt.</p>
+        <p>Bei einem Seitenaufruf verarbeitet Umami insbesondere Hostname, Seitenpfad, Seitentitel, Referrer, Browsersprache und Bildschirmgröße. Suchparameter und URL-Fragmente werden vor der Übermittlung entfernt. Zusätzlich erfassen wir Ereignisse für interne und externe Linkaufrufe, Downloads, Tool-Starts, Funktionsarten, Konfigurationsänderungen ohne Eingabewerte, Dateiauswahl ohne Dateimetadaten, bereitstehende Ergebnisse, technische Fehlerklassen, Scrolltiefe und aktive Verweildauer. Die aktivierte Performance-Messung verarbeitet technische Kennzahlen wie Ladezeit und Core Web Vitals.</p>
+        <p>Umami setzt für diese Messung keine Cookies. Wir vergeben keine eigene Nutzerkennung und rufen <code>umami.identify()</code> nicht auf. Für die Unterscheidung anonymer Sitzungen erzeugt Umami serverseitig einen Hash aus IP-Adresse, User-Agent und Website-ID. Der Tracking-Code respektiert die Do-Not-Track-Einstellung des Browsers. Die Analyse läuft ausschließlich auf der Produktionsdomain devawesome.io; lokale Entwicklung und Vercel-Vorschauen sind ausgeschlossen.</p>
+        <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt darin, Nutzung, Fehler, Abbrüche und technische Leistung der veröffentlichten Werkzeuge mit möglichst wenigen Daten zu beurteilen. Detaildaten werden höchstens 14 Monate gespeichert und anschließend gelöscht. Die Umami-Anwendung wird auf einem Server der Hetzner Online GmbH in Deutschland betrieben. Weitere Informationen finden Sie in der <a href="https://docs.umami.is/docs">Umami-Dokumentation</a> und den <a href="https://www.hetzner.com/de/legal/privacy-policy/">Datenschutzhinweisen von Hetzner</a>.</p>
+        <div class="analytics-choice" data-analytics-control>
+          <p data-analytics-status aria-live="polite">Analytics-Status wird geprüft.</p>
+          <div class="action-row">
+            <button class="action action-dark" type="button" data-analytics-disable>Analytics in diesem Browser deaktivieren</button>
+            <button class="action action-dark" type="button" data-analytics-enable hidden>Analytics wieder aktivieren</button>
+          </div>
+          <p>Die Auswahl wird ausschließlich als <code>umami.disabled</code> in Local Storage dieses Browsers gespeichert. Sie enthält keine Kennung und wird nicht an den Analyseserver übermittelt. Die Deaktivierung gilt für künftige Aufrufe und Ereignisse in diesem Browser; bereits eingegangene anonyme Messwerte werden dadurch nicht rückwirkend gelöscht. Alternativ können Sie Do Not Track im Browser aktivieren.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Kontakt per E-Mail oder Telefon</h2>
         <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Kontaktdaten und den Inhalt der Anfrage, um diese zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern es um vorvertragliche oder vertragliche Kommunikation geht, andernfalls Art. 6 Abs. 1 lit. f DSGVO aufgrund unseres berechtigten Interesses an der Bearbeitung sachlicher Anfragen.</p>
         <p>Die E-Mail-Infrastruktur der angegebenen Betreiberadresse wird bei netcup betrieben. Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten oder berechtigten Gründe für eine weitere Speicherung bestehen. Weitere Informationen: <a href="https://www.netcup.com/de/kontakt/datenschutzerklaerung">Datenschutzerklärung von netcup</a>.</p>
         <p>Auf dieser Website gibt es kein Kontaktformular. Ein Klick auf eine E-Mail-Adresse öffnet lediglich das von Ihnen konfigurierte E-Mail-Programm.</p>
       </section>
 
       <section>
-        <h2>5. Externe Links</h2>
+        <h2>6. Externe Links</h2>
         <p>Die Website verlinkt unter anderem auf GitHub, technische Originalquellen sowie sachlich anschließende Werkzeuge und Angebote desselben Betreibers. Erst wenn Sie einen externen Link aufrufen, verlassen Sie devawesome.io; der jeweilige Anbieter kann dann Verbindungsdaten nach seinen eigenen Regeln verarbeiten. Gemeinsame Betreiberschaft wird bei workflowbezogenen Links direkt offengelegt. Für GitHub finden Sie weitere Informationen in der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub General Privacy Statement</a>.</p>
       </section>
 
       <section>
-        <h2>6. Nicht eingesetzte Dienste</h2>
-        <p>Die aktuelle Website verwendet keine Webanalyse, kein Werbetracking, keine Social-Media-Pixel, keine extern geladenen Webfonts, keine Nutzerkonten, keinen Newsletter, kein Kontaktformular und keine eingebetteten Medien. Sie setzt keine eigenen Cookies und speichert keine Daten in Local Storage oder Session Storage.</p>
+        <h2>7. Nicht eingesetzte Dienste</h2>
+        <p>Die Website verwendet neben der beschriebenen Umami-Reichweitenmessung kein Werbetracking, keine Social-Media-Pixel, kein Session Replay, keine Heatmaps, keine extern geladenen Webfonts, keine Nutzerkonten, keinen Newsletter, kein Kontaktformular und keine eingebetteten Medien. Sie setzt keine eigenen Cookies. Local Storage wird nur verwendet, wenn Sie die Analyse über die oben angebotene Einstellung deaktivieren.</p>
         <p>Ein DNS-TXT-Eintrag dient ausschließlich der technischen Bestätigung der Domaininhaberschaft gegenüber Google Search Console. Die Website lädt dadurch kein Google-Skript und übermittelt beim Seitenaufruf keine Daten an Google.</p>
       </section>
 
       <section>
-        <h2>7. Ihre Rechte</h2>
+        <h2>8. Ihre Rechte</h2>
         <p>Sie haben nach Maßgabe der gesetzlichen Voraussetzungen das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Erteilte Einwilligungen können Sie mit Wirkung für die Zukunft widerrufen. Zur Ausübung Ihrer Rechte genügt eine Nachricht an die oben genannte E-Mail-Adresse.</p>
       </section>
 
       <section>
-        <h2>8. Beschwerderecht</h2>
+        <h2>9. Beschwerderecht</h2>
         <p>Sie können sich bei einer Datenschutzaufsichtsbehörde beschweren. Für den Sitz des Verantwortlichen ist insbesondere die Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen erreichbar: <a href="https://www.ldi.nrw.de/kontakt">Kontakt zur LDI NRW</a>.</p>
       </section>
 
       <section>
-        <h2>9. Änderungen</h2>
+        <h2>10. Änderungen</h2>
         <p>Wir passen diese Datenschutzerklärung an, wenn sich die Website, die eingesetzten Dienste oder die rechtlichen Anforderungen ändern. Maßgeblich ist die hier veröffentlichte Fassung.</p>
       </section>
     </div>
   </section>
+  <script>import "../scripts/privacy-controls";</script>
 </BaseLayout>

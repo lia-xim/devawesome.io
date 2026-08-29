@@ -220,6 +220,22 @@
   background: #f4f9e6;
 }
 
+.toolbox-page .analytics-choice {
+  margin-top: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--toolbox-line);
+  border-radius: 8px;
+  background: var(--toolbox-soft);
+}
+
+.toolbox-page .analytics-choice .action-row {
+  margin: 1rem 0 1.25rem;
+}
+
+.toolbox-page .analytics-choice p:last-child {
+  margin-bottom: 0;
+}
+
 .toolbox-page .field-test-grid {
   border-color: var(--toolbox-line);
   background: var(--toolbox-bg);

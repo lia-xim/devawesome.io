@@ -47,6 +47,7 @@ const planSchema = JSON.parse(await readFile(join(dist, "schemas", "developer-to
 const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-receipt.v0.1.json"), "utf8"));
 const runManifestSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-run-manifest.v1.json"), "utf8"));
 const recipeSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-recipe.v2.json"), "utf8"));
+const analyticsSource = await readFile(join(root, "public", "analytics.js"), "utf8");
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
 if (runManifestSchema.$id !== "https://devawesome.io/schemas/workbench-run-manifest.v1.json" || runManifestSchema.properties?.kind?.const !== "devawesome-workbench-run-manifest") failures.push("workbench run-manifest JSON Schema must build as the declared privacy-bounded contract");
@@ -59,10 +60,27 @@ try { await access(join(root, rights.governance.dossier)); } catch { failures.pu
 if (pkg.dependencies?.gsap || pkg.dependencies?.["@astrojs/sitemap"]) failures.push("global GSAP and unused sitemap dependencies must be absent");
 if (headers["x-robots-tag"]) failures.push("global Vercel X-Robots-Tag must be absent for the indexable launch");
 for (const key of ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options", "cross-origin-opener-policy"]) if (!headers[key]) failures.push("missing security header " + key);
+for (const directive of ["script-src 'self' https://analytics.contextter.com", "connect-src 'self' https://analytics.contextter.com"]) if (!headers["content-security-policy"]?.includes(directive)) failures.push("CSP must permit only the declared Umami origin for analytics: " + directive);
 if (!vercel.redirects?.some((r) => r.source === "/quiz" && r.destination === "/guess-the-programming-language/" && r.permanent === true)) failures.push("/quiz must permanently redirect");
 if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect !== false) failures.push("legacy default must remain real 404");
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
-if (!built.get("/datenschutz").html.includes("keine Webanalyse")) failures.push("privacy copy must match analytics-free runtime");
+const privacyHtml = built.get("/datenschutz").html;
+for (const disclosure of ["Reichweitenmessung mit Umami", "weder Dateiname noch Dateityp", "umami.disabled", "höchstens 14 Monate", "data-analytics-disable", "data-analytics-enable"]) if (!privacyHtml.includes(disclosure)) failures.push("privacy copy must disclose the implemented analytics boundary: " + disclosure);
+for (const [route, { html }] of built) {
+  for (const trackerContract of [
+    'src="https://analytics.contextter.com/script.js"',
+    'data-website-id="507834ba-6479-41a7-bac6-177240a39c95"',
+    'data-domains="devawesome.io"',
+    'data-exclude-search="true"',
+    'data-exclude-hash="true"',
+    'data-do-not-track="true"',
+    'data-performance="true"',
+    'src="/analytics.js"',
+  ]) if (!html.includes(trackerContract)) failures.push(route + " lacks analytics contract " + trackerContract);
+}
+for (const forbidden of [/\.value\b/, /FileReader/, /FormData/, /\.identify\s*\(/, /location\.search/, /location\.hash/, /clipboard/]) if (forbidden.test(analyticsSource)) failures.push("analytics must not collect tool contents or persistent identifiers: " + forbidden);
+for (const eventName of ["tool-start", "tool-action", "tool-file-selected", "tool-config-change", "tool-output-ready", "tool-result-visible", "tool-error", "link-click", "scroll-depth", "engaged-time"]) if (!analyticsSource.includes(`\"${eventName}\"`)) failures.push("analytics must declare event " + eventName);
+if ((await stat(join(root, "public", "analytics.js"))).size > 12000) failures.push("analytics.js exceeds its 12000 byte budget");
 if (!built.get("/new-ownership").html.includes("now eligible for search indexing")) failures.push("ownership page must disclose the current indexable launch status");
 for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract", "/field-tests/workbench-core-contract"]) {
   const html = built.get(route).html;

@@ -111,6 +111,17 @@ const robotsContent = includeCanonical && site.indexable ? "index, follow" : "no
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
     {includeCanonical && <script is:inline type="application/ld+json" set:html={structuredData} />}
+    <script
+      is:inline
+      defer
+      src={site.analytics.scriptUrl}
+      data-website-id={site.analytics.websiteId}
+      data-domains={site.analytics.productionDomain}
+      data-exclude-search="true"
+      data-exclude-hash="true"
+      data-do-not-track="true"
+      data-performance="true"
+    ></script>
   </head>
   <body class="toolbox-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -120,5 +131,6 @@ const robotsContent = includeCanonical && site.indexable ? "index, follow" : "no
       <SiteFooter />
     </div>
     <script is:inline src="/reveal.js" defer></script>
+    <script is:inline src="/analytics.js" defer></script>
   </body>
 </html>

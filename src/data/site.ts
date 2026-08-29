@@ -12,6 +12,13 @@ export const site = {
   githubUrl: "https://github.com/lia-xim/devawesome.io",
   githubIssuesUrl: "https://github.com/lia-xim/devawesome.io/issues",
   securityUrl: "https://github.com/lia-xim/devawesome.io/security",
+  analytics: {
+    provider: "Umami",
+    scriptUrl: "https://analytics.contextter.com/script.js",
+    hostUrl: "https://analytics.contextter.com",
+    websiteId: "507834ba-6479-41a7-bac6-177240a39c95",
+    productionDomain: "devawesome.io",
+  },
   indexable: true,
   ownershipLabel: "New ownership / 2026",
   operator: {

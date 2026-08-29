@@ -45,7 +45,7 @@ export const canonicalRoutes: CanonicalRoute[] = [
   { path: "/archive/14", title: "One HTML Page Challenge", description: "A current, independently written project note for the former DevAwesome issue 14 URL, with a clear ownership boundary.", job: "Answer the surviving issue-14 link with a current project note.", cluster: "legacy", searchEligible: true, evidence: "supported" },
   { path: "/archive/49", title: "HTML Memory Tested", description: "A current, independently written project note for the former DevAwesome issue 49 URL, with a clear ownership boundary.", job: "Answer the surviving issue-49 link with a current project note.", cluster: "legacy", searchEligible: true, evidence: "supported" },
   { path: "/impressum", title: "Impressum", description: "Legal provider identification for devawesome.io under its current operator.", job: "Find the current operator's legal contact details.", cluster: "legal", searchEligible: true, evidence: "verified" },
-  { path: "/datenschutz", title: "Datenschutz", description: "Privacy information for the current, analytics-free devawesome.io website.", job: "Understand current data processing and contact channels.", cluster: "legal", searchEligible: true, evidence: "verified" },
+  { path: "/datenschutz", title: "Datenschutz", description: "Privacy information for hosting, browser-local tools, and privacy-bounded Umami analytics on devawesome.io.", job: "Understand current data processing, analytics boundaries, opt-out, and contact channels.", cluster: "legal", searchEligible: true, evidence: "verified" },
 ];
 
 export const canonicalRouteMap = new Map(canonicalRoutes.map((route) => [route.path, route]));

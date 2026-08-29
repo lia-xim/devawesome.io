@@ -8,6 +8,8 @@ DevAwesome is a browser-local workbench for developers and SEO teams. The owner 
 
 The current workbench includes ten focused tools plus four guided workflows. Keyword imports expose conflicting duplicate data instead of silently choosing a row. Schema-aware recipes match mapped columns by identity and require a visible preflight before application. Crawl lists support host, subdomain, protocol, pattern, sitemap-type, resource, and pasted robots.txt boundaries while retaining exclusion reasons and winning rules. Keyword and crawl sources can be loaded from local CSV, TSV, TXT, or XML files without uploading them. The indexability workflow handles one evidence set or a mapped crawler export. MCP validation handles one payload or pairs a supplied JSONL session by request ID. Every deep workflow can download a privacy-bounded run manifest, and the standalone verifier checks its input, output, and settings receipts without embedding those files.
 
+Production uses the operator's Umami instance at `analytics.contextter.com` for pageviews, performance measurements, and bounded product events. The tracker is restricted to `devawesome.io`, removes query strings and fragments, respects Do Not Track, and never identifies users. The local event layer records tool and workflow actions without sending entered values, source files, file metadata, generated results, or quiz answers. The privacy page includes a browser-local opt-out.
+
 The release also keeps an original programming-language quiz, four reproducible field tests, a guide hub, a public methodology, a lab hub, two evidence-bounded legacy notes, legal pages, and a visible new-ownership disclosure.
 
 Matthias Ramahi is the operator and editor. All four field tests are explicitly marked as not independently reviewed; no reviewer identity is invented.
@@ -36,7 +38,7 @@ Run and recapture the four field tests:
     corepack pnpm field-test:receipt:capture
     corepack pnpm field-test:workbench:capture
 
-The QA pass checks all canonical routes, index directives, crawlable robots, generated sitemap membership, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all four test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, security headers, governance disclosures, and historical-identity claims.
+The QA pass checks all canonical routes, index directives, crawlable robots, generated sitemap membership, real 404 behavior, declared legacy decisions, legal pages, internal links, permanent aliases, all four test records, utility schemas, request-free and storage-free tool scripts, route-specific JavaScript budgets, the privacy-bounded Umami contract, security headers, governance disclosures, and historical-identity claims.
 
 ## Deployment
 
