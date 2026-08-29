@@ -62,9 +62,52 @@
     return /[",\r\n]/.test(value) ? `"${value.replaceAll('"', '""')}"` : value;
   }
   function formatEntries(entries, format) {
-    if (format === "comma") return entries.map(csvValue).join(", ");
-    if (format === "json") return JSON.stringify(entries, null, 2);
-    return entries.join("\n");
+    const values = entries.map((entry) => typeof entry === "string" ? entry : entry.url);
+    if (format === "comma") return values.map(csvValue).join(", ");
+    if (format === "json") return JSON.stringify(entries.map((entry) => typeof entry === "string" ? { url: entry } : entry), null, 2);
+    return values.join("\n");
+  }
+
+  function classifyResource(url) {
+    const path = url.pathname.toLowerCase();
+    if (/\.(?:html?|php|aspx?)$/.test(path) || !/\.[a-z\d]{1,8}$/.test(path)) return "page";
+    if (/\.(?:jpe?g|png|gif|webp|avif|svg|ico)$/.test(path)) return "image";
+    if (/\.(?:css|less|scss)$/.test(path)) return "stylesheet";
+    if (/\.(?:js|mjs|cjs|map)$/.test(path)) return "script";
+    if (/\.(?:woff2?|ttf|otf|eot)$/.test(path)) return "font";
+    if (/\.(?:pdf|docx?|xlsx?|pptx?)$/.test(path)) return "document";
+    if (/\.(?:mp3|mp4|wav|ogg|webm|mov)$/.test(path)) return "media";
+    if (/\.(?:xml|rss|atom)$/.test(path)) return "feed-or-sitemap";
+    if (/\.(?:zip|gz|tar|rar|7z)$/.test(path)) return "archive";
+    return "other-resource";
+  }
+
+  function scopeHost(value) {
+    const candidate = value.trim();
+    if (!candidate) return "";
+    try { return new URL(/^[a-z][a-z\d+.-]*:\/\//i.test(candidate) ? candidate : `https://${candidate}`).hostname.toLowerCase(); }
+    catch { return candidate.toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, ""); }
+  }
+
+  function compilePatterns(value) {
+    return value.split(/[\r\n,]+/).map((entry) => entry.trim()).filter(Boolean).map((entry) => {
+      const escaped = entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replaceAll("*", ".*");
+      return { source: entry, regex: new RegExp(escaped, "i") };
+    });
+  }
+
+  function csvRows(rows) {
+    return rows.map((row) => row.map(csvValue).join(",")).join("\n");
+  }
+
+  function downloadText(content, filename, type) {
+    const blob = new Blob([`${content}\n`], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   for (const root of document.querySelectorAll("[data-url-normalizer]")) {
@@ -75,6 +118,12 @@
     const addHttps = root.querySelector("[data-url-add-https]");
     const stripFragment = root.querySelector("[data-url-strip-fragment]");
     const stripTrailing = root.querySelector("[data-url-strip-trailing]");
+    const scopeHostInput = root.querySelector("[data-url-scope-host]");
+    const scopeMode = root.querySelector("[data-url-scope-mode]");
+    const protocolMode = root.querySelector("[data-url-protocol-mode]");
+    const outputGroup = root.querySelector("[data-url-output-group]");
+    const includePatterns = root.querySelector("[data-url-include-patterns]");
+    const excludePatterns = root.querySelector("[data-url-exclude-patterns]");
     const formats = [...root.querySelectorAll("[data-url-format]")];
     const status = root.querySelector("[data-url-status]");
     const normalizeButton = root.querySelector("[data-url-normalize]");
@@ -84,14 +133,24 @@
     const invalidWrap = root.querySelector("[data-url-invalid-wrap]");
     const invalidSummary = root.querySelector("[data-url-invalid-summary]");
     const invalidList = root.querySelector("[data-url-invalid]");
+    const excludedWrap = root.querySelector("[data-url-excluded-wrap]");
+    const excludedSummary = root.querySelector("[data-url-excluded-summary]");
+    const excludedList = root.querySelector("[data-url-excluded]");
+    const downloadExcluded = root.querySelector("[data-url-download-excluded]");
+    const groupSummary = root.querySelector("[data-url-group-summary]");
     if (!input || !output || !status || !normalizeButton || !clearButton || !copyButton || !downloadButton || !invalidWrap || !invalidSummary || !invalidList) continue;
 
     let currentFormat = "lines";
+    let currentExcluded = [];
     const run = () => {
       const seen = new Set();
-      const normalized = [];
+      const accepted = [];
       const invalid = [];
+      const excluded = [];
       let duplicates = 0;
+      const host = scopeHost(scopeHostInput?.value || "");
+      const include = compilePatterns(includePatterns?.value || "");
+      const exclude = compilePatterns(excludePatterns?.value || "");
       currentFormat = formats.find((field) => field.checked)?.value || "lines";
       for (const entry of splitEntries(input.value, inputMode?.value || "smart")) {
         try {
@@ -101,14 +160,52 @@
             stripTrailing: stripTrailing?.checked ?? true,
             queryMode: queryMode?.value || "tracking",
           });
-          if (seen.has(value)) duplicates += 1;
-          else { seen.add(value); normalized.push(value); }
+          if (seen.has(value)) { duplicates += 1; continue; }
+          seen.add(value);
+          const parsed = new URL(value);
+          const resourceType = classifyResource(parsed);
+          let reason = "";
+          if (protocolMode?.value !== "all" && parsed.protocol !== `${protocolMode.value}:`) reason = `Outside ${protocolMode.value.toUpperCase()} protocol scope`;
+          else if (host && scopeMode?.value === "exact" && parsed.hostname !== host) reason = `Outside exact host ${host}`;
+          else if (host && scopeMode?.value === "subdomains" && parsed.hostname !== host && !parsed.hostname.endsWith(`.${host}`)) reason = `Outside ${host} and its subdomains`;
+          else if (include.length && !include.some((pattern) => pattern.regex.test(value))) reason = "Does not match an include pattern";
+          else {
+            const blockedBy = exclude.find((pattern) => pattern.regex.test(value));
+            if (blockedBy) reason = `Matches exclude pattern ${blockedBy.source}`;
+          }
+          const record = { url: value, host: parsed.hostname, protocol: parsed.protocol.slice(0, -1), resourceType };
+          if (reason) excluded.push({ ...record, reason });
+          else accepted.push(record);
         } catch (error) { invalid.push({ entry, reason: error.message }); }
       }
-      output.value = formatEntries(normalized, currentFormat);
-      copyButton.disabled = normalized.length === 0;
-      downloadButton.disabled = normalized.length === 0;
-      status.textContent = `${normalized.length} kept · ${duplicates} duplicate${duplicates === 1 ? "" : "s"} removed · ${invalid.length} invalid`;
+      const group = outputGroup?.value || "all";
+      const selected = accepted.filter((entry) => group === "all" || (group === "pages" ? entry.resourceType === "page" : entry.resourceType !== "page"));
+      currentExcluded = excluded;
+      output.value = formatEntries(selected, currentFormat);
+      copyButton.disabled = selected.length === 0;
+      downloadButton.disabled = selected.length === 0;
+      if (downloadExcluded) downloadExcluded.disabled = excluded.length === 0;
+      status.textContent = `${selected.length} in output · ${excluded.length} excluded · ${duplicates} duplicate${duplicates === 1 ? "" : "s"} · ${invalid.length} invalid`;
+      if (groupSummary) {
+        const counts = accepted.reduce((map, entry) => map.set(entry.resourceType, (map.get(entry.resourceType) || 0) + 1), new Map());
+        groupSummary.replaceChildren(...[...counts.entries()].map(([type, count]) => {
+          const item = document.createElement("span");
+          item.innerHTML = `<strong>${count}</strong> ${type.replaceAll("-", " ")}`;
+          return item;
+        }));
+      }
+      if (excludedWrap && excludedSummary && excludedList) {
+        excludedList.replaceChildren(...excluded.map(({ url, reason }) => {
+          const item = document.createElement("li");
+          const code = document.createElement("code");
+          code.textContent = url;
+          item.append(code, document.createTextNode(` — ${reason}`));
+          return item;
+        }));
+        excludedSummary.textContent = `${excluded.length} excluded ${excluded.length === 1 ? "URL" : "URLs"} with reasons`;
+        excludedWrap.hidden = excluded.length === 0;
+        if (!excluded.length) excludedWrap.open = false;
+      }
       invalidList.replaceChildren(...invalid.map(({ entry, reason }) => {
         const item = document.createElement("li");
         const code = document.createElement("code");
@@ -123,7 +220,8 @@
 
     normalizeButton.addEventListener("click", run);
     input.addEventListener("input", run);
-    for (const field of [inputMode, queryMode, addHttps, stripFragment, stripTrailing, ...formats]) field?.addEventListener("change", run);
+    for (const field of [inputMode, queryMode, addHttps, stripFragment, stripTrailing, scopeMode, protocolMode, outputGroup, ...formats]) field?.addEventListener("change", run);
+    for (const field of [scopeHostInput, includePatterns, excludePatterns]) field?.addEventListener("input", run);
     clearButton.addEventListener("click", () => { input.value = ""; run(); status.textContent = "List cleared."; input.focus(); });
     copyButton.addEventListener("click", async () => {
       if (!output.value) return;
@@ -134,14 +232,14 @@
       if (!output.value) return;
       const extension = currentFormat === "json" ? "json" : currentFormat === "comma" ? "csv" : "txt";
       const type = currentFormat === "json" ? "application/json" : currentFormat === "comma" ? "text/csv" : "text/plain";
-      const blob = new Blob([`${output.value}\n`], { type });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `normalized-urls.${extension}`;
-      link.click();
-      URL.revokeObjectURL(url);
+      downloadText(output.value, `normalized-urls.${extension}`, type);
       status.textContent = `Normalized list downloaded as ${extension.toUpperCase()}.`;
+    });
+    downloadExcluded?.addEventListener("click", () => {
+      if (!currentExcluded.length) return;
+      const content = csvRows([["url", "reason", "resource_type"], ...currentExcluded.map((entry) => [entry.url, entry.reason, entry.resourceType])]);
+      downloadText(content, "excluded-urls.csv", "text/csv");
+      status.textContent = "Exclusion report downloaded as CSV.";
     });
     run();
   }

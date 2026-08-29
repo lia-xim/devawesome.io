@@ -1,0 +1,1 @@
+40 3 * * * /opt/analytics/maintenance/prune-devawesome-analytics.sh apply >> /opt/analytics/maintenance/devawesome-retention.log 2>&1

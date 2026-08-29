@@ -48,6 +48,8 @@ const receiptSchema = JSON.parse(await readFile(join(dist, "schemas", "evidence-
 const runManifestSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-run-manifest.v1.json"), "utf8"));
 const recipeSchema = JSON.parse(await readFile(join(dist, "schemas", "workbench-recipe.v2.json"), "utf8"));
 const analyticsSource = await readFile(join(root, "public", "analytics.js"), "utf8");
+const retentionSource = await readFile(join(root, "ops", "umami", "prune-devawesome-analytics.sh"), "utf8");
+const funnelSource = await readFile(join(root, "ops", "umami", "create-devawesome-funnels.sql"), "utf8");
 if (planSchema.$id !== "https://devawesome.io/schemas/developer-tool-test-plan.v0.1.json" || planSchema.type !== "object") failures.push("test-plan JSON Schema must build as a valid, versioned utility asset");
 if (receiptSchema.$id !== "https://devawesome.io/schemas/evidence-receipt.v0.1.json" || receiptSchema.properties?.algorithm?.const !== "SHA-256") failures.push("evidence-receipt JSON Schema must build as the declared SHA-256 contract");
 if (runManifestSchema.$id !== "https://devawesome.io/schemas/workbench-run-manifest.v1.json" || runManifestSchema.properties?.kind?.const !== "devawesome-workbench-run-manifest") failures.push("workbench run-manifest JSON Schema must build as the declared privacy-bounded contract");
@@ -79,8 +81,12 @@ for (const [route, { html }] of built) {
   ]) if (!html.includes(trackerContract)) failures.push(route + " lacks analytics contract " + trackerContract);
 }
 for (const forbidden of [/\.value\b/, /FileReader/, /FormData/, /\.identify\s*\(/, /location\.search/, /location\.hash/, /clipboard/]) if (forbidden.test(analyticsSource)) failures.push("analytics must not collect tool contents or persistent identifiers: " + forbidden);
-for (const eventName of ["tool-start", "tool-action", "tool-file-selected", "tool-config-change", "tool-output-ready", "tool-result-visible", "tool-error", "link-click", "scroll-depth", "engaged-time"]) if (!analyticsSource.includes(`\"${eventName}\"`)) failures.push("analytics must declare event " + eventName);
+for (const eventName of ["tool-view", "tool-start", "tool-input", "tool-run", "tool-action", "tool-result", "tool-file-selected", "tool-config-change", "tool-output-ready", "tool-result-visible", "tool-export", "tool-error", "link-click", "scroll-depth", "engaged-time"]) if (!analyticsSource.includes(`\"${eventName}\"`)) failures.push("analytics must declare event " + eventName);
+for (const workflow of ["prepare-keyword-import", "build-clean-crawl-list"]) if (!analyticsSource.includes(`\"${workflow}\"`)) failures.push("analytics must declare named funnel lifecycle for " + workflow);
 if ((await stat(join(root, "public", "analytics.js"))).size > 12000) failures.push("analytics.js exceeds its 12000 byte budget");
+for (const contract of ["507834ba-6479-41a7-bac6-177240a39c95", 'CUTOFF="14 months"', "--dry-run", "website_event", "event_data", "session_replay_saved"]) if (!retentionSource.includes(contract)) failures.push("retention job lacks scoped contract " + contract);
+for (const name of ["All tool completions", "Keyword import workflow", "Crawl-list workflow"]) if (!funnelSource.includes(name)) failures.push("saved funnel definition missing " + name);
+for (const forbidden of ["POSTGRES_PASSWORD", "APP_SECRET", "Bearer "]) if (retentionSource.includes(forbidden) || funnelSource.includes(forbidden)) failures.push("Umami operations must not contain a credential: " + forbidden);
 if (!built.get("/new-ownership").html.includes("now eligible for search indexing")) failures.push("ownership page must disclose the current indexable launch status");
 for (const route of ["/field-tests/astro-static-route-contract", "/field-tests/pnpm-frozen-lockfile-contract", "/field-tests/evidence-receipt-contract", "/field-tests/workbench-core-contract"]) {
   const html = built.get(route).html;
@@ -169,6 +175,9 @@ const utilityBudgets = {
   "indexability-batch.js": 8000,
   "mcp-session-core.js": 8000,
   "mcp-session-analyzer.js": 8000,
+  // The focused normalizer includes scope, pattern, resource grouping, and
+  // separate accepted/excluded export logic without loading the deep workflow.
+  "url-list-normalizer.js": 16000,
 };
 for (const asset of ["evidence-receipt.js", "evidence-receipt-core.js", "indexability-workflow.js", "json-formatter.js", "keyword-list-cleaner.js", "mcp-json-rpc-validator.js", "robots-txt-tester.js", "serp-snippet-preview.js", "test-plan.js", "url-list-normalizer.js", "uuid-generator.js", "workbench-recipes.js", "workbench-run-manifests.js", "workbench-tabular.js", "run-manifest-verifier.js", ...Object.keys(utilityBudgets)]) {
   const source = await readFile(join(root, "public", asset), "utf8");

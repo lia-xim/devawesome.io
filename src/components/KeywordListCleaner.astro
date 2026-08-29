@@ -33,7 +33,7 @@ const sample = "1. technical seo audit, keyword clustering\n2) Technical SEO Aud
     </div>
   ) : (
     <div class="list-control-panel">
-      <div class="list-control-grid">
+      <div class="list-control-grid list-control-grid-three">
         <label class="list-select-field">
           <span>Read the input as</span>
           <select data-keyword-input-mode>
@@ -51,6 +51,15 @@ const sample = "1. technical seo audit, keyword clustering\n2) Technical SEO Aud
             <label><input type="radio" name="keyword-output-format" value="json" data-keyword-format /><span>JSON</span></label>
           </div>
         </fieldset>
+        <label class="list-select-field">
+          <span>When duplicates match</span>
+          <select data-keyword-duplicate-strategy>
+            <option value="first">Keep the first spelling</option>
+            <option value="last">Keep the last spelling</option>
+            <option value="all">Keep every variant</option>
+          </select>
+          <small>The duplicate review below always shows what matched, including capitalization differences.</small>
+        </label>
       </div>
       <div class="cleanup-options">
         <label><input type="checkbox" checked data-keyword-ignore-case /> Remove duplicates regardless of capitalization</label>
@@ -61,6 +70,10 @@ const sample = "1. technical seo audit, keyword clustering\n2) Technical SEO Aud
         <p data-keyword-status aria-live="polite">Ready</p>
         <button class="toolbox-button toolbox-button-small" type="button" data-keyword-clean>Clean list</button>
       </div>
+      <details class="review-list" data-keyword-duplicate-wrap hidden>
+        <summary data-keyword-duplicate-summary>Duplicate review</summary>
+        <ul data-keyword-duplicates></ul>
+      </details>
     </div>
   )}
 </div>

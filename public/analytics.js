@@ -10,13 +10,28 @@
         ? "programming-language-quiz"
         : null;
   const started = new Set();
+  const inputStarted = new Set();
+  const resultsRecorded = new Set();
   const milestones = new Set();
   const resultStates = new WeakMap();
   const errorStates = new WeakMap();
+  const namedFunnels = new Set(["prepare-keyword-import", "build-clean-crawl-list"]);
+  const lifecycleEvents = {
+    view: "tool-view",
+    input: "tool-input",
+    run: "tool-run",
+    result: "tool-result",
+    export: "tool-export",
+  };
 
   function track(name, data = {}) {
     if (typeof window.umami?.track !== "function") return;
     window.umami.track(name, { page: route, ...data });
+  }
+
+  function trackLifecycle(stage, data = {}) {
+    track(lifecycleEvents[stage], { tool: product || "site", ...data });
+    if (product && namedFunnels.has(product)) track(`${product}-${stage}`, data);
   }
 
   function controlName(element) {
@@ -56,6 +71,8 @@
     track("tool-start", { tool: product });
   }
 
+  if (product) trackLifecycle("view");
+
   function linkData(link) {
     const href = link.getAttribute("href") || "";
     if (href.startsWith("mailto:")) return { kind: "email", target: "operator-contact" };
@@ -86,7 +103,20 @@
     const button = event.target.closest("button, [role='button']");
     if (!button || !button.closest("main")) return;
     startProduct();
-    track("tool-action", { tool: product || "site", action: controlName(button) });
+    const action = controlName(button);
+    if (/(?:copy|download|save|export)/.test(action)) trackLifecycle("export", { method: action.includes("copy") ? "copy" : action.includes("download") ? "download" : "save" });
+    if (/(?:clean|normalize|format|generate|test|validate|verify|extract|analyze|build|run)/.test(action) && !/(?:clear|reset)/.test(action)) trackLifecycle("run", { action });
+    track("tool-action", { tool: product || "site", action });
+  });
+
+  document.addEventListener("input", (event) => {
+    if (!(event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)) return;
+    if (!event.target.closest("main") || event.target.readOnly || event.target.matches("[data-analytics-control]")) return;
+    const key = `${product || "site"}:${controlName(event.target)}`;
+    if (inputStarted.has(key)) return;
+    inputStarted.add(key);
+    startProduct();
+    trackLifecycle("input", { control: controlName(event.target) });
   });
 
   document.addEventListener("submit", (event) => {
@@ -123,6 +153,11 @@
         if (previous !== "ready") {
           resultStates.set(element, "ready");
           track("tool-output-ready", { tool: product || "site", output: control });
+          const resultKey = `${product || "site"}:${control}`;
+          if (!resultsRecorded.has(resultKey)) {
+            resultsRecorded.add(resultKey);
+            trackLifecycle("result", { output: control });
+          }
         }
       }
       if (mutation.attributeName === "hidden" && !element.hasAttribute("hidden") && /(result|verdict|review|conflict)/.test(control)) {

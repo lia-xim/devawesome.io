@@ -24,7 +24,7 @@ const toolSchema = {
       <a class="tool-page-back" href="/tools">← All tools</a>
       <h1>URL list normalizer</h1>
     </div>
-    <p>Turn copied URLs, spreadsheet cells, or a rough text list into one consistent set. Choose what happens to tracking parameters, fragments, trailing slashes, and the output format.</p>
+    <p>Turn copied URLs, spreadsheet cells, or a rough text list into a scoped crawl input. Normalize variants, separate page URLs from resources, and keep every exclusion reason visible.</p>
   </header>
 
   <section class="tool-surface">
@@ -83,6 +83,49 @@ not a url</textarea>
             </div>
           </fieldset>
         </div>
+        <div class="scope-control-grid">
+          <label class="list-select-field">
+            <span>Scope host</span>
+            <input type="text" inputmode="url" placeholder="example.com" data-url-scope-host />
+            <small>Leave empty to accept every host.</small>
+          </label>
+          <label class="list-select-field">
+            <span>Host scope</span>
+            <select data-url-scope-mode>
+              <option value="all">All hosts</option>
+              <option value="exact">Exact host only</option>
+              <option value="subdomains">Host and subdomains</option>
+            </select>
+          </label>
+          <label class="list-select-field">
+            <span>Protocol scope</span>
+            <select data-url-protocol-mode>
+              <option value="all">HTTP and HTTPS</option>
+              <option value="https">HTTPS only</option>
+              <option value="http">HTTP only</option>
+            </select>
+          </label>
+          <label class="list-select-field">
+            <span>Output group</span>
+            <select data-url-output-group>
+              <option value="all">All accepted URLs</option>
+              <option value="pages">Likely HTML pages</option>
+              <option value="resources">Non-HTML resources</option>
+            </select>
+          </label>
+        </div>
+        <div class="pattern-control-grid">
+          <label class="list-select-field">
+            <span>Include patterns</span>
+            <textarea rows="3" placeholder="/blog/*&#10;/guides/*" data-url-include-patterns></textarea>
+            <small>Optional glob patterns. A URL must match at least one.</small>
+          </label>
+          <label class="list-select-field">
+            <span>Exclude patterns</span>
+            <textarea rows="3" placeholder="/admin/*&#10;?preview=*" data-url-exclude-patterns></textarea>
+            <small>Matching URLs remain in the exclusion export with the winning reason.</small>
+          </label>
+        </div>
         <div class="cleanup-options">
           <label><input type="checkbox" checked data-url-add-https /> Add https:// to bare domains</label>
           <label><input type="checkbox" checked data-url-strip-fragment /> Remove #fragments</label>
@@ -93,6 +136,12 @@ not a url</textarea>
           <button class="toolbox-button toolbox-button-small" type="button" data-url-normalize>Normalize list</button>
         </div>
       </div>
+      <div class="result-group-summary" data-url-group-summary aria-live="polite"></div>
+      <details class="review-list" data-url-excluded-wrap hidden>
+        <summary data-url-excluded-summary>Excluded URLs</summary>
+        <div class="review-list-actions"><button type="button" data-url-download-excluded disabled>Download exclusions</button></div>
+        <ul data-url-excluded></ul>
+      </details>
       <details class="invalid-list" data-url-invalid-wrap hidden>
         <summary data-url-invalid-summary>Invalid entries</summary>
         <ul data-url-invalid></ul>
@@ -103,8 +152,8 @@ not a url</textarea>
   <ToolPageContent
     steps={[
       "Paste URLs as lines, spreadsheet cells, comma-separated values, or a mixed list. Markdown links are accepted too.",
-      "Choose how parameters, fragments, trailing slashes, and bare domains should be handled.",
-      "Pick Lines, Commas, or JSON, then copy or download the unique result. Invalid entries stay visible below the tool.",
+      "Choose parameter cleanup, host and protocol scope, and optional include or exclude patterns.",
+      "Review page and resource groups, then copy the selected group or download accepted and excluded URLs separately.",
     ]}
     handles={[
       "HTTP and HTTPS URLs, including bare domains",
@@ -112,6 +161,8 @@ not a url</textarea>
       "Optional removal of tracking parameters, full query strings, fragments, and trailing path slashes",
       "Markdown links, ordinary list numbers, and common separators",
       "International domain names through the browser's URL parser",
+      "Exact-host, subdomain, protocol, include-pattern, and exclude-pattern boundaries",
+      "Separate page, resource, exclusion, and invalid groups with explicit reasons",
     ]}
     limits={[
       "It does not request, crawl, redirect-check, or verify that a URL exists.",

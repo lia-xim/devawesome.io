@@ -25,7 +25,7 @@ const toolSchema = {
       <a class="tool-page-back" href="/tools">← All tools</a>
       <h1>Keyword list cleaner</h1>
     </div>
-    <p>Paste a clean export or a messy list. Remove duplicate entries and list noise, then choose whether the result should use lines, commas, or JSON.</p>
+    <p>Paste a clean export or a messy list. Choose the separators, decide which duplicate spelling wins, and export lines, commas, or JSON without losing sight of what matched.</p>
   </header>
 
   <section class="tool-surface">
@@ -39,12 +39,12 @@ const toolSchema = {
   <ToolPageContent
     steps={[
       "Paste the list. Auto mode understands common separators and removes ordinary bullets or list numbers.",
-      "Choose how duplicates and whitespace should be handled, then select Lines, Commas, or JSON for the result.",
-      "Copy the result or download it in the matching TXT, CSV, or JSON format.",
+      "Choose how duplicates and whitespace should be handled. Every matching duplicate group remains visible for review.",
+      "Select Lines, Commas, or JSON, then copy or download the result in the matching format.",
     ]}
     handles={[
       "Blank rows, repeated spaces, bullets, list numbers, and separator-only rows",
-      "Duplicate entries while keeping the first spelling and the original order",
+      "Duplicate groups with the option to keep the first spelling, the last spelling, or every variant",
       "Line, comma, tab, semicolon, pipe, and spaced-slash separators",
       "Quoted comma-separated values and three selectable output formats",
     ]}

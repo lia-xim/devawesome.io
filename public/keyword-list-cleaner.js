@@ -41,19 +41,29 @@
   }
 
   function cleanKeywords(input, options) {
-    const seen = new Set();
+    const seen = new Map();
     const keywords = [];
+    const duplicateGroups = [];
     let ignored = 0;
     let duplicates = 0;
     for (const entry of parseEntries(input, options.mode)) {
       const keyword = cleanEntry(entry, options);
       if (!keyword) { ignored += 1; continue; }
       const key = options.ignoreCase ? keyword.toLocaleLowerCase() : keyword;
-      if (seen.has(key)) { duplicates += 1; continue; }
-      seen.add(key);
+      if (seen.has(key)) {
+        duplicates += 1;
+        const group = seen.get(key);
+        group.variants.push(keyword);
+        if (options.duplicateStrategy === "last") keywords[group.outputIndex] = keyword;
+        else if (options.duplicateStrategy === "all") keywords.push(keyword);
+        continue;
+      }
+      const group = { key, outputIndex: keywords.length, variants: [keyword] };
+      seen.set(key, group);
+      duplicateGroups.push(group);
       keywords.push(keyword);
     }
-    return { keywords, ignored, duplicates };
+    return { keywords, ignored, duplicates, duplicateGroups: duplicateGroups.filter((group) => group.variants.length > 1) };
   }
 
   function csvValue(value) {
@@ -72,6 +82,7 @@
     const ignoreCase = root.querySelector("[data-keyword-ignore-case]");
     const stripNoise = root.querySelector("[data-keyword-strip-noise]");
     const whitespace = root.querySelector("[data-keyword-whitespace]");
+    const duplicateStrategy = root.querySelector("[data-keyword-duplicate-strategy]");
     const inputMode = root.querySelector("[data-keyword-input-mode]");
     const formats = [...root.querySelectorAll("[data-keyword-format]")];
     const status = root.querySelector("[data-keyword-status]");
@@ -79,6 +90,9 @@
     const clearButton = root.querySelector("[data-keyword-clear]");
     const copyButton = root.querySelector("[data-keyword-copy]");
     const downloadButton = root.querySelector("[data-keyword-download]");
+    const duplicateWrap = root.querySelector("[data-keyword-duplicate-wrap]");
+    const duplicateSummary = root.querySelector("[data-keyword-duplicate-summary]");
+    const duplicateList = root.querySelector("[data-keyword-duplicates]");
     if (!input || !output || !status || !cleanButton || !clearButton || !copyButton) continue;
 
     let currentFormat = "lines";
@@ -89,16 +103,31 @@
         ignoreCase: ignoreCase?.checked ?? true,
         stripNoise: stripNoise?.checked ?? true,
         whitespace: whitespace?.checked ?? true,
+        duplicateStrategy: duplicateStrategy?.value || "first",
       });
       output.value = formatKeywords(result.keywords, currentFormat);
       copyButton.disabled = result.keywords.length === 0;
       if (downloadButton) downloadButton.disabled = result.keywords.length === 0;
-      status.textContent = `${result.keywords.length} kept · ${result.duplicates} duplicate${result.duplicates === 1 ? "" : "s"} removed · ${result.ignored} empty/noise row${result.ignored === 1 ? "" : "s"} ignored`;
+      status.textContent = `${result.keywords.length} kept · ${result.duplicates} duplicate match${result.duplicates === 1 ? "" : "es"} · ${result.ignored} empty/noise row${result.ignored === 1 ? "" : "s"} ignored`;
+      if (duplicateWrap && duplicateSummary && duplicateList) {
+        duplicateList.replaceChildren(...result.duplicateGroups.map((group) => {
+          const item = document.createElement("li");
+          const strong = document.createElement("strong");
+          strong.textContent = group.variants[duplicateStrategy?.value === "last" ? group.variants.length - 1 : 0];
+          const detail = document.createElement("span");
+          detail.textContent = `Matched ${group.variants.length} entries: ${group.variants.join(" · ")}`;
+          item.append(strong, detail);
+          return item;
+        }));
+        duplicateSummary.textContent = `${result.duplicateGroups.length} duplicate ${result.duplicateGroups.length === 1 ? "group" : "groups"} to review`;
+        duplicateWrap.hidden = result.duplicateGroups.length === 0;
+        if (!result.duplicateGroups.length) duplicateWrap.open = false;
+      }
     };
 
     cleanButton.addEventListener("click", run);
     input.addEventListener("input", run);
-    for (const field of [ignoreCase, stripNoise, whitespace, inputMode, ...formats]) field?.addEventListener("change", run);
+    for (const field of [ignoreCase, stripNoise, whitespace, inputMode, duplicateStrategy, ...formats]) field?.addEventListener("change", run);
     clearButton.addEventListener("click", () => {
       input.value = "";
       run();
