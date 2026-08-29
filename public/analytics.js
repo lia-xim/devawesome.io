@@ -16,6 +16,7 @@
   const resultStates = new WeakMap();
   const errorStates = new WeakMap();
   const namedFunnels = new Set(["prepare-keyword-import", "build-clean-crawl-list"]);
+  const automaticRunProducts = new Set(["keyword-list-cleaner", "url-list-normalizer", "prepare-keyword-import", "build-clean-crawl-list"]);
   const lifecycleEvents = {
     view: "tool-view",
     input: "tool-input",
@@ -32,6 +33,12 @@
   function trackLifecycle(stage, data = {}) {
     track(lifecycleEvents[stage], { tool: product || "site", ...data });
     if (product && namedFunnels.has(product)) track(`${product}-${stage}`, data);
+  }
+
+  function recordResultOnce(key, data = {}) {
+    if (resultsRecorded.has(key)) return;
+    resultsRecorded.add(key);
+    trackLifecycle("result", data);
   }
 
   function controlName(element) {
@@ -105,7 +112,10 @@
     startProduct();
     const action = controlName(button);
     if (/(?:copy|download|save|export)/.test(action)) trackLifecycle("export", { method: action.includes("copy") ? "copy" : action.includes("download") ? "download" : "save" });
-    if (/(?:clean|normalize|format|generate|test|validate|verify|extract|analyze|build|run)/.test(action) && !/(?:clear|reset)/.test(action)) trackLifecycle("run", { action });
+    if (/(?:clean|normalize|format|generate|test|validate|verify|extract|analyze|build|run)/.test(action) && !/(?:clear|reset)/.test(action)) {
+      trackLifecycle("run", { action });
+      setTimeout(() => recordResultOnce(`${product || "site"}:run`, { source: "explicit-run" }), 0);
+    }
     track("tool-action", { tool: product || "site", action });
   });
 
@@ -117,6 +127,12 @@
     inputStarted.add(key);
     startProduct();
     trackLifecycle("input", { control: controlName(event.target) });
+    if (product && automaticRunProducts.has(product)) {
+      setTimeout(() => {
+        trackLifecycle("run", { trigger: "automatic" });
+        recordResultOnce(`${product}:automatic`, { source: "automatic-run" });
+      }, 0);
+    }
   });
 
   document.addEventListener("submit", (event) => {
@@ -154,10 +170,7 @@
           resultStates.set(element, "ready");
           track("tool-output-ready", { tool: product || "site", output: control });
           const resultKey = `${product || "site"}:${control}`;
-          if (!resultsRecorded.has(resultKey)) {
-            resultsRecorded.add(resultKey);
-            trackLifecycle("result", { output: control });
-          }
+          recordResultOnce(resultKey, { output: control });
         }
       }
       if (mutation.attributeName === "hidden" && !element.hasAttribute("hidden") && /(result|verdict|review|conflict)/.test(control)) {
