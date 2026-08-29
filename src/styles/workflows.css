@@ -123,6 +123,10 @@
   overflow: hidden;
 }
 
+.flagship-workflow-area {
+  min-width: 0;
+}
+
 .flagship-workflow-grid article {
   display: flex;
   min-width: 0;
@@ -171,7 +175,7 @@
 
 .flagship-workflow-grid li strong { color: #fff; }
 
-.flagship-workflow-grid article > a {
+.flagship-primary-link {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -181,6 +185,55 @@
   font-size: 0.86rem;
   font-weight: 680;
   text-decoration: none;
+}
+
+.contextter-next-step {
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid #4a5360;
+  border-radius: 8px;
+  background: #171d26;
+}
+
+.contextter-next-step > span {
+  color: #8995a5;
+  font-size: 0.66rem;
+  font-weight: 680;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.contextter-next-step p {
+  margin: 0.65rem 0 0;
+  color: #c4ccd7;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.contextter-next-step a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 680;
+  line-height: 1.4;
+  text-decoration-color: #d8ff6a;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3rem;
+}
+
+.contextter-next-step a:hover {
+  color: #d8ff6a;
+}
+
+.flagship-ownership-disclosure {
+  max-width: 54rem;
+  margin: 1rem 0 0;
+  color: #8f9aa8;
+  font-size: 0.68rem;
+  line-height: 1.55;
 }
 
 .workbench-hero-copy h1 {
