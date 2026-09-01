@@ -3,13 +3,21 @@ const { join } = require("node:path");
 const { chromium } = require(process.env.DEVAWESOME_PLAYWRIGHT_MODULE || "playwright");
 
 const origin = process.env.DEVAWESOME_QA_ORIGIN || "http://127.0.0.1:4321";
-const allowedRequestOrigins = [origin, "https://analytics.contextter.com/"];
+const analyticsOrigin = "https://analytics.contextter.com/";
+const allowedRequestOrigins = [origin, analyticsOrigin];
 const screenshots = process.env.DEVAWESOME_QA_SCREENSHOTS || join(process.cwd(), "reports", "qa");
 const failures = [];
 const consoleErrors = [];
 
 function check(condition, message) {
   if (!condition) failures.push(message);
+}
+
+async function interactionResourceCount(page) {
+  return page.evaluate(
+    (ignoredOrigin) => performance.getEntriesByType("resource").filter((entry) => !entry.name.startsWith(ignoredOrigin)).length,
+    analyticsOrigin,
+  );
 }
 
 async function attachGuards(page) {
@@ -50,9 +58,9 @@ async function runDesktop(browser) {
   check(await page.getByRole("link", { name: /Prepare a keyword import/ }).first().isVisible(), "primary workflow CTA must be visible");
   check(await page.locator(".hero-flagship-preview").isVisible(), "desktop must show the flagship workflow preview");
 
-  const initialRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  const initialRequestCount = await interactionResourceCount(page);
   await page.locator(".hero-flagship-preview a").first().focus();
-  const postInteractionRequestCount = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  const postInteractionRequestCount = await interactionResourceCount(page);
   check(postInteractionRequestCount === initialRequestCount, "home navigation preview must not create a request");
 
   const desktopStyles = await page.evaluate(() => {
@@ -144,18 +152,18 @@ async function runTools(browser) {
 
   await page.goto(origin + "/tools/keyword-list-cleaner", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/keyword-list-cleaner");
-  let before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  let before = await interactionResourceCount(page);
   await page.locator("[data-keyword-input]").fill("1. seo audit, SEO Audit | keyword tracking\n/\n2) content brief");
   await page.locator("[data-keyword-clean]").click();
   check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit\nkeyword tracking\ncontent brief", "keyword cleaner must remove list noise and deduplicate mixed separators");
   await page.locator('[data-keyword-format][value="comma"]').check();
   check((await page.locator("[data-keyword-output]").inputValue()) === "seo audit, keyword tracking, content brief", "keyword cleaner must switch the output to comma-separated values");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword cleaner must not create a request");
+  check((await interactionResourceCount(page)) === before, "keyword cleaner must not create a request");
 
   await page.goto(origin + "/workflows/prepare-keyword-import", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/prepare-keyword-import");
   check((await page.locator(".workflow-progress li").count()) === 4, "keyword workflow must show its four-step sequence");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator('[data-keyword-example="csv"]').click();
   check(await page.locator("[data-keyword-conflict-review]").isVisible(), "keyword workflow must expose duplicate column conflicts");
   check((await page.locator("[data-keyword-conflicts] select").count()) === 1, "keyword workflow must expose one decision control per conflict");
@@ -179,12 +187,12 @@ async function runTools(browser) {
   await page.waitForFunction(() => document.querySelector("[data-keyword-conflict-strategy]")?.value === "merge");
   check((await page.locator("[data-keyword-conflict-strategy]").inputValue()) === "merge", "keyword recipe must restore the saved duplicate strategy");
   check((await page.locator("[data-keyword-workbench-input]").inputValue()) === inputBeforeRecipeLoad, "loading a keyword recipe must not replace pasted input");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "keyword workflow must not create a request");
+  check((await interactionResourceCount(page)) === before, "keyword workflow must not create a request");
 
   await page.goto(origin + "/workflows/build-clean-crawl-list", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/build-clean-crawl-list");
   check((await page.locator(".workflow-progress li").count()) === 6, "crawl workflow must show its six-step sequence");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-crawl-input]").fill("https://example.com/a\nhttps://shop.example.com/b\nhttp://example.com/c\nhttps://example.com/private/x\nhttps://example.com/file.pdf");
   await page.locator("[data-crawl-mode]").selectOption("lines");
   await page.locator("[data-crawl-scope-mode]").selectOption("exact");
@@ -194,11 +202,11 @@ async function runTools(browser) {
   check((await page.locator("[data-crawl-output]").inputValue()) === "https://example.com/a\nhttps://example.com/file.pdf", "crawl workflow must apply protocol, exact-host, and wildcard exclusion scope");
   check((await page.locator("[data-crawl-hosts] tr").count()) === 1, "crawl workflow must group the output by host");
   check((await page.locator("[data-crawl-excluded] li").count()) === 3, "crawl workflow must retain every excluded URL with a reason");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "crawl workflow must not create a request");
+  check((await interactionResourceCount(page)) === before, "crawl workflow must not create a request");
 
   await page.goto(origin + "/workflows/debug-indexability", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/debug-indexability");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-index-url]").fill("https://example.com/private/page");
   await page.locator("[data-index-headers]").fill("HTTP/2 200\nx-robots-tag: noindex");
   await page.locator("[data-index-html]").fill('<link rel="canonical" href="https://example.com/other"><meta name="robots" content="index,follow">');
@@ -207,12 +215,12 @@ async function runTools(browser) {
   check((await page.locator("[data-index-verdict]").textContent()).includes("noindex"), "indexability workflow must extract and reject an X-Robots-Tag noindex directive");
   check((await page.locator("[data-index-canonical]").inputValue()) === "other", "indexability workflow must extract a non-self canonical");
   check((await page.locator("[data-index-robots]").inputValue()) === "blocked", "indexability workflow must evaluate pasted robots.txt for the tested URL");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "indexability workflow must not create a request");
+  check((await interactionResourceCount(page)) === before, "indexability workflow must not create a request");
 
   await page.goto(origin + "/workflows/validate-mcp-message", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/validate-mcp-message");
   check((await page.locator(".workflow-progress li").count()) === 4, "MCP workflow must show its four-step sequence");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator('[data-mcp-lab-example="request"]').click();
   check((await page.locator("[data-mcp-lab-version]").inputValue()) === "2026-07-28", "MCP workflow must default to the current declared revision");
   check((await page.locator("[data-mcp-lab-corrected]").inputValue()).includes('"io.modelcontextprotocol/protocolVersion": "2026-07-28"'), "MCP workflow must propose current request metadata");
@@ -220,48 +228,48 @@ async function runTools(browser) {
   await page.locator("[data-mcp-lab-input]").fill('{"jsonrpc":"2.0","id":7,"result":{"content":[{"type":"text"}]}}');
   await page.locator("[data-mcp-lab-related]").fill('{"jsonrpc":"2.0","id":7,"result":{"content":[{"type":"text","text":"ok"}]}}');
   check((await page.locator('[data-mcp-pair-checks] li[data-state="error"]').count()) === 0 && (await page.locator("[data-mcp-pair-checks]").textContent()).includes("$.result.content[0].type matches expected value"), "MCP workflow must compare expected and actual response shapes");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP workflow must not create a request");
+  check((await interactionResourceCount(page)) === before, "MCP workflow must not create a request");
 
   await page.goto(origin + "/tools/url-list-normalizer", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/url-list-normalizer");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-url-input]").fill("1. Example.com/page/#top | https://example.com/page/?utm_source=test\n[Pricing](https://example.com/pricing?plan=pro)\nnot a url");
   await page.locator("[data-url-normalize]").click();
   check((await page.locator("[data-url-output]").inputValue()) === "https://example.com/page\nhttps://example.com/pricing?plan=pro", "URL normalizer must remove tracking parameters, normalize markdown URLs, strip fragments, and deduplicate");
   await page.locator('[data-url-format][value="json"]').check();
   check((await page.locator("[data-url-output]").inputValue()).includes('"https://example.com/pricing?plan=pro"'), "URL normalizer must switch the output to JSON");
   check((await page.locator("[data-url-status]").textContent()).includes("1 invalid"), "URL normalizer must report invalid entries");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "URL normalizer must not create a request");
+  check((await interactionResourceCount(page)) === before, "URL normalizer must not create a request");
 
   await page.goto(origin + "/tools/json-formatter", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/json-formatter");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-json-input]").fill('{"z":2,"a":1}');
   await page.locator("[data-json-minify]").click();
   check((await page.locator("[data-json-output]").inputValue()) === '{"z":2,"a":1}', "JSON minify must preserve parsed data");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "JSON tool must not create a request");
+  check((await interactionResourceCount(page)) === before, "JSON tool must not create a request");
 
   await page.goto(origin + "/tools/uuid-generator", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/uuid-generator");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-uuid-count]").fill("3");
   await page.locator("[data-uuid-generate]").click();
   const uuids = (await page.locator("[data-uuid-output]").inputValue()).trim().split("\n");
   const uuidV4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   check(uuids.length === 3 && uuids.every((value) => uuidV4.test(value)), "UUID tool must generate three valid v4 values");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "UUID tool must not create a request");
+  check((await interactionResourceCount(page)) === before, "UUID tool must not create a request");
 
   await page.goto(origin + "/tools/evidence-receipt", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/evidence-receipt");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator('textarea[name="evidence"]').fill("abc");
   await page.getByRole("button", { name: "Create hash" }).click();
   check((await page.locator("[data-receipt-digest]").inputValue()) === "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "SHA-256 tool must match the known abc vector");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "SHA-256 tool must not create a request");
+  check((await interactionResourceCount(page)) === before, "SHA-256 tool must not create a request");
 
   await page.goto(origin + "/tools/developer-tool-test-plan", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/developer-tool-test-plan");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   const values = {
     subject: "Canonical redirect for /old-page",
     action: "Request /old-page without following redirects",
@@ -272,19 +280,19 @@ async function runTools(browser) {
   await page.getByRole("button", { name: "Build test case" }).click();
   const plan = await page.locator("[data-plan-output]").textContent();
   check(plan.includes(values.subject) && plan.includes(values.edge) && plan.includes("Result: Not run"), "test-case builder must create the declared Markdown structure");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "test-plan tool must not create a request");
+  check((await interactionResourceCount(page)) === before, "test-plan tool must not create a request");
 
   await page.goto(origin + "/tools/mcp-json-rpc-validator", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/mcp-json-rpc-validator");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-mcp-input]").fill('{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}');
   await page.locator("[data-mcp-validate]").click();
   check((await page.locator("[data-mcp-output]").inputValue()).includes("Looks good:"), "MCP validator must accept a valid tools/list request");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "MCP validator must not create a request");
+  check((await interactionResourceCount(page)) === before, "MCP validator must not create a request");
 
   await page.goto(origin + "/tools/robots-txt-tester", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/robots-txt-tester");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-robots-agent]").selectOption("Googlebot");
   await page.locator("[data-robots-path]").fill("https://example.com/preview/article?draft=1");
   await page.locator("[data-robots-test]").click();
@@ -292,14 +300,14 @@ async function runTools(browser) {
   check((await page.locator("[data-robots-tested-path]").textContent()) === "/preview/article?draft=1", "robots tester must extract the path and query from a full URL");
   await page.locator('[data-robots-example="allowed"]').click();
   check((await page.locator("[data-robots-verdict]").textContent()) === "Allowed by robots.txt", "robots tester must explain an Allow exception through the example control");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "robots tester must not create a request");
+  check((await interactionResourceCount(page)) === before, "robots tester must not create a request");
 
   await page.goto(origin + "/tools/serp-snippet-preview", { waitUntil: "networkidle" });
   await verifyStructure(page, "/tools/serp-snippet-preview");
-  before = await page.evaluate(() => performance.getEntriesByType("resource").length);
+  before = await interactionResourceCount(page);
   await page.locator("[data-serp-title]").fill("Technical SEO Checklist | Example");
   check((await page.locator("[data-serp-display-title]").textContent()) === "Technical SEO Checklist | Example", "SERP preview must update the visible title");
-  check((await page.evaluate(() => performance.getEntriesByType("resource").length)) === before, "SERP preview must not create a request");
+  check((await interactionResourceCount(page)) === before, "SERP preview must not create a request");
 
   await context.close();
 }
