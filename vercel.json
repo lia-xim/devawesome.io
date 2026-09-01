@@ -37,8 +37,28 @@
     },
     {
       "permanent": true,
+      "destination": "/field-tests/workbench-core-contract",
+      "source": "/field-tests/workbench-core-contract/"
+    },
+    {
+      "permanent": true,
       "destination": "/guides",
       "source": "/guides/"
+    },
+    {
+      "permanent": true,
+      "destination": "/guides/clean-keyword-import-files",
+      "source": "/guides/clean-keyword-import-files/"
+    },
+    {
+      "permanent": true,
+      "destination": "/guides/debug-indexability-signals",
+      "source": "/guides/debug-indexability-signals/"
+    },
+    {
+      "permanent": true,
+      "destination": "/guides/prepare-crawl-list",
+      "source": "/guides/prepare-crawl-list/"
     },
     {
       "permanent": true,
@@ -94,6 +114,36 @@
       "permanent": true,
       "destination": "/tools/evidence-receipt",
       "source": "/tools/evidence-receipt/"
+    },
+    {
+      "permanent": true,
+      "destination": "/tools/run-manifest-verifier",
+      "source": "/tools/run-manifest-verifier/"
+    },
+    {
+      "permanent": true,
+      "destination": "/workflows",
+      "source": "/workflows/"
+    },
+    {
+      "permanent": true,
+      "destination": "/workflows/prepare-keyword-import",
+      "source": "/workflows/prepare-keyword-import/"
+    },
+    {
+      "permanent": true,
+      "destination": "/workflows/build-clean-crawl-list",
+      "source": "/workflows/build-clean-crawl-list/"
+    },
+    {
+      "permanent": true,
+      "destination": "/workflows/debug-indexability",
+      "source": "/workflows/debug-indexability/"
+    },
+    {
+      "permanent": true,
+      "destination": "/workflows/validate-mcp-message",
+      "source": "/workflows/validate-mcp-message/"
     },
     {
       "permanent": true,

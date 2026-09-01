@@ -28,12 +28,13 @@ const resultPath = join(root, "reports", "field-tests", "workbench-core-contract
 const capture = process.argv.includes("--capture");
 const cases = [];
 const fixture = (...parts) => join(root, "public", "fixtures", ...parts);
+const normalizeLineEndings = (value) => value.replace(/\r\n?/g, "\n");
 const keywordInput = await readFile(fixture("keyword-import-conflicts.input.csv"), "utf8");
-const keywordExpected = (await readFile(fixture("keyword-import-conflicts.expected.csv"), "utf8")).trim();
+const keywordExpected = normalizeLineEndings(await readFile(fixture("keyword-import-conflicts.expected.csv"), "utf8")).trim();
 const keywordRecipe = JSON.parse(await readFile(fixture("keyword-import-conflicts.recipe.json"), "utf8"));
 const crawlInput = await readFile(fixture("crawl-scope.input.txt"), "utf8");
-const crawlExpected = (await readFile(fixture("crawl-scope.expected.txt"), "utf8")).trim();
-const crawlExcludedExpected = (await readFile(fixture("crawl-scope.excluded.csv"), "utf8")).trim();
+const crawlExpected = normalizeLineEndings(await readFile(fixture("crawl-scope.expected.txt"), "utf8")).trim();
+const crawlExcludedExpected = normalizeLineEndings(await readFile(fixture("crawl-scope.excluded.csv"), "utf8")).trim();
 const crawlRecipe = JSON.parse(await readFile(fixture("crawl-scope.recipe.json"), "utf8"));
 const indexInput = JSON.parse(await readFile(fixture("indexability-evidence.input.json"), "utf8"));
 const indexExpected = JSON.parse(await readFile(fixture("indexability-evidence.expected.json"), "utf8"));

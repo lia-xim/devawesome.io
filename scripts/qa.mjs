@@ -7,6 +7,7 @@ const dist = join(root, "dist");
 const { canonicalRoutes, toCanonicalUrl } = await import("../src/data/routes.ts");
 const routes = canonicalRoutes.map(({ path }) => path.replace(/^\//, "").replace(/\/$/, ""));
 const canonicals = new Map(canonicalRoutes.map(({ path }) => [path.replace(/\/$/, "") || "/", toCanonicalUrl(path)]));
+const routeRecords = new Map(canonicalRoutes.map((route) => [route.path.replace(/\/$/, "") || "/", route]));
 const failures = [];
 async function builtRoute(route) {
   const candidates = route ? [join(dist, route, "index.html"), join(dist, route + ".html")] : [join(dist, "index.html")];
@@ -29,6 +30,13 @@ for (const [route, { html }] of built) {
   if (route !== "/404" && !html.includes('property="og:url"')) failures.push(route + " lacks og:url");
   for (const name of ["twitter:card", "twitter:title", "twitter:description"]) {
     if (!html.includes(`name="${name}"`)) failures.push(route + " lacks " + name);
+  }
+  if (route !== "/404" && html.includes(" | DevAwesome Browser Workbench</title>")) failures.push(route + " uses the verbose website name as its title suffix");
+  if (route !== "/404") {
+    const record = routeRecords.get(route);
+    const expectedTitle = `${record.title} | DevAwesome`;
+    if (!html.includes(`<title>${expectedTitle}</title>`)) failures.push(route + " rendered title differs from the canonical route registry");
+    if (!html.includes(`<meta name="description" content="${record.description}">`)) failures.push(route + " rendered description differs from the canonical route registry");
   }
 }
 const robots = await readFile(join(dist, "robots.txt"), "utf8");
@@ -64,6 +72,14 @@ if (headers["x-robots-tag"]) failures.push("global Vercel X-Robots-Tag must be a
 for (const key of ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options", "cross-origin-opener-policy"]) if (!headers[key]) failures.push("missing security header " + key);
 for (const directive of ["script-src 'self' https://analytics.contextter.com", "connect-src 'self' https://analytics.contextter.com"]) if (!headers["content-security-policy"]?.includes(directive)) failures.push("CSP must permit only the declared Umami origin for analytics: " + directive);
 if (!vercel.redirects?.some((r) => r.source === "/quiz" && r.destination === "/guess-the-programming-language/" && r.permanent === true)) failures.push("/quiz must permanently redirect");
+for (const { path } of canonicalRoutes) {
+  if (path === "/") continue;
+  const source = path.endsWith("/") ? path.slice(0, -1) : path + "/";
+  const destination = path;
+  if (!vercel.redirects?.some((redirect) => redirect.source === source && redirect.destination === destination && redirect.permanent === true)) {
+    failures.push(`${source} must permanently normalize to canonical ${destination}`);
+  }
+}
 if (legacy.defaultUnknownPathAction !== "404" || legacy.catchAllHomepageRedirect !== false) failures.push("legacy default must remain real 404");
 if (!built.get("/impressum").html.includes("Matthias Ramahi")) failures.push("impressum must name operator");
 const privacyHtml = built.get("/datenschutz").html;
@@ -124,7 +140,7 @@ for (const name of js) {
   if (bytes > 20000) failures.push(name + " exceeds 20 KB route chunk budget: " + bytes);
 }
 const home = built.get("/").html;
-for (const copy of ["Turn raw SEO exports into inputs you can review and reuse.", "Prepare a keyword import", "Build a clean crawl list", "A result is useful when you know what changed."]) if (!home.includes(copy)) failures.push("home lacks workflow-first copy: " + copy);
+for (const copy of ["Browser-based SEO tools for data you need to clean, check, and reuse.", "SEO data workflows that leave you with a checked file.", "Free SEO and developer tools for focused jobs.", "Use examples, limits, and field-test evidence."]) if (!home.includes(copy)) failures.push("home lacks workflow-first copy: " + copy);
 for (const path of ["/tools/keyword-list-cleaner", "/tools/url-list-normalizer", "/tools/robots-txt-tester", "/tools/serp-snippet-preview", "/tools/mcp-json-rpc-validator", "/tools/json-formatter", "/tools/uuid-generator", "/tools/evidence-receipt", "/tools/developer-tool-test-plan", "/tools/run-manifest-verifier"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const path of ["/workflows/prepare-keyword-import", "/workflows/build-clean-crawl-list", "/workflows/debug-indexability", "/workflows/validate-mcp-message"]) if (!home.includes(`href="${path}"`)) failures.push("home must link directly to " + path);
 for (const url of ["https://contextter.com/features/keyword-database", "https://contextter.com/features/site-audit"]) if (!home.includes(`href="${url}"`)) failures.push("home must provide the relevant Contextter workflow handoff: " + url);

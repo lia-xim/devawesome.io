@@ -3,6 +3,7 @@ const { join } = require("node:path");
 const { chromium } = require(process.env.DEVAWESOME_PLAYWRIGHT_MODULE || "playwright");
 
 const origin = process.env.DEVAWESOME_QA_ORIGIN || "http://127.0.0.1:4321";
+const allowedRequestOrigins = [origin, "https://analytics.contextter.com/"];
 const screenshots = process.env.DEVAWESOME_QA_SCREENSHOTS || join(process.cwd(), "reports", "qa");
 const failures = [];
 const consoleErrors = [];
@@ -17,7 +18,7 @@ async function attachGuards(page) {
   });
   page.on("pageerror", (error) => consoleErrors.push(error.message));
   page.on("request", (request) => {
-    if (!request.url().startsWith(origin)) failures.push("external request: " + request.url());
+    if (!allowedRequestOrigins.some((allowed) => request.url().startsWith(allowed))) failures.push("undeclared external request: " + request.url());
   });
 }
 
@@ -42,10 +43,10 @@ async function runDesktop(browser) {
   await page.goto(origin + "/", { waitUntil: "networkidle" });
   await verifyStructure(page, "/");
 
-  await page.getByRole("heading", { level: 1, name: /Turn raw SEO exports into inputs you can review and reuse/ }).waitFor();
+  await page.getByRole("heading", { level: 1, name: /Browser-based SEO tools for data you need to clean, check, and reuse/ }).waitFor();
   check((await page.locator(".hero-flagship-preview a").count()) === 2, "home must lead with two flagship preparation workflows");
   check((await page.locator(".secondary-workflows a").count()) === 2, "home must expose the two evidence and protocol workflows");
-  check((await page.locator(".tool-row").count()) === 9, "home must show exactly nine real tool rows");
+  check((await page.locator(".tool-row").count()) === 10, "home must show exactly ten real tool rows");
   check(await page.getByRole("link", { name: /Prepare a keyword import/ }).first().isVisible(), "primary workflow CTA must be visible");
   check(await page.locator(".hero-flagship-preview").isVisible(), "desktop must show the flagship workflow preview");
 
@@ -103,7 +104,7 @@ async function runMobile(browser) {
   await page.locator(".mobile-nav summary").click();
   check(await page.locator(".mobile-nav nav").isVisible(), "mobile navigation must open");
   await page.locator(".mobile-nav summary").click();
-  check((await page.locator(".tool-row").count()) === 9, "mobile must show all nine tools");
+  check((await page.locator(".tool-row").count()) === 10, "mobile must show all ten tools");
 
   const mobileStyles = await page.evaluate(() => {
     const hero = getComputedStyle(document.querySelector(".workbench-hero-copy h1"));
@@ -172,6 +173,9 @@ async function runTools(browser) {
   check(recipeJson.tool === "keyword-import" && !JSON.stringify(recipeJson).includes("running shoes"), "keyword recipe must contain configuration without pasted input");
   const inputBeforeRecipeLoad = await page.locator("[data-keyword-workbench-input]").inputValue();
   await page.locator("[data-recipe-load]").setInputFiles(join(process.cwd(), "public", "fixtures", "keyword-import-conflicts.recipe.json"));
+  await page.locator("[data-recipe-preflight]").waitFor({ state: "visible" });
+  check((await page.locator("[data-recipe-preflight-list]").textContent()).includes("Legacy recipe"), "legacy keyword recipe must disclose its positional-mapping limitation before application");
+  await page.locator("[data-recipe-preflight-apply]").click();
   await page.waitForFunction(() => document.querySelector("[data-keyword-conflict-strategy]")?.value === "merge");
   check((await page.locator("[data-keyword-conflict-strategy]").inputValue()) === "merge", "keyword recipe must restore the saved duplicate strategy");
   check((await page.locator("[data-keyword-workbench-input]").inputValue()) === inputBeforeRecipeLoad, "loading a keyword recipe must not replace pasted input");
@@ -179,7 +183,7 @@ async function runTools(browser) {
 
   await page.goto(origin + "/workflows/build-clean-crawl-list", { waitUntil: "networkidle" });
   await verifyStructure(page, "/workflows/build-clean-crawl-list");
-  check((await page.locator(".workflow-progress li").count()) === 5, "crawl workflow must show its five-step sequence");
+  check((await page.locator(".workflow-progress li").count()) === 6, "crawl workflow must show its six-step sequence");
   before = await page.evaluate(() => performance.getEntriesByType("resource").length);
   await page.locator("[data-crawl-input]").fill("https://example.com/a\nhttps://shop.example.com/b\nhttp://example.com/c\nhttps://example.com/private/x\nhttps://example.com/file.pdf");
   await page.locator("[data-crawl-mode]").selectOption("lines");
@@ -341,7 +345,7 @@ async function captureConceptViewports(browser) {
       ],
       consoleErrors: 0,
       externalRequests: 0,
-      checkedTools: 9,
+      checkedTools: 10,
       checkedWorkflows: 4,
     }, null, 2));
   } finally {

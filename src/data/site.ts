@@ -4,6 +4,7 @@ export const site = {
   canonicalHost: "https://devawesome.io",
   language: "en",
   title: "DevAwesome Browser Workbench",
+  titleSuffix: "DevAwesome",
   description: "Browser-local workbenches for reviewable SEO and developer data.",
   purpose: "A browser-local workbench that prepares keyword imports and crawl inputs, explains indexability and MCP evidence, saves reusable rules as portable recipes, records private run manifests, and keeps focused mini-tools available for smaller jobs.",
   status: "Public, indexable browser-workbench publication launched by explicit owner decision on 28 August 2026.",
