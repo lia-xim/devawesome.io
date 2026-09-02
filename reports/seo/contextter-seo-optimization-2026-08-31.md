@@ -1,5 +1,18 @@
 # Evidence-led SEO implementation — 2026-08-31
 
+## Contextter refresh — 2026-09-01
+
+The correct workspace binding was reverified before acquisition: `ws_8kec25mygy81`, name `devawesome.io`, domain `devawesome.io`, lifecycle `active`. Only `contextter_devawesome` was used.
+
+- Fresh US-English domain snapshot `snap_i6l5akojjurj` returned a partial overview: 141 backlinks, 103 referring domains, no ranked keywords, top pages, or competitors, and a provider-specific spam score of 35. The score is not a Google metric.
+- A second bounded snapshot, `snap_wg3fi75zz4ui`, completed and identified five linked/indexed targets. The homepage received 105 links from 88 referring domains; `/archive/14` received 13 links from 13 referring domains; `/archive/49` received one link from one domain; `/guess-the-programming-language/` received 21 links from one domain.
+- The anchor inventory supports a navigational job for “Dev Awesome Issue #14” and the existing “One HTML Page Challenge” subject. The page remains newly authored and does not reproduce the former newsletter.
+- Two bounded keyword-research jobs failed before provider execution with `KEYWORD_RESEARCH_SOURCE_RESERVATION_INVALID` and settled at EUR 0. Search demand, volume, difficulty, and intent remain `NOT PROVEN`.
+- Site Audit remains unavailable: no active audit site exists, `configureSite` returns `CTX-VAL-001`, and a fresh crawl cannot resolve a site resource.
+- The account cost breakdown settled EUR 0.57 for this task: EUR 0.36 for the partial domain action and EUR 0.21 for the successful anchor/indexed-page snapshot. No holds remain. The first operation record still reports `reconciliationRequired`, so Contextter's operation state and settled account ledger are inconsistent.
+
+Decision: strengthen only `/archive/14` with the evidenced Issue 14 navigational label. Keep the homepage as the primary workbench hub, retain `/archive/49` and the quiz, and create no new keyword page until demand or Search Console evidence exists.
+
 ## Scope and safety boundary
 
 - Contextter MCP server: `contextter_devawesome` only.
@@ -14,15 +27,15 @@
 | Claim | State | Evidence and limit |
 |---|---|---|
 | Contextter is bound to the intended workspace | Verified | Workspace overview returned `ws_8kec25mygy81`, `devawesome.io`, `devawesome.io`, active. |
-| Paid Contextter acquisition | BLOCKED | Contextter lists active grants for the combined 5 EUR request and both quote-specific capabilities, including the latest 24-hour grants. Fresh execution nevertheless returns `ADDITIONAL_AUTHORIZATION_REQUIRED`: each quote declares `actions:quote`, `actions:approve`, and `actions:execute` as required, while Contextter's authorization capability exposes and issues only `actions:execute`. Reserved and settled spend remain `0.00 EUR`. This is a server-side scope-matching failure, not missing user approval. |
+| Paid Contextter acquisition | PARTIAL | Fresh execution now starts under the existing human approvals. One partial domain snapshot charged EUR 0.36 and one complete anchor/indexed-page snapshot charged EUR 0.21. Two keyword jobs failed before provider execution and settled at EUR 0. Site configuration still fails. Total task cost: EUR 0.57. |
 | Current repository has 35 search-eligible canonical routes | Verified | `src/data/routes.ts`, generated sitemap, Astro build, and repository QA agree. |
 | Canonicals, index directives, sitemap, robots, 404, structured data, security headers, and internal-link discoverability pass locally | Verified | `corepack pnpm build`, `corepack pnpm qa`, and rendered browser QA passed on 2026-08-31. This is local release proof, not live production proof. |
-| Current Domain Overview rankings and top pages | NOT PROVEN | Contextter stored read returned `DOMAIN_PROFILE_NOT_FOUND`; fresh acquisition requires an approved grant. |
-| Current keyword demand and intent metrics | NOT PROVEN | Workspace coverage returned `NO_STORED_RESEARCH_RUN`, `NO_STORED_KEYWORDS`, and `NO_STORED_KEYWORD_DATA_RUN`; fresh acquisition requires an approved grant. |
-| Current technical Site Audit health | NOT PROVEN | Workspace coverage returned `NO_ACTIVE_SITE_AUDIT_SITE`. Creating the required site configuration fails with `AUTH_SCOPE_DENIED` because the MCP credential lacks `site:write`, which is not exposed by the available authorization capabilities. |
+| Current Domain Overview rankings and top pages | NOT PROVEN | Fresh snapshot `snap_i6l5akojjurj` completed partially but returned no ranking, top-page, or competitor rows. |
+| Current keyword demand and intent metrics | NOT PROVEN | Both a six-seed and one-seed quick run failed with `KEYWORD_RESEARCH_SOURCE_RESERVATION_INVALID` before provider execution and settled at EUR 0. |
+| Current technical Site Audit health | NOT PROVEN | Workspace coverage reports `NO_ACTIVE_SITE_AUDIT_SITE`. `configureSite` now reaches the server but returns `CTX-VAL-001`; without a site resource the bounded crawl returns `RESOURCE_NOT_FOUND`. |
 | Current GSC clicks, impressions, CTR, queries, pages, and indexing coverage | NOT PROVEN | Contextter returned `SEARCH_PERFORMANCE_SNAPSHOT_NOT_FOUND`. |
 | Current tracked rankings and competitors | NOT PROVEN | Contextter returned zero active schedules and `TRACKING_DOMAIN_NOT_STORED`. |
-| Current stored backlink profile | NOT PROVEN | Workspace coverage returned `NO_STORED_BACKLINK_SNAPSHOT`. Historical repository recovery evidence is not a current Contextter backlink snapshot. |
+| Current backlink profile | Supported | Fresh Contextter snapshots report 141 backlinks and 103 referring domains, with complete bounded anchor and linked-page samples. Relevance and ownership were not independently verified; many sample domains and one explicit paid-link anchor appear low quality. |
 | Current conversion or workflow performance | NOT PROVEN | The repository proves a privacy-bounded Umami implementation, but Contextter contains no tracking/performance data for this workspace. |
 | Former operator or mark clearance | NOT PROVEN | Preserved as an explicit rights-manifest and portfolio risk. |
 | Independent technical reviewer | NOT PROVEN | Preserved as an explicit rights-manifest and portfolio risk. |
@@ -48,7 +61,7 @@ DevAwesome is positioned as a browser-based SEO and developer workbench for peop
 - **Conversion path:** focused tool → complete workflow → guide or field-test proof → optional disclosed Contextter handoff where a live workspace or crawl is the real next step.
 - **Non-goals:** former-newsletter revival, generic software reviews, mass query pages, upload-based SaaS claims, or competing head-term utilities with no differentiated proof.
 
-The phrases below are intent hypotheses derived from verified product jobs and page content. Current volume, difficulty, SERP composition, rankings, and conversion performance remain `NOT PROVEN` because Contextter's paid-action scope matching is blocked and no Search Console snapshot is stored.
+The phrases below are intent hypotheses derived from verified product jobs and page content. Current volume, difficulty, SERP composition, rankings, and conversion performance remain `NOT PROVEN` because both Contextter keyword jobs failed before provider execution and no Search Console snapshot is stored.
 
 | Cluster | Primary search hypothesis | Existing URL roles | Strategic action |
 |---|---|---|---|
@@ -99,7 +112,7 @@ Review date for all rows: after the first usable Contextter/GSC baseline or by 2
 | `/labs` | Locate public fixtures and runners | Repository verified | Keep | Evidence utility; maintain only with live fixtures | Fixture downloads, reproductions |
 | `/guess-the-programming-language/` | Original syntax-recognition quiz | Repository and legacy route evidence verified; current demand NOT PROVEN | Keep | Exact legacy intent restored with new original work; `/quiz` remains a permanent alias | Organic entries, completions |
 | `/new-ownership` | Explain identity, rights, and non-transfer boundary | Portfolio and rights manifest verified | Keep | Required identity/consent clarification | Organic entries, correction contacts |
-| `/archive/14` | Answer one reviewed legacy target with new project context | Repository legacy manifest supports target-level continuity | Keep | Concise title/description aligned; no former issue republished | Organic/referral entries, exits to source |
+| `/archive/14` | Answer one reviewed legacy target with new project context | Contextter reports 13 links from 13 domains and the anchor “Dev Awesome - Issue #14”; repository evidence supports subject-level continuity | Strengthen | Add the evidenced Issue 14 navigational label to title and H1; no former issue republished | Organic/referral entries, exits to source |
 | `/archive/49` | Answer one reviewed legacy target with new project context | Repository legacy manifest supports target-level continuity | Keep | Concise title/description aligned; no former issue republished | Organic/referral entries, exits to source |
 | `/impressum` | Current operator identification | Repository verified | Keep | German metadata aligned with visible German content | Availability, legal accuracy |
 | `/datenschutz` | Explain current hosting, local tools, analytics, and opt-out | Repository and privacy QA verified | Keep | German metadata aligned with visible German content | Availability, opt-out correctness |
@@ -124,7 +137,7 @@ Review date for all rows: after the first usable Contextter/GSC baseline or by 2
 
 ## Remaining decision gates
 
-1. Repair Contextter's paid-action scope matching, then run the already bounded Domain Snapshot and keyword research without exceeding 1.75 EUR. Expose `site:write` or preconfigure `https://devawesome.io` before the bounded Site Audit. Until then, these evidence layers remain `NOT PROVEN`.
+1. Repair the keyword provider reservation and Site Audit configuration path, then collect demand and crawl evidence without exceeding the remaining approved budget. Domain/link snapshots are now available; rankings, keyword demand, competitors, GSC, and technical audit health remain `NOT PROVEN`.
 2. Connect or refresh Search Console in the correct workspace before making performance-based merge, removal, or new-page decisions.
 3. Establish a ranking baseline only for admitted keyword jobs; do not bulk-track every research candidate.
 4. Resolve or continue explicitly disclosing former-operator/mark clearance and independent technical review.
@@ -138,7 +151,7 @@ Review date for all rows: after the first usable Contextter/GSC baseline or by 2
 | Search demand | Query/page impressions, clicks, CTR, position by user job | Growth on admitted tool/workflow intents without sibling cannibalization | Do not judge from one short window |
 | Product use | Tool/workflow view → input → run → result → export | More completed local outputs on priority jobs | Current Contextter performance data is NOT PROVEN |
 | Workflow handoff | Contextual outbound handoff after a completed job | Handoffs help a real next step without becoming the site's reason to exist | Shared ownership is not independent evidence |
-| Authority | Relevant referring domains and target health | Genuine third-party use or citation of tools, fixtures, and methods | Current Contextter backlink snapshot is NOT PROVEN |
+| Authority | Relevant referring domains and target health | Genuine third-party use or citation of tools, fixtures, and methods | Contextter baseline exists; source relevance and link quality require review |
 
 ## Risk register
 
@@ -156,7 +169,7 @@ Review date for all rows: after the first usable Contextter/GSC baseline or by 2
 
 ### Days 1–30
 
-1. Complete the bounded Contextter Domain Snapshot, keyword research, and Site Audit after an effective grant; preserve the 5 EUR ceiling.
+1. Resolve `KEYWORD_RESEARCH_SOURCE_RESERVATION_INVALID` and `configureSite` validation, then complete the keyword and Site Audit baseline within the remaining 5 EUR ceiling.
 2. Connect or refresh the correct Search Console property in `ws_8kec25mygy81`; record query/page and indexing baselines before content expansion.
 3. After a separately authorized deployment, verify every new slash alias, title, description, canonical, sitemap URL, robots rule, and 404 on production.
 4. Resolve or formally retain the disclosed former-operator/mark and independent-reviewer gaps.

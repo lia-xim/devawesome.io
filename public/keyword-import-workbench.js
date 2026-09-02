@@ -169,13 +169,13 @@ for (const root of document.querySelectorAll("[data-keyword-import-workbench]"))
     renderPreview(currentResult);
     renderConflicts(currentResult);
     formatNote.textContent = currentFormat === "contextter"
-      ? 'Contextter CSV renames the selected keyword column to "keyword". The current Contextter importer can map retained columns during import.'
+      ? 'Crawl Foundry CSV renames the selected keyword column to "keyword". The current Crawl Foundry importer can map retained columns during import.'
       : currentFormat === "csv" ? "CSV keeps the selected keyword column and any retained columns."
       : currentFormat === "json" ? "JSON exports one object per cleaned keyword row."
       : "TXT contains one cleaned keyword per line and drops additional columns.";
     status.textContent = currentResult.unresolvedConflicts
       ? `Resolve ${currentResult.unresolvedConflicts} conflicting keyword${currentResult.unresolvedConflicts === 1 ? "" : "s"} before export.`
-      : `${currentResult.rows.length} rows ready for ${currentFormat === "contextter" ? "Contextter CSV" : currentFormat.toUpperCase()} export.`;
+      : `${currentResult.rows.length} rows ready for ${currentFormat === "contextter" ? "Crawl Foundry CSV" : currentFormat.toUpperCase()} export.`;
     copy.disabled = !output.value || currentResult.unresolvedConflicts > 0;
     downloadButton.disabled = !output.value || currentResult.unresolvedConflicts > 0;
     if (manifestSave) manifestSave.disabled = !output.value || currentResult.unresolvedConflicts > 0;
